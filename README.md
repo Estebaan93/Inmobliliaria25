@@ -3,6 +3,7 @@ PROYECTO INMOBILIARIA
 El sistema trata de la informatización de la gestión de alquileres de propiedades inmuebles que realiza una agencia inmobiliaria.
 
 Entidades:
+
 ● Propietario. Es el dueño de uno o varios inmuebles.
 ● Inmueble. Son las propiedades que se dan en alquiler a los inquilinos, a través de un contrato.
 ● Inquilino. Es quien contrata el alquiler de un inmueble.
@@ -13,6 +14,7 @@ Entidades:
 Existen dos roles: administrador y empleado. Solo los administradores pueden eliminar entidades. Solo los administradores pueden gestionar a otros usuarios. Los empleados pueden manipular su propio perfil.
 
 Funcionalidades:
+
 ● En la inmobiliaria se alquilan diferentes tipos de inmuebles para un uso determinado.
 ● Los propietarios de los inmuebles los ofrecen a la agencia para que ésta les busque inquilinos y hacer un contrato de alquiler por un tiempo determinado. 
 Claro está que el propietario está obligado a aceptar el inquilino que proponga la agencia si cumple las condiciones estipuladas.
@@ -41,6 +43,7 @@ Se debe registrar qué usuario creó un contrato y, en caso que corresponda, qui
 Esta información de auditoría sólo es visible para administradores y en una vista de detalles de la entidad correspondiente.
 
 Informes:
+
 ● Listar todos los inmuebles y su dueño, que estén en el sistema.
 Permitir filtrar por disponibilidad (no de fechas, sino de la propiedad “Estado” o “Disponible”).
 ● Listar todos los inmuebles que le correspondan a un propietario.
