@@ -1,7 +1,7 @@
-using Inmobiliaria25.Repositorios;
-using inmobiliaria25.Models;
+//Repositorios/RepositorioInquilino.cs
 using Inmobiliaria25.Db;
 using MySql.Data.MySqlClient;
+using inmobiliaria25.Models;
 
 namespace Inmobiliaria25.Repositorios
 {
@@ -14,14 +14,14 @@ namespace Inmobiliaria25.Repositorios
       _context = context;
     }
 
-    // listo
-    public List<Inquilinos> ObtenerTodos()
+    // SOLO ACTIVOS (estado = 1)
+    public List<Inquilinos> ObtenerActivos()
     {
       var lista = new List<Inquilinos>();
       using (var conn = _context.GetConnection())
       {
         conn.Open();
-        string sql = "SELECT idInquilino, dni, apellido, nombre, telefono, correo, estado FROM Inquilino";
+        string sql = "SELECT idInquilino, apellido, nombre, dni, telefono, correo, estado FROM Inquilino WHERE estado = 1";
         using (var cmd = new MySqlCommand(sql, conn))
         using (var reader = cmd.ExecuteReader())
         {
@@ -30,21 +30,50 @@ namespace Inmobiliaria25.Repositorios
             lista.Add(new Inquilinos
             {
               idInquilino = reader.GetInt32("idInquilino"),
-              dni = reader.GetString("dni"),
               apellido = reader.GetString("apellido"),
               nombre = reader.GetString("nombre"),
+              dni = reader.GetString("dni"),
               telefono = reader.GetString("telefono"),
               correo = reader.GetString("correo"),
               estado = reader.GetBoolean("estado")
             });
+          }
         }
       }
+      return lista;
     }
-            return lista;
-        }
 
-        // busco id
-        public Inquilinos? ObtenerPorId(int id)
+    // SOLO DADOS DE BAJA (estado = 0)
+    public List<Inquilinos> ObtenerDadosDeBaja()
+    {
+      var lista = new List<Inquilinos>();
+      using (var conn = _context.GetConnection())
+      {
+        conn.Open();
+        string sql = "SELECT idInquilino, apellido, nombre, dni, telefono, correo, estado FROM Inquilino WHERE estado = 0";
+        using (var cmd = new MySqlCommand(sql, conn))
+        using (var reader = cmd.ExecuteReader())
+        {
+          while (reader.Read())
+          {
+            lista.Add(new Inquilinos
+            {
+              idInquilino = reader.GetInt32("idInquilino"),
+              apellido = reader.GetString("apellido"),
+              nombre = reader.GetString("nombre"),
+              dni = reader.GetString("dni"),
+              telefono = reader.GetString("telefono"),
+              correo = reader.GetString("correo"),
+              estado = reader.GetBoolean("estado")
+            });
+          }
+        }
+      }
+      return lista;
+    }
+
+    // Buscar por Id
+    public Inquilinos? ObtenerPorId(int id)
     {
       Inquilinos? i = null;
       using (var conn = _context.GetConnection())
@@ -76,48 +105,77 @@ namespace Inmobiliaria25.Repositorios
       return i;
     }
 
-    // creo
-    public int Alta(Inquilinos i)
+    // Validar que no se repita el DNI (excluyendo un id si estamos editando)
+    public bool ObtenerPorDni(string dni, int? excluirId = null)
     {
-      int res = -1;
       using (var conn = _context.GetConnection())
       {
         conn.Open();
-        string sql = @"INSERT INTO Inquilino (dni, apellido, nombre, telefono, correo, estado)
-                               VALUES (@dni, @apellido, @nombre, @telefono, @correo, @estado)";
+        string sql = "SELECT COUNT(*) FROM Inquilino WHERE dni=@dni";
+        if (excluirId.HasValue)
+        {
+          sql += " AND idInquilino != @id";
+        }
+
         using (var cmd = new MySqlCommand(sql, conn))
         {
-          cmd.Parameters.AddWithValue("@dni", i.dni);
+          cmd.Parameters.AddWithValue("@dni", dni);
+          if (excluirId.HasValue)
+            cmd.Parameters.AddWithValue("@id", excluirId.Value);
+
+          var count = Convert.ToInt32(cmd.ExecuteScalar());
+          return count > 0;
+        }
+      }
+    }
+
+    // Alta
+    public int Alta(Inquilinos i)
+    {
+      int res = -1;
+      if (ObtenerPorDni(i.dni))
+        throw new Exception("El DNI ya está registrado. Revise la tabla de inquilinos.");
+
+      using (var conn = _context.GetConnection())
+      {
+        conn.Open();
+        string sqlInsert = @"INSERT INTO Inquilino (apellido, nombre, dni, telefono, correo, estado)
+                             VALUES (@apellido, @nombre, @dni, @telefono, @correo, 1)";
+        using (var cmd = new MySqlCommand(sqlInsert, conn))
+        {
           cmd.Parameters.AddWithValue("@apellido", i.apellido);
           cmd.Parameters.AddWithValue("@nombre", i.nombre);
+          cmd.Parameters.AddWithValue("@dni", i.dni);
           cmd.Parameters.AddWithValue("@telefono", i.telefono);
           cmd.Parameters.AddWithValue("@correo", i.correo);
-          cmd.Parameters.AddWithValue("@estado", i.estado);
           res = cmd.ExecuteNonQuery();
         }
       }
+
       return res;
     }
 
-    // modifico
+    // Modificar (NO toca estado)
     public int Modificar(Inquilinos i)
     {
       int res = -1;
+      if (ObtenerPorDni(i.dni, i.idInquilino))
+        throw new Exception("El DNI ya está registrado en otro inquilino.");
+
       using (var conn = _context.GetConnection())
       {
         conn.Open();
         string sql = @"UPDATE Inquilino SET
-                               dni=@dni, apellido=@apellido, nombre=@nombre,
-                               telefono=@telefono,cCorreo=@correo, estado=@estado
+                               apellido=@apellido, nombre=@nombre, dni=@dni,
+                               telefono=@telefono, correo=@correo
                                WHERE idInquilino=@id";
         using (var cmd = new MySqlCommand(sql, conn))
         {
-          cmd.Parameters.AddWithValue("@dni", i.dni);
           cmd.Parameters.AddWithValue("@apellido", i.apellido);
           cmd.Parameters.AddWithValue("@nombre", i.nombre);
+          cmd.Parameters.AddWithValue("@dni", i.dni);
           cmd.Parameters.AddWithValue("@telefono", i.telefono);
           cmd.Parameters.AddWithValue("@correo", i.correo);
-          cmd.Parameters.AddWithValue("@estado", i.estado);
           cmd.Parameters.AddWithValue("@id", i.idInquilino);
           res = cmd.ExecuteNonQuery();
         }
@@ -125,14 +183,14 @@ namespace Inmobiliaria25.Repositorios
       return res;
     }
 
-    // elimino
+    // Baja 
     public int Baja(int id)
     {
       int res = -1;
       using (var conn = _context.GetConnection())
       {
         conn.Open();
-        string sql = "DELETE FROM Inquilino WHERE idInquilino=@id";
+        string sql = "UPDATE Inquilino SET estado = 0 WHERE idInquilino = @id";
         using (var cmd = new MySqlCommand(sql, conn))
         {
           cmd.Parameters.AddWithValue("@id", id);
