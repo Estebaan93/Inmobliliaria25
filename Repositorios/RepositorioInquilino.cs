@@ -1,12 +1,13 @@
 //Repositorios/RepositorioInquilino.cs
-using Inmobiliaria25.Db;
-using MySql.Data.MySqlClient;
-using inmobiliaria25.Models;
+using Inmobiliaria25.Db; //Hace uso de la clase dataContext
+using MySql.Data.MySqlClient; //Hace uso de mysql
+using inmobiliaria25.Models;  //
 
 namespace Inmobiliaria25.Repositorios
 {
   public class RepositorioInquilino
   {
+    //Declaro variable privada, es el puente para conectar la bd con los metodos
     private readonly DataContext _context;
 
     public RepositorioInquilino(DataContext context)
@@ -15,19 +16,21 @@ namespace Inmobiliaria25.Repositorios
     }
 
     // SOLO ACTIVOS (estado = 1)
+    //Metodo que devuelve una lista de objetos, me trae todos los inquilinos con estado 1
     public List<Inquilinos> ObtenerActivos()
     {
+      //Var vacia que va guardar los datos
       var lista = new List<Inquilinos>();
       using (var conn = _context.GetConnection())
       {
         conn.Open();
         string sql = "SELECT idInquilino, apellido, nombre, dni, telefono, correo, estado FROM Inquilino WHERE estado = 1";
-        using (var cmd = new MySqlCommand(sql, conn))
+        using (var cmd = new MySqlCommand(sql, conn)) //Crea comando para ejecutar la consulta
         using (var reader = cmd.ExecuteReader())
         {
           while (reader.Read())
           {
-            lista.Add(new Inquilinos
+            lista.Add(new Inquilinos //Recorre las filas, crea un objeto con sus propiedades
             {
               idInquilino = reader.GetInt32("idInquilino"),
               apellido = reader.GetString("apellido"),
@@ -75,7 +78,7 @@ namespace Inmobiliaria25.Repositorios
     // Buscar por Id
     public Inquilinos? ObtenerPorId(int id)
     {
-      Inquilinos? i = null;
+      Inquilinos? i = null; //Tengo un inquiino con id null?
       using (var conn = _context.GetConnection())
       {
         conn.Open();
@@ -106,7 +109,7 @@ namespace Inmobiliaria25.Repositorios
     }
 
     // Validar que no se repita el DNI (excluyendo un id si estamos editando)
-    public bool ObtenerPorDni(string dni, int? excluirId = null)
+    public bool ObtenerPorDni(string dni, int? excluirId = null) //parámetro opcional y nullable. Si tiene valor, se usa en el WHERE para excluir un registro específico.
     {
       using (var conn = _context.GetConnection())
       {

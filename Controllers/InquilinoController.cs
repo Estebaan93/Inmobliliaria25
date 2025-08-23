@@ -5,10 +5,14 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Inmobiliaria25.Controllers
 {
+		//Define la clase que hereda de controller
 	public class InquilinoController : Controller
 	{
+		//var privada y lectura, permite que el controller use los metodos del repo
 		private readonly RepositorioInquilino repo;
 
+		//Constructor del controlador asp.net inyecta dependencias, pasa automaticamente objeto al repo y se guarda.
+		//En la var this.repo para ser usado por todos los metodos
 		public InquilinoController(RepositorioInquilino repo)
 		{
 			this.repo = repo;
@@ -17,6 +21,7 @@ namespace Inmobiliaria25.Controllers
 		// Listar activos
 		public IActionResult Index()
 		{
+			//Llama al metodo, este consulta con sql devuelve una lista y guarda en la var lista
 			var lista = repo.ObtenerActivos();
 			return View(lista);
 		}
@@ -28,10 +33,12 @@ namespace Inmobiliaria25.Controllers
 		}
 
 		[HttpPost]
+		//Al hacer click recibe un objeto Inquilino inquilino 
 		public IActionResult Guardar(Inquilinos inquilino)
 		{
 			try
 			{
+				//Pregunta inquilino tiene id > 0?, si es si queire decir que ya existe, si es no es nueva.
 				if (inquilino.idInquilino > 0)
 				{
 					// EDITAR
@@ -68,6 +75,7 @@ namespace Inmobiliaria25.Controllers
 		}
 
 		// Editar (GET)
+		//Este es cuando se hace click y consulta
 		public IActionResult Editar(int id)
 		{
 			var inquilino = repo.ObtenerPorId(id);
@@ -79,6 +87,7 @@ namespace Inmobiliaria25.Controllers
 		}
 
 		// Editar (POST)
+		//Este cuando ya edita en el formulario, click en guardar
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public IActionResult Editar(Inquilinos inquilino)
