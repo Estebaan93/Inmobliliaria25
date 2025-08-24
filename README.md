@@ -1,4 +1,4 @@
-PROYECTO INMOBILIARIA
+PROYECTO INMOBILIARIA 25
 
 El sistema trata de la informatización de la gestión de alquileres de propiedades inmuebles que realiza una agencia inmobiliaria.
 
