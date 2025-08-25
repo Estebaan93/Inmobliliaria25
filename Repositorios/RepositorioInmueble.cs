@@ -39,7 +39,6 @@ namespace Inmobiliaria25.Repositorios
               cantidadAmbientes = reader.GetInt32(nameof(Inmuebles.cantidadAmbientes)),
               disponible= reader.GetBoolean(nameof(Inmuebles.disponible)),
 
-
             });
           }
         }
