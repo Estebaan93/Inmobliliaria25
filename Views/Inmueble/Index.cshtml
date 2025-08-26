@@ -1,0 +1,75 @@
+@model IEnumerable<inmobiliaria25.Models.Inmuebles>
+
+@{
+  ViewData["Title"] = "Inmuebles";
+}
+
+<h2 class="h2-inquilino-background">Gestión de Inmuebles</h2>
+<p>
+  <a href="@Url.Action("Crear", "Inmueble")" class="btn btn-agregar">Crear Inmuebles</a>
+</p>
+
+<div class="displayDeFiltros">
+  <div class="barraDeBusqueda">
+    <input type="text" placeholder="Buscar por DNI..." id="buscarPropietarioDNI" class="form-control">
+    <button type="button" class="btn btn-primary" id="filtrarPorDni" title="Buscar"><i
+        class="fa-solid fa-magnifying-glass"></i></button>
+  </div>
+  <div class="barraDeBusqueda">
+    <input type="text" placeholder="Buscar por apellido..." id="buscarPropietarioApellido" class="form-control">
+    <button type="button" class="btn btn-primary" id="filtrarPorApellido" title="Buscar"><i
+        class="fa-solid fa-magnifying-glass"></i></button>
+  </div>
+  <div class="barraDeBusqueda">
+    <input type="text" placeholder="Buscar por email..." id="buscarPropietarioEmail" class="form-control">
+    <button type="button" class="btn btn-primary" id="filtrarPorEmail" title="Buscar"><i
+        class="fa-solid fa-magnifying-glass"></i></button>
+  </div>
+  <div class="barraDeBusqueda">
+    <button type="button" class="btn btn-danger" id="propietariosDadosDeBaja">Dados de baja</button>
+  </div>
+</div>
+<table class="table table-even-columns table-striped table-hover table-bordered">
+  <thead class="table-dark">
+    <tr>
+      <th>@Html.DisplayNameFor(model => model.First().dni)</th>
+      <th>@Html.DisplayNameFor(model => model.First().apellido)</th>
+      <th>@Html.DisplayNameFor(model => model.First().nombre)</th>
+      <th>@Html.DisplayNameFor(model => model.First().telefono)</th>
+      <th>@Html.DisplayNameFor(model => model.First().correo)</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody id="tablaPropietarios">
+    @foreach (var item in Model)
+    {
+      <tr>
+        <td>@Html.DisplayFor(modelItem => item.dni)</td>
+        <td>@Html.DisplayFor(modelItem => item.apellido)</td>
+        <td>@Html.DisplayFor(modelItem => item.nombre)</td>
+        <td>@Html.DisplayFor(modelItem => item.telefono)</td>
+        <td>@Html.DisplayFor(modelItem => item.correo)</td>
+        <td class="d-flex align-items-center w-auto">
+          <a href="@Url.Action("Editar", "Propietario", new { id = item.idPropietario })" class="btn btn-editbt mx-1">
+            <i class="fa-solid fa-pen-to-square"></i>
+          </a>
+          @*  @if(User.IsInRole("Administrador")){
+                        }  NO OLVIDAR!!!!CUANDO AVANCE NO OLVIDAR ACTIVAR, EL ADMIN SOLO ELIMINA AHORA PRUEBO NADA MAS*@
+          <form asp-action="Borrar" class="mx-1 form-borrar-propietario" method="post" style="display:inline;">
+            <input type="hidden" name="id" value="@item.idPropietario" />
+            <button type="submit" class="btn btn-borrarbt" title="Borrar">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </form>
+
+          <a class="btn btn-detallebt mx-1" href="/Propietario/Detalle/@item.idPropietario">
+            <i class="fa-solid fa-list"></i>
+          </a>
+        </td>
+      </tr>
+    }
+  </tbody>
+</table>
+@section Scripts {
+  <script src="~/js/site.js"></script>
+}

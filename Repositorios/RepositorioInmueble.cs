@@ -15,7 +15,7 @@ namespace Inmobiliaria25.Repositorios
     }
 
     //Solo activos (estado = 1) 
-    public List<Inmuebles> ObtenerInmuebles()
+    public List<Inmuebles> ObtenerInmueblesActivos()
     {
       List<Inmuebles> inmueble = new List<Inmuebles>();
       using (var conn = _context.GetConnection())
@@ -41,17 +41,17 @@ namespace Inmobiliaria25.Repositorios
               idTipo = reader.GetInt32("idTipo"),
               metros2 = reader.GetString("metros2"),
               cantidadAmbientes = reader.GetInt32("cantidadAmbientes"),
-
+              disponible = reader.GetBoolean("disponible"),
+              precio = reader.GetDecimal("precio"),
+              descripcion = reader.GetString("descripcion"),
+              cochera = reader.GetBoolean("cochera"), //tinyInt corresponde a bool en c#
+              piscina = reader.GetBoolean("piscina"),
+              mascotas = reader.GetBoolean("mascotas"),
+              urlImagen= reader.GetString("urlImagen")
             });
-
           }
         }
-
-
       }
-
-
-
       return inmueble;
     }
 

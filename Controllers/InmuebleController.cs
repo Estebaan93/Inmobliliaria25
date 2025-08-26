@@ -20,8 +20,8 @@ namespace Inmobiliaria25.Controllers
     //Listar activos
     public IActionResult Index(){
       //Llamamos al metodo
-      //var lista= repo.ObtenerActivos();
-      return View();
+      var lista= repo.ObtenerInmueblesActivos();
+      return View(lista);
       
     }
  
