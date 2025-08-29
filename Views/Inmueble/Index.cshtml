@@ -32,37 +32,50 @@
 <table class="table table-even-columns table-striped table-hover table-bordered">
   <thead class="table-dark">
     <tr>
-      <th>@Html.DisplayNameFor(model => model.First().dni)</th>
-      <th>@Html.DisplayNameFor(model => model.First().apellido)</th>
-      <th>@Html.DisplayNameFor(model => model.First().nombre)</th>
-      <th>@Html.DisplayNameFor(model => model.First().telefono)</th>
-      <th>@Html.DisplayNameFor(model => model.First().correo)</th>
-      <th></th>
+      <th>@Html.DisplayNameFor(model => model.First().idInmueble)</th>
+      <th>@Html.DisplayNameFor(model => model.First().idPropietario)</th>
+      <th>@Html.DisplayNameFor(model => model.First().idDireccion)</th>
+      <th>@Html.DisplayNameFor(model => model.First().idTipo)</th>
+      <th>@Html.DisplayNameFor(model => model.First().metros2)</th>
+      <th>@Html.DisplayNameFor(model => model.First().cantidadAmbientes)</th>
+      <th>@Html.DisplayNameFor(model => model.First().disponible)</th>
+      <th>@Html.DisplayNameFor(model => model.First().descripcion)</th>
+      <th>@Html.DisplayNameFor(model => model.First().cochera)</th>
+      <th>@Html.DisplayNameFor(model => model.First().piscina)</th>
+      <th>@Html.DisplayNameFor(model => model.First().mascotas)</th>
+      <th>@Html.DisplayNameFor(model => model.First().urlImagen)</th>
     </tr>
   </thead>
   <tbody id="tablaPropietarios">
     @foreach (var item in Model)
     {
       <tr>
-        <td>@Html.DisplayFor(modelItem => item.dni)</td>
-        <td>@Html.DisplayFor(modelItem => item.apellido)</td>
-        <td>@Html.DisplayFor(modelItem => item.nombre)</td>
-        <td>@Html.DisplayFor(modelItem => item.telefono)</td>
-        <td>@Html.DisplayFor(modelItem => item.correo)</td>
+        <td>@Html.DisplayFor(modelItem => item.idInmueble)</td>
+        <td>@Html.DisplayFor(modelItem => item.idPropietario)</td>
+        <td>@Html.DisplayFor(modelItem => item.idDireccion)</td>
+        <td>@Html.DisplayFor(modelItem => item.idTipo)</td>
+        <td>@Html.DisplayFor(modelItem => item.metros2)</td>
+        <td>@Html.DisplayFor(modelItem => item.cantidadAmbientes)</td>
+        <td>@Html.DisplayFor(modelItem => item.disponible)</td>
+        <td>@Html.DisplayFor(modelItem => item.descripcion)</td>
+        <td>@Html.DisplayFor(modelItem => item.cochera)</td>
+        <td>@Html.DisplayFor(modelItem => item.piscina)</td>
+        <td>@Html.DisplayFor(modelItem => item.mascotas)</td>
+        <td>@Html.DisplayFor(modelItem => item.urlImagen)</td>
         <td class="d-flex align-items-center w-auto">
-          <a href="@Url.Action("Editar", "Propietario", new { id = item.idPropietario })" class="btn btn-editbt mx-1">
+          <a href="@Url.Action("Editar", "Inmueble", new { id = item.idInmueble })" class="btn btn-editbt mx-1">
             <i class="fa-solid fa-pen-to-square"></i>
           </a>
           @*  @if(User.IsInRole("Administrador")){
                         }  NO OLVIDAR!!!!CUANDO AVANCE NO OLVIDAR ACTIVAR, EL ADMIN SOLO ELIMINA AHORA PRUEBO NADA MAS*@
-          <form asp-action="Borrar" class="mx-1 form-borrar-propietario" method="post" style="display:inline;">
+          <form asp-action="Borrar" class="mx-1 form-borrar-inmueble" method="post" style="display:inline;">
             <input type="hidden" name="id" value="@item.idPropietario" />
             <button type="submit" class="btn btn-borrarbt" title="Borrar">
               <i class="fa-solid fa-trash"></i>
             </button>
           </form>
 
-          <a class="btn btn-detallebt mx-1" href="/Propietario/Detalle/@item.idPropietario">
+          <a class="btn btn-detallebt mx-1" href="/Inmueble/Detalle/@item.idInmueble">
             <i class="fa-solid fa-list"></i>
           </a>
         </td>

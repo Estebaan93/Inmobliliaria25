@@ -32,7 +32,9 @@ public class Inmuebles
   public string? descripcion { get; set; }
 
   public bool cochera { get; set; }
+
   public bool piscina { get; set; }
+  
   public bool mascotas { get; set; }
 
   [Required]
