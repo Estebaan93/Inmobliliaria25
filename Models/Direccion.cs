@@ -7,19 +7,18 @@ public class Direcion
   public int idDireccion { get; set; }
 
   [Required]
-  public string? calle { get; set; }
+  public string calle { get; set; } = string.Empty;
 
   [Required]
   public int altura { get; set; }
 
   [Required]
-  public string? cp { get; set; }
+  public string cp { get; set; } = string.Empty;
 
   [Required]
-  public string? ciudad { get; set; }
+  public string ciudad { get; set; } = string.Empty;
 
   [Required]
-  public string? coordenadas { get; set; }
-
+  public string coordenadas { get; set; } = string.Empty;
 
 }

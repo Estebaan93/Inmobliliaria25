@@ -1,4 +1,5 @@
-using System.ComponentModel.DataAnnotations; //Uso de espacios de nombres
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema; //Uso de espacios de nombres
 namespace inmobiliaria25.Models;
 
 public class Contrato
@@ -11,12 +12,13 @@ public class Contrato
 
   [Required(ErrorMessage = "El campo inmueble es obligatorio")]
   public int idInmueble { get; set; }
-  //ublic Inquilinos inquilino { get; set; }
+  //public Inquilinos inquilino { get; set; }
   //public Inmuebles inmueble { get; set; }
 
   [Required(ErrorMessage = "El monto es obligatorio")]
+  [Column(TypeName ="decimal(10,0)")] //Para EF le dice que tipo exacto que debe usar en la BD
   [Range(0.01, double.MaxValue, ErrorMessage = "El monto debe ser mayor a 0")]
-  public double monto { get; set; }
+  public decimal monto { get; set; }
 
   [Required(ErrorMessage = "La fecha de inicio es obligatoria")]
   [DataType(DataType.Date)]
@@ -26,8 +28,10 @@ public class Contrato
   [DataType(DataType.Date)]
   public DateTime fechaFin { get; set; }
 
-  public DateTime fechaAnulacion { get; set; }
+  [DataType(DataType.Date)]
+  public DateTime? fechaAnulacion { get; set; } //nullable en la BD
 
+  [Required]
   public bool estado { get; set; }
 
   public decimal? multaGenerada { get; set; }
