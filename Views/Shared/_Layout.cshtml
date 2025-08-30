@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿<!--Views/Shared/_Layout.cshtml -->
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -9,7 +10,6 @@
   <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
   <link rel="stylesheet" href="~/NETmvc2108.styles.css" asp-append-version="true" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-
 </head>
 
 <body>
@@ -22,6 +22,7 @@
           <li class="nav-item">
             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Inicio</a>
           </li>
+
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle text-dark" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
               aria-expanded="false">Inquilinos</a>
@@ -30,6 +31,7 @@
               <li><a class="dropdown-item" href="/Inquilino/Index">Listar/Buscar</a></li>
             </ul>
           </li>
+
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle text-dark" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
               aria-expanded="false">Propietarios</a>
@@ -38,7 +40,8 @@
               <li><a class="dropdown-item" href="/Propietario/Index">Listar/Buscar</a></li>
             </ul>
           </li>
-          <li class="nav-item dropdown"></li>
+
+          <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle text-dark" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
               aria-expanded="false">Inmuebles</a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
