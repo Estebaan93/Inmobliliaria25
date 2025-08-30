@@ -1,75 +1,90 @@
 @model IEnumerable<inmobiliaria25.Models.Inquilinos>
 
 @{
-  ViewData["Title"] = "Inquilinos";
+    ViewData["Title"] = "Inquilinos";
 }
 
 <h2 class="h2-inquilino-background">Gestión de Inquilinos</h2>
 <p>
-  <a href="@Url.Action("Crear", "Inquilino")" class="btn btn-agregar">Crear Inquilino</a>
+    <a href="@Url.Action("Crear", "Inquilino")" class="btn btn-agregar">Crear Inquilino</a>
 </p>
 
 <div class="displayDeFiltros">
-  <div class="barraDeBusqueda">
-    <input type="text" placeholder="Buscar por DNI..." id="buscarInquilinoDNI" class="form-control">
-    <button type="button" class="btn btn-primary" id="filtrarPorDni" title="Buscar"><i
-        class="fa-solid fa-magnifying-glass"></i></button>
-  </div>
-  <div class="barraDeBusqueda">
-    <input type="text" placeholder="Buscar por apellido..." id="buscarInquilinoApellido" class="form-control">
-    <button type="button" class="btn btn-primary" id="filtrarPorApellido" title="Buscar"><i
-        class="fa-solid fa-magnifying-glass"></i></button>
-  </div>
-  <div class="barraDeBusqueda">
-    <input type="text" placeholder="Buscar por email..." id="buscarInquilinoEmail" class="form-control">
-    <button type="button" class="btn btn-primary" id="filtrarPorEmail" title="Buscar"><i
-        class="fa-solid fa-magnifying-glass"></i></button>
-  </div>
-  <div class="barraDeBusqueda">
-    <button type="button" class="btn btn-danger" id="inquilinosDadosDeBaja">Dados de baja</button>
-  </div>
+    <div class="displayDeFiltros"></div>
+    <div class="barraDeBusqueda">
+        <form asp-action="BuscarPorDni" method="get" class="d-flex">
+            <input type="text" name="dni" placeholder="Buscar por DNI..." class="form-control" />
+            <button type="submit" class="btn btn-primary" title="Buscar">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+        </form>
+    </div>
+
+    <div class="barraDeBusqueda">
+        <form asp-action="BuscarPorApellido" method="get" class="d-flex">
+            <input type="text" name="apellido" placeholder="Buscar por apellido..." class="form-control" />
+            <button type="submit" class="btn btn-primary" title="Buscar">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+        </form>
+    </div>
+
+    <div class="barraDeBusqueda">
+        <form asp-action="BuscarPorEmail" method="get" class="d-flex">
+            <input type="text" name="email" placeholder="Buscar por email..." class="form-control" />
+            <button type="submit" class="btn btn-primary" title="Buscar">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+        </form>
+    </div>
+
+    <div class="barraDeBusqueda">
+        <form asp-action="DadosDeBaja" method="get">
+            <button type="submit" class="btn btn-danger">Dados de baja</button>
+        </form>
+    </div>
 </div>
 <table class="table table-even-columns table-striped table-hover table-bordered">
-  <thead class="table-dark">
-    <tr>
-      <th>@Html.DisplayNameFor(model => model.First().dni)</th>
-      <th>@Html.DisplayNameFor(model => model.First().apellido)</th>
-      <th>@Html.DisplayNameFor(model => model.First().nombre)</th>
-      <th>@Html.DisplayNameFor(model => model.First().telefono)</th>
-      <th>@Html.DisplayNameFor(model => model.First().correo)</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody id="tablaInquilinos">
-    @foreach (var item in Model)
-    {
-      <tr>
-        <td>@Html.DisplayFor(modelItem => item.dni)</td>
-        <td>@Html.DisplayFor(modelItem => item.apellido)</td>
-        <td>@Html.DisplayFor(modelItem => item.nombre)</td>
-        <td>@Html.DisplayFor(modelItem => item.telefono)</td>
-        <td>@Html.DisplayFor(modelItem => item.correo)</td>
-        <td class="d-flex align-items-center w-auto">
-          <a href="@Url.Action("Editar", "Inquilino", new { id = item.idInquilino })" class="btn btn-editbt mx-1">
-            <i class="fa-solid fa-pen-to-square"></i>
-          </a>
-          @*  @if(User.IsInRole("Administrador")){
+    <thead class="table-dark">
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.First().dni)</th>
+            <th>@Html.DisplayNameFor(model => model.First().apellido)</th>
+            <th>@Html.DisplayNameFor(model => model.First().nombre)</th>
+            <th>@Html.DisplayNameFor(model => model.First().telefono)</th>
+            <th>@Html.DisplayNameFor(model => model.First().correo)</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody id="tablaInquilinos">
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.dni)</td>
+                <td>@Html.DisplayFor(modelItem => item.apellido)</td>
+                <td>@Html.DisplayFor(modelItem => item.nombre)</td>
+                <td>@Html.DisplayFor(modelItem => item.telefono)</td>
+                <td>@Html.DisplayFor(modelItem => item.correo)</td>
+                <td class="d-flex align-items-center w-auto">
+                    <a href="@Url.Action("Editar", "Inquilino", new { id = item.idInquilino })" class="btn btn-editbt mx-1">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                    </a>
+                    @*  @if(User.IsInRole("Administrador")){
                         }  NO OLVIDAR!!!!CUANDO AVANCE NO OLVIDAR ACTIVAR, EL ADMIN SOLO ELIMINA AHORA PRUEBO NADA MAS*@
-          <form asp-action="Borrar" class="mx-1 form-borrar-inquilino" method="post" style="display:inline;">
-            <input type="hidden" name="id" value="@item.idInquilino" />
-            <button type="submit" class="btn btn-borrarbt" title="Borrar">
-              <i class="fa-solid fa-trash"></i>
-            </button>
-          </form>
+                    <form asp-action="Borrar" class="mx-1 form-borrar-inquilino" method="post" style="display:inline;">
+                        <input type="hidden" name="id" value="@item.idInquilino" />
+                        <button type="submit" class="btn btn-borrarbt" title="Borrar">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </form>
 
-          <a class="btn btn-detallebt mx-1" href="/Inquilino/Detalle/@item.idInquilino">
-            <i class="fa-solid fa-list"></i>
-          </a>
-        </td>
-      </tr>
-    }
-  </tbody>
+                    <a class="btn btn-detallebt mx-1" href="/Inquilino/Detalles/@item.idInquilino">
+                        <i class="fa-solid fa-list"></i>
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
 </table>
 @section Scripts {
-  <script src="~/js/site.js"></script>
+    <script src="~/js/site.js"></script>
 }

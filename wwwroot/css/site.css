@@ -19,6 +19,7 @@ html {
 
 body {
   margin-bottom: 60px;
+   background:#e2e2e9e1
 }
 
 .titulo-inmobiliaria {
@@ -52,3 +53,235 @@ body {
     background-position: 1000px 0;
   }
 }
+
+/* INQUILINO - PROPIETARIO  */
+
+.barraDeFiltros{
+  display: flex;
+  margin: 10px;
+}
+.barraDeBusqueda{
+  display: flex;
+  width: 30%;
+  margin: 10px;
+}
+.displayDeFiltros{
+  display: flex;
+  align-items: center;
+}
+
+/*  tabla gral */
+.table {
+  border-collapse: separate;
+  border-spacing: 0 0.5rem;
+  width: 100%; 
+}
+
+.table th, .table td {
+  vertical-align: middle;
+  text-align: center;
+  padding: 15px;
+}
+
+.table-hover tbody tr:hover {
+  background-color: #f5f5f5;
+}
+
+.table-dark th {
+  background-color: #343a40;
+  color: white;
+}
+
+/* Ajustes columnas con distribucion uniforme */
+.table-even-columns th, .table-even-columns td {
+  width: 14%;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.table-even-columns th:last-child, .table-even-columns td:last-child {
+  width: 16%;
+  vertical-align: middle;
+}
+/* button Agregar */
+.btn-agregar {
+  background-color: #95a495d6;
+  border-color: #484e48;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-weight: bold;
+  transition: background-color 0.3s, border-color 0.3s;
+}
+
+.btn-agregar:hover {
+  background-color: #e9f26bd7;
+  border-color: #e9f26bad;
+}
+/* -------- button primario, es global -------- */
+.btn-primary {
+    background-color: #687075 !important;  /* azul marino corporativo */
+    border-color: #0a3d62 !important;
+    color: #fff !important;
+}
+
+.btn-primary:hover {
+    background-color: #b7dac4 !important;  /* hover */
+    border-color: #458567 !important;
+}
+
+/* ======== ESTILO FICHA DETALLES ======== */
+.card-detalle {
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    background: #fff;
+}
+
+.card-detalle:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 25px rgba(0,0,0,0.15);
+}
+
+/* Avatar */
+.card-detalle img {
+    border: 4px solid #f1f1f1;
+    padding: 3px;
+    background: #fff;
+}
+
+/* tit card*/
+.card-detalle h3 {
+    font-weight: 700;
+    color: #333;
+}
+
+.card-detalle p {
+    font-size: 1rem;
+    margin: 0.4rem 0;
+}
+/* Card efecto vidrio */
+.card-glass {
+    background: rgba(80, 83, 85, 0.404);
+    backdrop-filter: blur(12px) saturate(150%);
+    -webkit-backdrop-filter: blur(12px) saturate(150%);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* hover suave */
+.card-glass:hover {
+    transform: translateY(-5px) scale(1.01);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* haz de iluminacion */
+.card-glass::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        120deg,
+        rgba(255, 255, 255, 0.1) 0%,
+        rgba(255, 255, 255, 0.4) 50%,
+        rgba(255, 255, 255, 0.1) 100%
+    );
+    transform: rotate(25deg) translateX(-150%);
+    animation: shine 9s infinite linear;
+    pointer-events: none; 
+}
+
+/* anmimacion del haz */
+@keyframes shine {
+    0%   { transform: rotate(25deg) translateX(-150%); }
+    100% { transform: rotate(25deg) translateX(150%); }
+}
+
+
+/* -------- card -------- */
+.card-propietario {
+    border-top: 6px solid #f5dc97; 
+}
+
+.card-inquilino {
+    border-top: 6px solid #96aaaf; 
+}
+.h2-propietario-background {
+    font-weight: bold;
+    padding: 12px;
+    border-radius: 6px;
+    text-align: center;
+    background: linear-gradient(90deg, #004aad, #007bff);
+    color: white;
+    margin-bottom: 20px;
+}
+.icon-bg {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    color: white;
+    margin-right: 8px;
+}
+.icon-dni { background: #007bff; }    
+.icon-phone { background: #28a745; }  
+.icon-mail { background: #dc3545; }   
+
+/* Card vidriada para formularios */
+.formulario-card {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px) saturate(160%);
+    -webkit-backdrop-filter: blur(10px) saturate(160%);
+    border-radius: 20px;
+    padding: 2rem;
+    width: 500px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+    border: 1px solid rgba(255,255,255,0.25);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.formulario-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 28px rgba(0,0,0,0.35);
+}
+
+/* Inputs uniformes */
+.form-control {
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    padding: 0.75rem 1rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-control:focus {
+    border-color: #0077b6;
+    box-shadow: 0 0 8px rgba(0, 119, 182, 0.5);
+}
+
+/* Botón degradado */
+.btn-gradient {
+    background: linear-gradient(135deg, #0077b6, #00b4d8);
+    color: #fff;
+    font-weight: bold;
+    border: none;
+    border-radius: 12px;
+    padding: 0.75rem 1.5rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-gradient:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(0, 180, 216, 0.4);
+}
+
+
