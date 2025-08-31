@@ -40,14 +40,14 @@
               <li><a class="dropdown-item" href="/Propietario/Index">Listar/Buscar</a></li>
             </ul>
           </li>
-
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle text-dark" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
-              aria-expanded="false">Inmuebles</a>
-            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <li><a class="dropdown-item" href="/Inmueble/Crear">Crear/Ingresar</a></li>
-              <li><a class="dropdown-item" href="/Inmueble/Index">Listar/Buscar</a></li>
-            </ul>
+          <li class="nav-item dropdown"></li>
+          <a class="nav-link dropdown-toggle text-dark" id="inmuebleDropdown" role="button" data-bs-toggle="dropdown"
+            aria-expanded="false">Inmuebles</a>
+          <ul class="dropdown-menu" aria-labelledby="inmuebleDropdown">
+            <li><a class="dropdown-item" href="/Inmueble/Crear">Crear/Ingresar</a></li>
+            <li><a class="dropdown-item" href="/Inmueble/Index">Listar/Buscar</a></li>
+            <li><a class="dropdown-item" href="#" id="btnTiposInmuebles">Tipos de Inmuebles</a></li>
+          </ul>
           </li>
     </nav>
   </header>
@@ -65,6 +65,7 @@
   <script src="~/lib/jquery/dist/jquery.min.js"></script>
   <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
   <script src="~/js/site.js" asp-append-version="true"></script>
+  <link rel="stylesheet" href="~/css/sweetalert.css" asp-append-version="true" />
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   @await RenderSectionAsync("Scripts", required: false)
 </body>

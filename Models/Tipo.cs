@@ -1,20 +1,16 @@
 using System.ComponentModel.DataAnnotations;
-namespace inmobiliaria25.Models;
 
-public class Tipo
+namespace Inmobiliaria25.Models  
 {
-  [Key]
-  public int idTipo { get; set; }
+    public class Tipo
+    {
+        [Key]
+        public int IdTipo { get; set; }
+        public string Observacion { get; set; }
 
-  
-  //public string? observacion { get; set; }
-  //public string observacion { get; set; } = null;
-  //La observacion puede ser obligatoria??
-  public string observacion { get; set; } = string.Empty;
-
-  public override string ToString()
-  {
-    return observacion?? string.Empty;
-  }
-
+        public override string ToString()
+        {
+            return Observacion;
+        }
+    }
 }

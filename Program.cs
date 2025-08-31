@@ -8,6 +8,8 @@ builder.Services.AddSingleton<DataContext>();
 builder.Services.AddTransient<RepositorioInquilino>();
 builder.Services.AddTransient<RepositorioPropietario>();
 builder.Services.AddTransient<RepositorioInmueble>();
+builder.Services.AddScoped<RepositorioTipo>();
+builder.Services.AddScoped<RepositorioDireccion>();
 //builder.Services.AddTransient<RepositorioContrato>();
 
 

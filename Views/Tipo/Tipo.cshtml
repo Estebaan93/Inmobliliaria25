@@ -1,0 +1,25 @@
+@{
+    Layout = null; // anulo el _Layout
+}
+
+<div class="text-end mb-2">
+    <button class="btn btn-success btn-sm" onclick="abrirCrearTipo()">
+        <i class="fa fa-plus"></i> Nuevo Tipo
+    </button>
+</div>
+<table class="table table-striped table-hover table-bordered tipos">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Observación</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody id="tablaTipos">
+        <!-- carga dinamica con ajax -->
+    </tbody>
+</table>
+
+@section Scripts {
+    <script src="~/js/tipo.js"></script>
+}
