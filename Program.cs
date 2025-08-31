@@ -7,6 +7,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSingleton<DataContext>();
 builder.Services.AddTransient<RepositorioInquilino>();
 builder.Services.AddTransient<RepositorioPropietario>();
+builder.Services.AddTransient<RepositorioInmueble>();
+//builder.Services.AddTransient<RepositorioContrato>();
 
 
 // Add services to the container.

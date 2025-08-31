@@ -24,10 +24,11 @@ namespace Inmobiliaria25.Repositorios
         /*string sql = $@" SELECT {nameof(Inmuebles.idInmueble)}, {nameof(Inmuebles.idPropietario)}, {nameof(Inmuebles.idDireccion)}, {nameof(Inmuebles.idTipo)}, {nameof(Inmuebles.metros2)}, 
         {nameof(Inmuebles.cantidadAmbientes)}, {nameof(Inmuebles.disponible)}, {nameof(Inmuebles.precio)}, {nameof(Inmuebles.descripcion)}, {nameof(Inmuebles.cochera)}, {nameof(Inmuebles.piscina)}, 
         {nameof(Inmuebles.mascotas)}, {nameof(Inmuebles.urlImagen)} FROM inmueble WHERE estado=1 ";*/
-        string sql= @"SELECT idInmueble, idPropietario, idDireccion, idTipo, metros2, cantidadAmbientes, disponible, 
-                              precio, descripcion, cochera, piscina, mascotas, urlImagen, estado
-                        FROM inmueble
-                        WHERE estado = 1";
+        string sql= @"SELECT i.idInmueble, i.idPropietario, i.idDireccion, i.idTipo, i.metros2, i.cantidadAmbientes, i.disponible, i.precio, i.descripcion, 
+i.cochera, i.piscina, i.mascotas, i.urlImagen, i.estado, p.nombre, p.apellido, p.dni, p.correo
+FROM inmueble i
+INNER JOIN propietario p ON i.idPropietario = p.idPropietario
+WHERE i.estado = 1";
         using (var cmd = new MySqlCommand(sql, conn))
         using (var reader = cmd.ExecuteReader())
         {
