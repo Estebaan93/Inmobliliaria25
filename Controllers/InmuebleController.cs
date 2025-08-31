@@ -15,14 +15,25 @@ namespace Inmobiliaria25.Controllers
             _repoPropietario = repoPropietario;
         }
 
+        //Vista principal
         public IActionResult Index()
         {
-            var vm = new InmuebleViewModel
+            var viewModel = new InmuebleViewModel
             {
-                Inmuebles = _repoInmueble.Listar(),
+                Inmuebles = new List<Inmueble>(), // tabla empieza vacía, se llena con AJAX
                 Propietarios = _repoPropietario.ObtenerActivos()
             };
-            return View(vm);
+
+            return View(viewModel);
         }
+
+        // Endpoint AJAX para los filtros
+        [HttpGet]
+public IActionResult Filtrar(int? estado = null, int? idPropietario = null)
+{
+    var inmuebles = _repoInmueble.Listar(estado, idPropietario);
+    return Json(inmuebles);
+}
+
     }
 }
