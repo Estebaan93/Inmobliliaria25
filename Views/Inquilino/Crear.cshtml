@@ -1,47 +1,47 @@
-@model inmobiliaria25.Models.Inquilinos
+@model Inmobiliaria25.Models.Inquilinos
 
 @{
-    ViewData["Title"] = "Crear Inquilinos";
+  ViewData["Title"] = "Crear Inquilinos";
 }
 
 <h2 class="h2-inquilino-background text-center mb-4">Crear Inquilinos</h2>
 
 <div class="formulario-card mx-auto">
-    <form asp-action="Guardar" method="post">
-        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+  <form asp-action="Guardar" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-        <div class="mb-3">
-            <label asp-for="dni" class="form-label"></label>
-            <input asp-for="dni" class="form-control" />
-            <span asp-validation-for="dni" class="text-danger"></span>
-        </div>
+    <div class="mb-3">
+      <label asp-for="dni" class="form-label"></label>
+      <input asp-for="dni" class="form-control" />
+      <span asp-validation-for="dni" class="text-danger"></span>
+    </div>
 
-        <div class="mb-3">
-            <label asp-for="apellido" class="form-label"></label>
-            <input asp-for="apellido" class="form-control" />
-            <span asp-validation-for="apellido" class="text-danger"></span>
-        </div>
+    <div class="mb-3">
+      <label asp-for="apellido" class="form-label"></label>
+      <input asp-for="apellido" class="form-control" />
+      <span asp-validation-for="apellido" class="text-danger"></span>
+    </div>
 
-        <div class="mb-3">
-            <label asp-for="nombre" class="form-label"></label>
-            <input asp-for="nombre" class="form-control" />
-            <span asp-validation-for="nombre" class="text-danger"></span>
-        </div>
+    <div class="mb-3">
+      <label asp-for="nombre" class="form-label"></label>
+      <input asp-for="nombre" class="form-control" />
+      <span asp-validation-for="nombre" class="text-danger"></span>
+    </div>
 
-        <div class="mb-3">
-            <label asp-for="telefono" class="form-label"></label>
-            <input asp-for="telefono" class="form-control" />
-            <span asp-validation-for="telefono" class="text-danger"></span>
-        </div>
+    <div class="mb-3">
+      <label asp-for="telefono" class="form-label"></label>
+      <input asp-for="telefono" class="form-control" />
+      <span asp-validation-for="telefono" class="text-danger"></span>
+    </div>
 
-        <div class="mb-3">
-            <label asp-for="correo" class="form-label"></label>
-            <input asp-for="correo" class="form-control" />
-            <span asp-validation-for="correo" class="text-danger"></span>
-        </div>
+    <div class="mb-3">
+      <label asp-for="correo" class="form-label"></label>
+      <input asp-for="correo" class="form-control" />
+      <span asp-validation-for="correo" class="text-danger"></span>
+    </div>
 
-        <div class="text-center">
-            <button type="submit" class="btn btn-gradient">Guardar</button>
-        </div>
-    </form>
+    <div class="text-center">
+      <button type="submit" class="btn btn-gradient">Guardar</button>
+    </div>
+  </form>
 </div>

@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-namespace inmobiliaria25.Models;
+namespace Inmobiliaria25.Models;
 
 public class Inquilinos
 {

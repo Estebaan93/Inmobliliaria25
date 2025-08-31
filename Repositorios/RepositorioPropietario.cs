@@ -1,6 +1,6 @@
 using Inmobiliaria25.Db;
 using MySql.Data.MySqlClient;
-using inmobiliaria25.Models;
+using Inmobiliaria25.Models;
 
 namespace Inmobiliaria25.Repositorios
 {

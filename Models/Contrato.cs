@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema; //Uso de espacios de nombres
-namespace inmobiliaria25.Models;
+namespace Inmobiliaria25.Models;
 
 public class Contrato
 {

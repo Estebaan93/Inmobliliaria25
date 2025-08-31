@@ -1,7 +1,7 @@
 //Repositorios/RepositorioInmueble.cs
 using Inmobiliaria25.Db; //Uso de DB
 using MySql.Data.MySqlClient; //Hace uso de mysql
-using inmobiliaria25.Models; //Hace uso de Models, pero OJO esta en minuscula el namespace
+using Inmobiliaria25.Models; //Hace uso de Models, pero OJO esta en minuscula el namespace
 
 namespace Inmobiliaria25.Repositorios
 {

@@ -1,58 +1,56 @@
-@model inmobiliaria25.Models.Inquilinos
+@model Inmobiliaria25.Models.Inquilinos
 
 @{
-    ViewData["Title"] = "Detalles del Inquilino";
+  ViewData["Title"] = "Detalles del Inquilino";
 }
 
 <h2 class="h2-inquilino-background text-center mb-4">Ficha del Inquilino</h2>
 
 <div class="card card-glass w-50 mx-auto">
-    <div class="card-body text-center">
-        <!-- Avatar -->
-        <img src="https://cdn-icons-png.flaticon.com/512/1946/1946429.png" 
-             alt="Avatar inquilino" 
-             class="rounded-circle mb-3 shadow-sm" 
-             style="width:120px; height:120px; object-fit:cover;">
+  <div class="card-body text-center">
+    <!-- Avatar -->
+    <img src="https://cdn-icons-png.flaticon.com/512/1946/1946429.png" alt="Avatar inquilino"
+      class="rounded-circle mb-3 shadow-sm" style="width:120px; height:120px; object-fit:cover;">
 
-        <!-- Nombre -->
-        <h3 class="card-title fw-bold">@Model.nombre @Model.apellido</h3>
-        <p class="text-muted">Inquilino</p>
+    <!-- Nombre -->
+    <h3 class="card-title fw-bold">@Model.nombre @Model.apellido</h3>
+    <p class="text-muted">Inquilino</p>
 
-        <hr />
+    <hr />
 
-        <!-- Info -->
-        <div class="text-start px-4">
-            <p><i class="fa-solid fa-id-card me-2 text-primary"></i><strong>DNI:</strong> @Model.dni</p>
-            <p><i class="fa-solid fa-phone me-2 text-success"></i><strong>Teléfono:</strong> @Model.telefono</p>
-            <p><i class="fa-solid fa-envelope me-2 text-danger"></i><strong>Correo:</strong> @Model.correo</p>
-        </div>
-
-        <hr />
-
-        <!-- Botones -->
-        <div class="d-flex justify-content-center mt-3">
-            <a asp-action="Editar" asp-route-id="@Model.idInquilino" class="btn btn-editbt mx-1">
-                <i class="fa-solid fa-pen-to-square"></i> Editar
-            </a>
-
-            @if (Model.estado)
-            {
-                <form asp-action="Borrar" method="post" class="mx-1">
-                    <input type="hidden" name="id" value="@Model.idInquilino" />
-                    <button type="submit" class="btn btn-borrarbt">
-                        <i class="fa-solid fa-trash"></i> Dar de Baja
-                    </button>
-                </form>
-            }
-            else
-            {
-                <form asp-action="Alta" method="post" class="mx-1">
-                    <input type="hidden" name="id" value="@Model.idInquilino" />
-                    <button type="submit" class="btn btn-exitobt">
-                        <i class="fa-solid fa-circle-check"></i> Dar de Alta
-                    </button>
-                </form>
-            }
-        </div>
+    <!-- Info -->
+    <div class="text-start px-4">
+      <p><i class="fa-solid fa-id-card me-2 text-primary"></i><strong>DNI:</strong> @Model.dni</p>
+      <p><i class="fa-solid fa-phone me-2 text-success"></i><strong>Teléfono:</strong> @Model.telefono</p>
+      <p><i class="fa-solid fa-envelope me-2 text-danger"></i><strong>Correo:</strong> @Model.correo</p>
     </div>
+
+    <hr />
+
+    <!-- Botones -->
+    <div class="d-flex justify-content-center mt-3">
+      <a asp-action="Editar" asp-route-id="@Model.idInquilino" class="btn btn-editbt mx-1">
+        <i class="fa-solid fa-pen-to-square"></i> Editar
+      </a>
+
+      @if (Model.estado)
+      {
+        <form asp-action="Borrar" method="post" class="mx-1">
+          <input type="hidden" name="id" value="@Model.idInquilino" />
+          <button type="submit" class="btn btn-borrarbt">
+            <i class="fa-solid fa-trash"></i> Dar de Baja
+          </button>
+        </form>
+      }
+      else
+      {
+        <form asp-action="Alta" method="post" class="mx-1">
+          <input type="hidden" name="id" value="@Model.idInquilino" />
+          <button type="submit" class="btn btn-exitobt">
+            <i class="fa-solid fa-circle-check"></i> Dar de Alta
+          </button>
+        </form>
+      }
+    </div>
+  </div>
 </div>
