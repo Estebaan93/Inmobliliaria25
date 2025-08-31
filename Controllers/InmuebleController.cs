@@ -1,35 +1,28 @@
-//Controllers/InmuebleController.cs
 using Inmobiliaria25.Models;
 using Inmobiliaria25.Repositorios;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Inmobiliaria25.Controllers
 {
-  //Definimos la clase que hereda de controller
-  public class InmuebleController : Controller
-  {
-    //Variable priva que permite que el controller use los metodos del repo
-    private readonly RepositorioInmueble repo;
-
-    //Constructor del controlador asp.net inyecta dependencias
-    public InmuebleController(RepositorioInmueble repo)
+    public class InmuebleController : Controller
     {
-      this.repo = repo;
+        private readonly RepositorioInmueble _repoInmueble;
+        private readonly RepositorioPropietario _repoPropietario;
+
+        public InmuebleController(RepositorioInmueble repoInmueble, RepositorioPropietario repoPropietario)
+        {
+            _repoInmueble = repoInmueble;
+            _repoPropietario = repoPropietario;
+        }
+
+        public IActionResult Index()
+        {
+            var vm = new InmuebleViewModel
+            {
+                Inmuebles = _repoInmueble.Listar(),
+                Propietarios = _repoPropietario.ObtenerActivos()
+            };
+            return View(vm);
+        }
     }
-    
-    //Listar activos
-    public IActionResult Index(){
-      //Llamamos al metodo
-      var lista= repo.ObtenerInmueblesActivos();
-      return View(lista);
-      
-    }
- 
-
-
-
-  }
-
-
-
 }
