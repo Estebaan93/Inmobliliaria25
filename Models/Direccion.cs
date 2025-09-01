@@ -1,24 +1,19 @@
 using System.ComponentModel.DataAnnotations;
-namespace Inmobiliaria25.Models;
 
-public class Direccion
+namespace Inmobiliaria25.Models
 {
-  [Key]
-  public int idDireccion { get; set; }
+  public class Direccion
+  {
+    public int IdDireccion { get; set; }
 
-  [Required]
-  public string calle { get; set; } = string.Empty;
+    [Required]
+    public string Calle { get; set; }
 
-  [Required]
-  public int altura { get; set; }
+    [Required]
+    public int Altura { get; set; }
 
-  [Required]
-  public string cp { get; set; } = string.Empty;
-
-  [Required]
-  public string ciudad { get; set; } = string.Empty;
-
-  [Required]
-  public string coordenadas { get; set; } = string.Empty;
-
+    public string? Cp { get; set; }
+    public string? Ciudad { get; set; }
+    public string? Coordenadas { get; set; }
+  }
 }

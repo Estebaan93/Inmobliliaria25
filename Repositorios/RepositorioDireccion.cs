@@ -6,37 +6,36 @@ namespace Inmobiliaria25.Repositorios
 {
   public class RepositorioDireccion
   {
-    private readonly DataContext _context;// HEREDO
+    private readonly DataContext _context;// heredo
 
-    public RepositorioDireccion(DataContext context)// CONSTRUCTOR
+    public RepositorioDireccion(DataContext context)// constructor
     {
       _context = context;
     }
 
-    // CREAR (cuando se crea un inmueble nuevo)
-    public int Crear(Direccion direccion)
+    // crear 
+    public int Crear(Direccion d)
     {
-      int idCreado = -1;
+      int id = -1;
       using (var conn = _context.GetConnection())
       {
         conn.Open();
         string sql = @"INSERT INTO Direccion (calle, altura, cp, ciudad, coordenadas)
-                               VALUES (@calle, @altura, @cp, @ciudad, @coordenadas);
-                               SELECT LAST_INSERT_ID();";
+                           VALUES (@calle, @altura, @cp, @ciudad, @coordenadas);
+                           SELECT LAST_INSERT_ID();";
         using (var cmd = new MySqlCommand(sql, conn))
         {
-          cmd.Parameters.AddWithValue("@calle", direccion.calle);
-          cmd.Parameters.AddWithValue("@altura", direccion.altura);
-          cmd.Parameters.AddWithValue("@cp", direccion.cp);
-          cmd.Parameters.AddWithValue("@ciudad", direccion.ciudad);
-          cmd.Parameters.AddWithValue("@coordenadas", direccion.coordenadas);
-          idCreado = Convert.ToInt32(cmd.ExecuteScalar());
+          cmd.Parameters.AddWithValue("@calle", d.Calle);
+          cmd.Parameters.AddWithValue("@altura", d.Altura);
+          cmd.Parameters.AddWithValue("@cp", d.Cp);
+          cmd.Parameters.AddWithValue("@ciudad", d.Ciudad);
+          cmd.Parameters.AddWithValue("@coordenadas", d.Coordenadas);
+          id = Convert.ToInt32(cmd.ExecuteScalar());
         }
       }
-      return idCreado;
+      return id;
     }
-
-    // MODIFICAR (cuando se edita un inmueble)
+    // modif (cuando se edita un inmueble)
     public int Modificar(Direccion direccion)
     {
       int res = -1;
@@ -48,19 +47,19 @@ namespace Inmobiliaria25.Repositorios
                                WHERE idDireccion=@idDireccion";
         using (var cmd = new MySqlCommand(sql, conn))
         {
-          cmd.Parameters.AddWithValue("@calle", direccion.calle);
-          cmd.Parameters.AddWithValue("@altura", direccion.altura);
-          cmd.Parameters.AddWithValue("@cp", direccion.cp);
-          cmd.Parameters.AddWithValue("@ciudad", direccion.ciudad);
-          cmd.Parameters.AddWithValue("@coordenadas", direccion.coordenadas);
-          cmd.Parameters.AddWithValue("@idDireccion", direccion.idDireccion);
+          cmd.Parameters.AddWithValue("@calle", direccion.Calle);
+          cmd.Parameters.AddWithValue("@altura", direccion.Altura);
+          cmd.Parameters.AddWithValue("@cp", direccion.Cp);
+          cmd.Parameters.AddWithValue("@ciudad", direccion.Ciudad);
+          cmd.Parameters.AddWithValue("@coordenadas", direccion.Coordenadas);
+          cmd.Parameters.AddWithValue("@idDireccion", direccion.IdDireccion);
           res = cmd.ExecuteNonQuery();
         }
       }
       return res;
     }
 
-    // OBTENER (cuando se quiere mostrar detalles de un inmueble)
+    // obtener 
     public Direccion? Obtener(int idDireccion)
     {
       Direccion? direccion = null;
@@ -77,12 +76,12 @@ namespace Inmobiliaria25.Repositorios
             {
               direccion = new Direccion
               {
-                idDireccion = reader.GetInt32("idDireccion"),
-                calle = reader.GetString("calle"),
-                altura = reader.GetInt32("altura"),
-                cp = reader.GetString("cp"),
-                ciudad = reader.GetString("ciudad"),
-                coordenadas = reader.GetString("coordenadas")
+                IdDireccion = reader.GetInt32("idDireccion"),
+                Calle = reader.GetString("calle"),
+                Altura = reader.GetInt32("altura"),
+                Cp = reader.GetString("cp"),
+                Ciudad = reader.GetString("ciudad"),
+                Coordenadas = reader.GetString("coordenadas")
               };
             }
           }

@@ -47,11 +47,11 @@
 <table class="table table-even-columns table-striped table-hover table-bordered">
   <thead class="table-dark">
     <tr>
-      <th>@Html.DisplayNameFor(model => model.First().dni)</th>
-      <th>@Html.DisplayNameFor(model => model.First().apellido)</th>
-      <th>@Html.DisplayNameFor(model => model.First().nombre)</th>
-      <th>@Html.DisplayNameFor(model => model.First().telefono)</th>
-      <th>@Html.DisplayNameFor(model => model.First().correo)</th>
+      <th>@Html.DisplayNameFor(model => model.First().Dni)</th>
+      <th>@Html.DisplayNameFor(model => model.First().Apellido)</th>
+      <th>@Html.DisplayNameFor(model => model.First().Nombre)</th>
+      <th>@Html.DisplayNameFor(model => model.First().Telefono)</th>
+      <th>@Html.DisplayNameFor(model => model.First().Correo)</th>
       <th></th>
     </tr>
   </thead>
@@ -59,25 +59,25 @@
     @foreach (var item in Model)
     {
       <tr>
-        <td>@Html.DisplayFor(modelItem => item.dni)</td>
-        <td>@Html.DisplayFor(modelItem => item.apellido)</td>
-        <td>@Html.DisplayFor(modelItem => item.nombre)</td>
-        <td>@Html.DisplayFor(modelItem => item.telefono)</td>
-        <td>@Html.DisplayFor(modelItem => item.correo)</td>
+        <td>@Html.DisplayFor(modelItem => item.Dni)</td>
+        <td>@Html.DisplayFor(modelItem => item.Apellido)</td>
+        <td>@Html.DisplayFor(modelItem => item.Nombre)</td>
+        <td>@Html.DisplayFor(modelItem => item.Telefono)</td>
+        <td>@Html.DisplayFor(modelItem => item.Correo)</td>
         <td class="d-flex align-items-center w-auto">
-          <a href="@Url.Action("Editar", "Propietario", new { id = item.idPropietario })" class="btn btn-editbt mx-1">
+          <a href="@Url.Action("Editar", "Propietario", new { id = item.IdPropietario })" class="btn btn-editbt mx-1">
             <i class="fa-solid fa-pen-to-square"></i>
           </a>
           @*  @if(User.IsInRole("Administrador")){
                         }  NO OLVIDAR!!!!CUANDO AVANCE NO OLVIDAR ACTIVAR, EL ADMIN SOLO ELIMINA AHORA PRUEBO NADA MAS*@
           <form asp-action="Borrar" class="mx-1 form-borrar-propietario" method="post" style="display:inline;">
-            <input type="hidden" name="id" value="@item.idPropietario" />
+            <input type="hidden" name="id" value="@item.IdPropietario" />
             <button type="submit" class="btn btn-borrarbt" title="Borrar">
               <i class="fa-solid fa-trash"></i>
             </button>
           </form>
 
-          <a class="btn btn-detallebt mx-1" href="/Propietario/Detalles/@item.idPropietario">
+          <a class="btn btn-detallebt mx-1" href="/Propietario/Detalles/@item.IdPropietario">
             <i class="fa-solid fa-list"></i>
           </a>
         </td>

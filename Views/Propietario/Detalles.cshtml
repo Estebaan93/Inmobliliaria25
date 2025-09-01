@@ -10,23 +10,23 @@
   <div class="card-body text-center">
     <img src="https://cdn-icons-png.flaticon.com/512/1077/1077114.png" alt="Avatar propietario"
       class="rounded-circle mb-3" style="width:120px; height:120px; object-fit:cover;">
-    <h3 class="card-title">@Model.nombre @Model.apellido</h3>
+    <h3 class="card-title">@Model.Nombre @Model.Apellido</h3>
     <p class="text-muted">Propietario</p>
     <hr />
     <div class="text-start px-4">
-      <p><i class="fa-solid fa-id-card me-2 text-primary"></i><strong>DNI:</strong> @Model.dni</p>
-      <p><i class="fa-solid fa-phone me-2 text-success"></i><strong>Teléfono:</strong> @Model.telefono</p>
-      <p><i class="fa-solid fa-envelope me-2 text-danger"></i><strong>Correo:</strong> @Model.correo</p>
+      <p><i class="fa-solid fa-id-card me-2 text-primary"></i><strong>DNI:</strong> @Model.Dni</p>
+      <p><i class="fa-solid fa-phone me-2 text-success"></i><strong>Teléfono:</strong> @Model.Telefono</p>
+      <p><i class="fa-solid fa-envelope me-2 text-danger"></i><strong>Correo:</strong> @Model.Correo</p>
     </div>
     <hr />
     <div class="d-flex justify-content-center mt-3">
-      <a asp-action="Editar" asp-route-id="@Model.idPropietario" class="btn btn-editbt mx-1">
+      <a asp-action="Editar" asp-route-id="@Model.IdPropietario" class="btn btn-editbt mx-1">
         <i class="fa-solid fa-pen-to-square"></i> Editar
       </a>
-      @if (Model.estado)
+      @if (Model.Estado)
       {
         <form asp-action="Borrar" method="post" class="mx-1">
-          <input type="hidden" name="id" value="@Model.idPropietario" />
+          <input type="hidden" name="id" value="@Model.IdPropietario" />
           <button type="submit" class="btn btn-borrarbt">
             <i class="fa-solid fa-trash"></i> Dar de Baja
           </button>
@@ -35,7 +35,7 @@
       else
       {
         <form asp-action="Alta" method="post" class="mx-1">
-          <input type="hidden" name="id" value="@Model.idPropietario" />
+          <input type="hidden" name="id" value="@Model.IdPropietario" />
           <button type="submit" class="btn btn-exitobt">
             <i class="fa-solid fa-circle-check"></i> Dar de Alta
           </button>

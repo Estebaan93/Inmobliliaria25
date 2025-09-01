@@ -31,13 +31,13 @@ namespace Inmobiliaria25.Repositorios
           {
             lista.Add(new Inquilinos //recorre las filas devueltas, crea un obj con sus propiedades
             {
-              idInquilino = reader.GetInt32("idInquilino"),
-              apellido = reader.GetString("apellido"),
-              nombre = reader.GetString("nombre"),
-              dni = reader.GetString("dni"),
-              telefono = reader.GetString("telefono"),
-              correo = reader.GetString("correo"),
-              estado = reader.GetBoolean("estado")
+              IdInquilino = reader.GetInt32("idInquilino"),
+              Apellido = reader.GetString("apellido"),
+              Nombre = reader.GetString("nombre"),
+              Dni = reader.GetString("dni"),
+              Telefono = reader.GetString("telefono"),
+              Correo = reader.GetString("correo"),
+              Estado = reader.GetBoolean("estado")
             });
           }
         }
@@ -60,13 +60,13 @@ namespace Inmobiliaria25.Repositorios
           {
             lista.Add(new Inquilinos
             {
-              idInquilino = reader.GetInt32("idInquilino"),
-              apellido = reader.GetString("apellido"),
-              nombre = reader.GetString("nombre"),
-              dni = reader.GetString("dni"),
-              telefono = reader.GetString("telefono"),
-              correo = reader.GetString("correo"),
-              estado = reader.GetBoolean("estado")
+              IdInquilino = reader.GetInt32("idInquilino"),
+              Apellido = reader.GetString("apellido"),
+              Nombre = reader.GetString("nombre"),
+              Dni = reader.GetString("dni"),
+              Telefono = reader.GetString("telefono"),
+              Correo = reader.GetString("correo"),
+              Estado = reader.GetBoolean("estado")
             });
           }
         }
@@ -92,13 +92,13 @@ namespace Inmobiliaria25.Repositorios
             {
               i = new Inquilinos
               {
-                idInquilino = reader.GetInt32("idInquilino"),
-                dni = reader.GetString("dni"),
-                apellido = reader.GetString("apellido"),
-                nombre = reader.GetString("nombre"),
-                telefono = reader.GetString("telefono"),
-                correo = reader.GetString("correo"),
-                estado = reader.GetBoolean("estado")
+                IdInquilino = reader.GetInt32("idInquilino"),
+                Dni = reader.GetString("dni"),
+                Apellido = reader.GetString("apellido"),
+                Nombre = reader.GetString("nombre"),
+                Telefono = reader.GetString("telefono"),
+                Correo = reader.GetString("correo"),
+                Estado = reader.GetBoolean("estado")
               };
             }
           }
@@ -135,7 +135,7 @@ namespace Inmobiliaria25.Repositorios
     public int Alta(Inquilinos i)
     {
       int res = -1;
-      if (ObtenerPorDni(i.dni))
+      if (ObtenerPorDni(i.Dni))
         throw new Exception("El DNI ya está registrado. Revise la tabla de inquilinos.");
 
       using (var conn = _context.GetConnection())
@@ -145,11 +145,11 @@ namespace Inmobiliaria25.Repositorios
                              VALUES (@apellido, @nombre, @dni, @telefono, @correo, 1)";
         using (var cmd = new MySqlCommand(sqlInsert, conn))
         {
-          cmd.Parameters.AddWithValue("@apellido", i.apellido);
-          cmd.Parameters.AddWithValue("@nombre", i.nombre);
-          cmd.Parameters.AddWithValue("@dni", i.dni);
-          cmd.Parameters.AddWithValue("@telefono", i.telefono);
-          cmd.Parameters.AddWithValue("@correo", i.correo);
+          cmd.Parameters.AddWithValue("@apellido", i.Apellido);
+          cmd.Parameters.AddWithValue("@nombre", i.Nombre);
+          cmd.Parameters.AddWithValue("@dni", i.Dni);
+          cmd.Parameters.AddWithValue("@telefono", i.Telefono);
+          cmd.Parameters.AddWithValue("@correo", i.Correo);
           res = cmd.ExecuteNonQuery();
         }
       }
@@ -161,7 +161,7 @@ namespace Inmobiliaria25.Repositorios
     public int Modificar(Inquilinos i)
     {
       int res = -1;
-      if (ObtenerPorDni(i.dni, i.idInquilino))
+      if (ObtenerPorDni(i.Dni, i.IdInquilino))
         throw new Exception("El DNI ya está registrado en otro inquilino.");
 
       using (var conn = _context.GetConnection())
@@ -173,12 +173,12 @@ namespace Inmobiliaria25.Repositorios
                                WHERE idInquilino=@id";
         using (var cmd = new MySqlCommand(sql, conn))
         {
-          cmd.Parameters.AddWithValue("@apellido", i.apellido);
-          cmd.Parameters.AddWithValue("@nombre", i.nombre);
-          cmd.Parameters.AddWithValue("@dni", i.dni);
-          cmd.Parameters.AddWithValue("@telefono", i.telefono);
-          cmd.Parameters.AddWithValue("@correo", i.correo);
-          cmd.Parameters.AddWithValue("@id", i.idInquilino);
+          cmd.Parameters.AddWithValue("@apellido", i.Apellido);
+          cmd.Parameters.AddWithValue("@nombre", i.Nombre);
+          cmd.Parameters.AddWithValue("@dni", i.Dni);
+          cmd.Parameters.AddWithValue("@telefono", i.Telefono);
+          cmd.Parameters.AddWithValue("@correo", i.Correo);
+          cmd.Parameters.AddWithValue("@id", i.IdInquilino);
           res = cmd.ExecuteNonQuery();
         }
       }
@@ -220,13 +220,13 @@ namespace Inmobiliaria25.Repositorios
             {
               lista.Add(new Inquilinos
               {
-                idInquilino = reader.GetInt32("idInquilino"),
-                apellido = reader.GetString("apellido"),
-                nombre = reader.GetString("nombre"),
-                dni = reader.GetString("dni"),
-                telefono = reader.GetString("telefono"),
-                correo = reader.GetString("correo"),
-                estado = reader.GetBoolean("estado")
+                IdInquilino = reader.GetInt32("idInquilino"),
+                Apellido = reader.GetString("apellido"),
+                Nombre = reader.GetString("nombre"),
+                Dni = reader.GetString("dni"),
+                Telefono = reader.GetString("telefono"),
+                Correo = reader.GetString("correo"),
+                Estado = reader.GetBoolean("estado")
               });
             }
           }
@@ -254,13 +254,13 @@ namespace Inmobiliaria25.Repositorios
             {
               lista.Add(new Inquilinos
               {
-                idInquilino = reader.GetInt32("idInquilino"),
-                apellido = reader.GetString("apellido"),
-                nombre = reader.GetString("nombre"),
-                dni = reader.GetString("dni"),
-                telefono = reader.GetString("telefono"),
-                correo = reader.GetString("correo"),
-                estado = reader.GetBoolean("estado")
+                IdInquilino = reader.GetInt32("idInquilino"),
+                Apellido = reader.GetString("apellido"),
+                Nombre = reader.GetString("nombre"),
+                Dni = reader.GetString("dni"),
+                Telefono = reader.GetString("telefono"),
+                Correo = reader.GetString("correo"),
+                Estado = reader.GetBoolean("estado")
               });
             }
           }
@@ -288,13 +288,13 @@ namespace Inmobiliaria25.Repositorios
             {
               lista.Add(new Inquilinos
               {
-                idInquilino = reader.GetInt32("idInquilino"),
-                apellido = reader.GetString("apellido"),
-                nombre = reader.GetString("nombre"),
-                dni = reader.GetString("dni"),
-                telefono = reader.GetString("telefono"),
-                correo = reader.GetString("correo"),
-                estado = reader.GetBoolean("estado")
+                IdInquilino = reader.GetInt32("idInquilino"),
+                Apellido = reader.GetString("apellido"),
+                Nombre = reader.GetString("nombre"),
+                Dni = reader.GetString("dni"),
+                Telefono = reader.GetString("telefono"),
+                Correo = reader.GetString("correo"),
+                Estado = reader.GetBoolean("estado")
               });
             }
           }
@@ -312,7 +312,7 @@ namespace Inmobiliaria25.Repositorios
         string sql = "UPDATE Inquilino SET estado = 1 WHERE idInquilino=@id";
         using (var cmd = new MySqlCommand(sql, conn))
         {
-          cmd.Parameters.AddWithValue("@id", i.idInquilino);
+          cmd.Parameters.AddWithValue("@id", i.IdInquilino);
           res = cmd.ExecuteNonQuery();
         }
       }

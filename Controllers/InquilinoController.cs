@@ -17,7 +17,7 @@ namespace Inmobiliaria25.Controllers
       this.repo = repo;
     }
 
-    // Listar activos
+    // listar activos
     public IActionResult Index()
     {
       // llama al metodo, este consulta sql devuelve una lista que se guarda en la var lista
@@ -25,7 +25,7 @@ namespace Inmobiliaria25.Controllers
       return View(lista);
     }
 
-    // Crear (GET)
+    // crear (GET)
     public IActionResult Crear()
     {
       return View();
@@ -38,10 +38,10 @@ namespace Inmobiliaria25.Controllers
       try
       {
         // pregunta inq tiene id mayor a 0?, si es si quiere decir q ya existe, si dice no es nuevo
-        if (inquilino.idInquilino > 0)
+        if (inquilino.IdInquilino > 0)
         {
-          // EDItAR // consulta al repo si hay otro inq con ese dni aparte del que se edita
-          if (repo.ObtenerPorDni(inquilino.dni, inquilino.idInquilino))
+          // editar // consulta al repo si hay otro inq con ese dni aparte del que se edita
+          if (repo.ObtenerPorDni(inquilino.Dni, inquilino.IdInquilino))
           {
             ModelState.AddModelError("dni", "El DNI ya está registrado en otro inquilino.");
             return View("Editar", inquilino);
@@ -52,8 +52,8 @@ namespace Inmobiliaria25.Controllers
         }
         else
         {
-          // CREAR // consulta al repo si hay un inqu con ese dni
-          if (repo.ObtenerPorDni(inquilino.dni))
+          // crear // consulta al repo si hay un inqu con ese dni
+          if (repo.ObtenerPorDni(inquilino.Dni))
           {
             ModelState.AddModelError("dni", "El DNI ya está registrado. Revise la tabla de propietarios.");
             return View("Crear", inquilino);
@@ -73,8 +73,8 @@ namespace Inmobiliaria25.Controllers
       }
     }
 
-    // Editar (GET)
-    // ESTE ES CUANDO HAGO CLICK
+    // editar (GET)
+    // cuando hago click
     public IActionResult Editar(int id)
     {
       //llama al repo , la respuesta la guarda en la var inquilino
@@ -86,8 +86,8 @@ namespace Inmobiliaria25.Controllers
       return View(inquilino);
     }
 
-    // Editar (POST)
-    //ESTE CUANDO YA SE EDITA EN EL FORM
+    // editar (POST)
+    //este es cuando ya se edita el form
     [HttpPost]
     [ValidateAntiForgeryToken]
     public IActionResult Editar(Inquilinos inquilino)
@@ -102,7 +102,7 @@ namespace Inmobiliaria25.Controllers
       return RedirectToAction(nameof(Index));
     }
 
-    // Baja 
+    // baja 
     [HttpPost]
     public IActionResult Borrar(int id)
     {
@@ -112,7 +112,7 @@ namespace Inmobiliaria25.Controllers
     }
 
 
-    // Listar dados de baja
+    // listar dados de baja
     [HttpGet]
     public IActionResult DadosDeBaja()
     {
@@ -173,7 +173,7 @@ namespace Inmobiliaria25.Controllers
       try
       {
         Inquilinos i = repo.ObtenerPorId(id);
-        i.estado = true;
+        i.Estado = true;
         int filasAfectadas = repo.Reactivar(i);
       }
       catch (System.Exception)

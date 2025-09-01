@@ -18,7 +18,7 @@ namespace Inmobiliaria25.Controllers
     // SOLO PARA SWEETALERT
     // =======================
 
-    // LISTAR
+    // listar
     [HttpGet]
     public IActionResult ListarJson() //todos los tipos en formato JSON  lo usa tu fetch 
     {
@@ -26,7 +26,7 @@ namespace Inmobiliaria25.Controllers
       return Json(tipos);
     }
 
-    // CREAR
+    // crear
     [HttpPost]
     public IActionResult CrearJson([FromBody] Tipo tipo) // creo en fetch y mando el json en el body
     {
@@ -37,7 +37,7 @@ namespace Inmobiliaria25.Controllers
       return Json(new { id, mensaje = "Tipo creado con éxito" });
     }
 
-    // EDITAR
+    // editar
     [HttpPost]
     public IActionResult EditarJson([FromBody] Tipo tipo)
     {
@@ -48,7 +48,7 @@ namespace Inmobiliaria25.Controllers
       return Json(new { mensaje = "Tipo actualizado con éxito" });
     }
 
-    // ELIMINAR
+    // elim
     [HttpPost]
     public IActionResult EliminarJson([FromBody] int id)
     {

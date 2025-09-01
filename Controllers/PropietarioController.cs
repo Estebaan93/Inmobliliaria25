@@ -13,14 +13,14 @@ namespace Inmobiliaria25.Controllers
       this.repo = repo;
     }
 
-    // Listar activos
+    // listar activos
     public IActionResult Index()
     {
       var lista = repo.ObtenerActivos();
       return View(lista);
     }
 
-    // Crear (GET)
+    // crear (GET)
     public IActionResult Crear()
     {
       return View();
@@ -31,10 +31,10 @@ namespace Inmobiliaria25.Controllers
     {
       try
       {
-        if (propietario.idPropietario > 0)
+        if (propietario.IdPropietario > 0)
         {
-          // EDITAR
-          if (repo.ExisteDni(propietario.dni, propietario.idPropietario))
+          // editar
+          if (repo.ExisteDni(propietario.Dni, propietario.IdPropietario))
           {
             ModelState.AddModelError("dni", "El DNI ya está registrado en otro propietario.");
             return View("Editar", propietario);
@@ -45,8 +45,8 @@ namespace Inmobiliaria25.Controllers
         }
         else
         {
-          // CREAR
-          if (repo.ExisteDni(propietario.dni))
+          // crear
+          if (repo.ExisteDni(propietario.Dni))
           {
             ModelState.AddModelError("dni", "El DNI ya está registrado. Revise la tabla de propietarios.");
             return View("Crear", propietario);
@@ -67,7 +67,7 @@ namespace Inmobiliaria25.Controllers
     }
 
 
-    // Editar (GET)
+    // editar (GET)
     public IActionResult Editar(int id)
     {
       var propietario = repo.ObtenerPorId(id);
@@ -93,7 +93,7 @@ namespace Inmobiliaria25.Controllers
       return RedirectToAction(nameof(Index));
     }
 
-    // Baja lógica
+    // baja logica
     [HttpPost]
     public IActionResult Borrar(int id)
     {
@@ -102,7 +102,7 @@ namespace Inmobiliaria25.Controllers
       return RedirectToAction(nameof(Index));
     }
 
-    // Listar dados de baja
+    // listar dados de baja
     [HttpGet]
     public IActionResult DadosDeBaja()
     {
@@ -111,7 +111,7 @@ namespace Inmobiliaria25.Controllers
     }
 
 
-    // Buscar x dni
+    // buscar x dni
     public IActionResult BuscarPorDni(string dni)
     {
       if (string.IsNullOrEmpty(dni))
@@ -164,7 +164,7 @@ namespace Inmobiliaria25.Controllers
       try
       {
         Propietarios p = repo.ObtenerPorId(id);
-        p.estado = true;
+        p.Estado = true;
         int filasAfectadas = repo.Reactivar(p);
       }
       catch (System.Exception)

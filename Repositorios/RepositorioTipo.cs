@@ -123,5 +123,3 @@ namespace Inmobiliaria25.Repositorios
     }
   }
 }
-
-

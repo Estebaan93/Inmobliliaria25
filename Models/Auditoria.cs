@@ -4,16 +4,16 @@ namespace Inmobiliaria25.Models;
 public class Auditoria
 {
   [Key]
-  public int idAuditoria { get; set; }
+  public int IdAuditoria { get; set; }
 
   [Required]
-  public int idUsuario { get; set; }
+  public int IdUsuario { get; set; }
 
   [Required]
-  public string accion { get; set; } = string.Empty;
+  public string Accion { get; set; } = string.Empty;
 
-  public string observacion { get; set; } = string.Empty;
+  public string Observacion { get; set; } = string.Empty;
 
-  public DateTime fechaYHora { get; set; }
+  public DateTime FechaYHora { get; set; }
 
 }

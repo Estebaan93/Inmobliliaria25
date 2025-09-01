@@ -3,54 +3,53 @@
 <h2 class="h2-tipos-background">Administrar Inmuebles</h2>
 
 <p>
-    <a href="@Url.Action("Crear", "Inmueble")" class="btn btn-agregar">NUEVO</a>
+  <a href="@Url.Action("Crear", "Inmueble")" class="btn btn-agregar">NUEVO</a>
 </p>
 
-<!-- Filtros -->
+<!--filtros -->
 <div class="displayDeFiltros mb-3">
-    <!-- Estado -->
-    <div class="barraDeBusqueda">
-        <select id="selectFiltroEstado" class="form-select">
-            <option value="">Todos los estados</option>
-            <option value="1">Disponible</option>
-            <option value="0">No disponible</option>
-            <option value="2">Alquilado</option>
-        </select>
-    </div>
+  <!-- Estado -->
+  <div class="barraDeBusqueda">
+    <select id="selectFiltroEstado" class="form-select">
+      <option value="">Todos los estados</option>
+      <option value="1">Disponible</option>
+      <option value="0">No disponible</option>
+      <option value="2">Alquilado</option>
+    </select>
+  </div>
 
-    <!-- Propietarios -->
-    <div class="barraDeBusqueda">
-        <select id="selectFiltroPorPropietario" class="form-select">
-            <option value="">Todos los propietarios</option>
-            @foreach (var p in Model.Propietarios)
-            {
-                <option value="@p.idPropietario">@p.apellido @p.nombre</option>
-            }
-        </select>
-    </div>
+  <!--propietarios -->
+  <div class="barraDeBusqueda">
+    <select id="selectFiltroPorPropietario" class="form-select">
+      <option value="">Todos los propietarios</option>
+      @foreach (var p in Model.Propietarios)
+      {
+        <option value="@p.IdPropietario">@p.Apellido @p.Nombre</option>
+      }
+    </select>
+  </div>
 </div>
 
 
-<!-- Tabla -->
+<!--tabla -->
 <table class="table table-striped table-hover table-bordered">
-    <thead class="table-dark">
-        <tr>
-            <th>Tipo</th>
-            <th>Descripción</th>
-            <th>Ambientes</th>
-            <th>Precio</th>
-            <th>Cochera</th>
-            <th>Piscina</th>
-            <th>Mascotas</th>
-            <th>Estado</th>
-            <th>Acciones</th> 
-        </tr>
-    </thead>
-    <tbody id="tablaInmuebles">
-        <!-- se llena por AJAX -->
-    </tbody>
+  <thead class="table-dark">
+    <tr>
+      <th>Tipo</th>
+      <th>Descripción</th>
+      <th>Ambientes</th>
+      <th>Precio</th>
+      <th>Cochera</th>
+      <th>Piscina</th>
+      <th>Mascotas</th>
+      <th>Estado</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody id="tablaInmuebles">
+    <!-- se llena por AJAX -->
+  </tbody>
 </table>
 @section Scripts {
-    <script src="~/js/inmueble.js"></script>
+  <script src="~/js/inmueble.js"></script>
 }
-

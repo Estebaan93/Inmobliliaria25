@@ -5,21 +5,21 @@ public class Propietarios
 {
   [Key]
   [Required]
-  public int idPropietario { get; set; }
+  public int IdPropietario { get; set; }
 
    [Required]
-  public string? dni { get; set; }
+  public string? Dni { get; set; }
 
    [Required]
-  public string? apellido { get; set; }
+  public string? Apellido { get; set; }
 
    [Required]
-  public string? nombre { get; set; }
+  public string? Nombre { get; set; }
 
-  public string? telefono { get; set; }
+  public string? Telefono { get; set; }
 
   [Required]
-  public string? correo { get; set; }
+  public string? Correo { get; set; }
   
-  public bool estado { get; set; }
+  public bool Estado { get; set; }
 }
