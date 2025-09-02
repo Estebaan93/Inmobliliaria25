@@ -160,4 +160,73 @@
             }
         });
     }
+    document.getElementById("selectInmueble").addEventListener("change", function () {
+    var selected = this.options[this.selectedIndex];
+    var precio = selected.getAttribute("data-precio") || "";
+
+    document.getElementById("PropietarioNombre").value = selected.getAttribute("data-propietario") || "";
+    document.getElementById("PrecioVisible").value = precio;
+    document.getElementById("MontoHidden").value = precio; //  AHORA se guarda en Contrato.Monto
 });
+
+
+});
+
+// Esperar a que cargue el DOM
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".btn-editar").forEach(btn => {
+        btn.addEventListener("click", function () {
+            const idPago = this.dataset.id;
+            const detalle = this.dataset.detalle;
+            const fecha = this.dataset.fecha;
+            const importe = this.dataset.importe;
+            const numero = this.dataset.numero;
+
+            Editar(idPago, detalle, fecha, importe, numero);
+        });
+    });
+});
+
+// Función Editar con SweetAlert
+function Editar(idPago, detalle, fecha, importe, numero) {
+    Swal.fire({
+        title: 'Editar Pago',
+        html: `
+            <div class="text-start">
+                <p><b>📅 Fecha:</b> ${fecha}</p>
+                <p><b>💰 Importe:</b> $${importe}</p>
+                <p><b>#️⃣ Número de Pago:</b> ${numero}</p>
+                <label><b>📝 Detalle:</b></label>
+                <input id="swal-input-detalle" class="swal2-input" value="${detalle || ''}">
+            </div>
+        `,
+        focusConfirm: false,
+        showCancelButton: true,
+        confirmButtonText: 'Guardar',
+        cancelButtonText: 'Cancelar',
+        preConfirm: () => {
+            const nuevoDetalle = document.getElementById('swal-input-detalle').value.trim();
+            if (!nuevoDetalle) {
+                Swal.showValidationMessage('El detalle no puede estar vacío');
+            }
+            return nuevoDetalle;
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch('/Pago/Editar', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ IdPago: idPago, Detalle: result.value })
+            })
+                .then(response => {
+                    if (response.ok) {
+                        Swal.fire('✅ Actualizado')
+                            .then(() => location.reload());
+                    } else {
+                        Swal.fire('❌ Error');
+                    }
+                })
+                .catch(() => Swal.fire('❌ Error'));
+        }
+    });
+}

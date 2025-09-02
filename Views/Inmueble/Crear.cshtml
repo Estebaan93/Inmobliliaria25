@@ -1,116 +1,116 @@
 @model Inmobiliaria25.Models.InmuebleFormViewModel
 
 @{
-  ViewData["Title"] = "Crear Inmueble";
+    ViewData["Title"] = "Crear Inmueble";
 }
 
 <h2>Crear Inmueble</h2>
 
 <form asp-action="Crear" method="post">
-  <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-  <!-- Propietario -->
-  <div class="form-group">
-    <label asp-for="Inmueble.IdPropietario" class="form-label">Propietario</label>
-    <select asp-for="Inmueble.IdPropietario" class="form-control">
-      <option value="">-- Seleccione un propietario --</option>
-      @foreach (var p in Model.Propietarios)
-      {
-        <option value="@p.IdPropietario">@p.Apellido @p.Nombre</option>
-      }
-    </select>
-  </div>
+    <!-- Propietario -->
+    <div class="form-group">
+        <label asp-for="Inmueble.IdPropietario" class="form-label">Propietario</label>
+        <select asp-for="Inmueble.IdPropietario" class="form-control">
+            <option value="">-- Seleccione un propietario --</option>
+            @foreach (var p in Model.Propietarios)
+            {
+                <option value="@p.IdPropietario">@p.Apellido @p.Nombre</option>
+            }
+        </select>
+    </div>
 
-  <!-- Tipo -->
-  <div class="form-group">
-    <label asp-for="Inmueble.IdTipo" class="form-label">Tipo</label>
-    <select asp-for="Inmueble.IdTipo" class="form-control"
-      asp-items="@(new SelectList(Model.Tipos, "IdTipo", "Observacion"))">
-      <option value="">-- Seleccione un tipo --</option>
-    </select>
-  </div>
+    <!-- Tipo -->
+    <div class="form-group">
+        <label asp-for="Inmueble.IdTipo" class="form-label">Tipo</label>
+        <select asp-for="Inmueble.IdTipo" class="form-control"
+                asp-items="@(new SelectList(Model.Tipos, "IdTipo", "Observacion"))">
+            <option value="">-- Seleccione un tipo --</option>
+        </select>
+    </div>
 
-  <!-- Descripción -->
-  <div class="form-group">
-    <label asp-for="Inmueble.Descripcion" class="form-label">Descripción</label>
-    <textarea asp-for="Inmueble.Descripcion" class="form-control"></textarea>
-  </div>
+    <!-- Descripción -->
+    <div class="form-group">
+        <label asp-for="Inmueble.Descripcion" class="form-label">Descripción</label>
+        <textarea asp-for="Inmueble.Descripcion" class="form-control"></textarea>
+    </div>
 
-  <!-- Metros cuadrados -->
-  <div class="form-group">
-    <label asp-for="Inmueble.Metros2" class="form-label">Metros cuadrados</label>
-    <input asp-for="Inmueble.Metros2" class="form-control" />
-  </div>
+    <!-- Metros cuadrados -->
+    <div class="form-group">
+        <label asp-for="Inmueble.Metros2" class="form-label">Metros cuadrados</label>
+        <input asp-for="Inmueble.Metros2" class="form-control" />
+    </div>
 
-  <!-- Cantidad de ambientes -->
-  <div class="form-group">
-    <label asp-for="Inmueble.CantidadAmbientes" class="form-label">Cantidad de ambientes</label>
-    <input asp-for="Inmueble.CantidadAmbientes" class="form-control" />
-  </div>
+    <!-- Cantidad de ambientes -->
+    <div class="form-group">
+        <label asp-for="Inmueble.CantidadAmbientes" class="form-label">Cantidad de ambientes</label>
+        <input asp-for="Inmueble.CantidadAmbientes" class="form-control" />
+    </div>
 
-  <!-- Dirección -->
-  <div class="form-group mb-3">
-    <label asp-for="Direccion.Calle" class="form-label">Calle</label>
-    <input type="text" asp-for="Direccion.Calle" class="form-control" />
-  </div>
+    <!-- Dirección -->
+    <div class="form-group mb-3">
+        <label asp-for="Direccion.Calle" class="form-label">Calle</label>
+        <input type="text" asp-for="Direccion.Calle" class="form-control" />
+    </div>
 
-  <div class="form-group mb-3">
-    <label asp-for="Direccion.Altura" class="form-label">Altura</label>
-    <input type="text" asp-for="Direccion.Altura" class="form-control" />
-  </div>
+    <div class="form-group mb-3">
+        <label asp-for="Direccion.Altura" class="form-label">Altura</label>
+        <input type="text" asp-for="Direccion.Altura" class="form-control" />
+    </div>
 
-  <div class="form-group mb-3">
-    <label asp-for="Direccion.Cp" class="form-label">Código Postal</label>
-    <input type="text" asp-for="Direccion.Cp" class="form-control" />
-  </div>
+    <div class="form-group mb-3">
+        <label asp-for="Direccion.Cp" class="form-label">Código Postal</label>
+        <input type="text" asp-for="Direccion.Cp" class="form-control" />
+    </div>
 
-  <div class="form-group mb-3">
-    <label asp-for="Direccion.Ciudad" class="form-label">Ciudad</label>
-    <input type="text" asp-for="Direccion.Ciudad" class="form-control" />
-  </div>
+    <div class="form-group mb-3">
+        <label asp-for="Direccion.Ciudad" class="form-label">Ciudad</label>
+        <input type="text" asp-for="Direccion.Ciudad" class="form-control" />
+    </div>
 
-  <div class="form-group mb-3">
-    <label asp-for="Direccion.Coordenadas" class="form-label">Coordenadas</label>
-    <input type="text" asp-for="Direccion.Coordenadas" class="form-control" />
-  </div>
+    <div class="form-group mb-3">
+        <label asp-for="Direccion.Coordenadas" class="form-label">Coordenadas</label>
+        <input type="text" asp-for="Direccion.Coordenadas" class="form-control" />
+    </div>
 
-  <!-- Precio -->
-  <div class="form-group">
-    <label asp-for="Inmueble.Precio" class="form-label">Precio</label>
-    <input asp-for="Inmueble.Precio" class="form-control" />
-  </div>
+    <!-- Precio -->
+    <div class="form-group">
+        <label asp-for="Inmueble.Precio" class="form-label">Precio</label>
+        <input asp-for="Inmueble.Precio" class="form-control" />
+    </div>
 
-  <!-- Checkboxes -->
-  <div class="form-check">
-    <input asp-for="Inmueble.Cochera" class="form-check-input" type="checkbox" />
-    <label class="form-check-label" asp-for="Inmueble.Cochera">Cochera</label>
-  </div>
+    <!-- Checkboxes -->
+    <div class="form-check">
+        <input asp-for="Inmueble.Cochera" class="form-check-input" type="checkbox" />
+        <label class="form-check-label" asp-for="Inmueble.Cochera">Cochera</label>
+    </div>
 
-  <div class="form-check">
-    <input asp-for="Inmueble.Piscina" class="form-check-input" type="checkbox" />
-    <label class="form-check-label" asp-for="Inmueble.Piscina">Piscina</label>
-  </div>
+    <div class="form-check">
+        <input asp-for="Inmueble.Piscina" class="form-check-input" type="checkbox" />
+        <label class="form-check-label" asp-for="Inmueble.Piscina">Piscina</label>
+    </div>
 
-  <div class="form-check">
-    <input asp-for="Inmueble.Mascotas" class="form-check-input" type="checkbox" />
-    <label class="form-check-label" asp-for="Inmueble.Mascotas">Acepta mascotas</label>
-  </div>
+    <div class="form-check">
+        <input asp-for="Inmueble.Mascotas" class="form-check-input" type="checkbox" />
+        <label class="form-check-label" asp-for="Inmueble.Mascotas">Acepta mascotas</label>
+    </div>
 
-  <!-- URL Imagen -->
-  <div class="form-group">
-    <label asp-for="Inmueble.UrlImagen" class="form-label">URL Imagen</label>
-    <input asp-for="Inmueble.UrlImagen" class="form-control" />
-  </div>
+    <!-- URL Imagen -->
+    <div class="form-group">
+        <label asp-for="Inmueble.UrlImagen" class="form-label">URL Imagen</label>
+        <input asp-for="Inmueble.UrlImagen" class="form-control" />
+    </div>
 
-  <!-- Estado -->
-  <div class="form-group">
-    <label asp-for="Inmueble.Estado" class="form-label">Estado</label>
-    <select asp-for="Inmueble.Estado" class="form-control">
-      <option value="0">No Disponible</option>
-      <option value="1">Disponible</option>
-      <option value="2">Alquilado</option>
-    </select>
-  </div>
+    <!-- Estado -->
+    <div class="form-group">
+        <label asp-for="Inmueble.estado" class="form-label">Estado</label>
+        <select asp-for="Inmueble.estado" class="form-control">
+            <option value="0">No Disponible</option>
+            <option value="1">Disponible</option>
+            <option value="2">Alquilado</option>
+        </select>
+    </div>
 
-  <button type="submit" class="btn btn-primary mt-3">Guardar</button>
+    <button type="submit" class="btn btn-primary mt-3">Guardar</button>
 </form>

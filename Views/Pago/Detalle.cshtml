@@ -1,0 +1,49 @@
+@model Inmobiliaria25.Models.Pago
+
+@{
+    ViewData["Title"] = "Detalle del Pago";
+}
+
+<h2 class="titulo-detalle">Detalle del Pago</h2>
+
+<div class="pago-card">
+    <div class="pago-info">
+        <p><i class="fa-solid fa-file-contract me-2 text-primary"></i>
+           <b>Contrato:</b> @Model.Contrato?.inquilino?.Apellido - @Model.Contrato?.inmueble?.propietario?.Apellido
+        </p>
+
+        <p><i class="fa-solid fa-calendar-day me-2 text-info"></i>
+           <b>Fecha de Pago:</b> @Model.FechaPago.ToString("dd/MM/yyyy")
+        </p>
+
+        <p><i class="fa-solid fa-money-bill-wave me-2 text-success"></i>
+           <b>Importe:</b> $@Model.Importe
+        </p>
+
+        <p><i class="fa-solid fa-hashtag me-2 text-dark"></i>
+           <b>Número de Pago:</b> @Model.NumeroPago
+        </p>
+
+        <p><i class="fa-solid fa-file-alt me-2 text-warning"></i>
+           <b>Detalle:</b> @Model.Detalle
+        </p>
+
+        <p>
+           <i class="fa-solid fa-circle-check me-2 @(Model.Estado ? "text-success" : "text-danger")"></i>
+           <b>Estado:</b>
+           @if (Model.Estado)
+           {
+               <span class="badge badge-vigente">Pagado</span>
+           }
+           else
+           {
+               <span class="badge badge-anulado">Anulado</span>
+           }
+        </p>
+    </div>
+</div>
+
+<a asp-action="Index" asp-route-idContrato="@Model.IdContrato" class="btn btn-secondary mt-3">Volver</a>
+@section Styles {
+    <link rel="stylesheet" href="~/css/contrato.css" asp-append-version="true" />
+}

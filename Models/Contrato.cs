@@ -1,41 +1,48 @@
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema; //Uso de espacios de nombres
-namespace Inmobiliaria25.Models;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
-public class Contrato
+namespace Inmobiliaria25.Models
 {
-  [Required]
-  public int IdContrato { get; set; }
+    public class Contrato
+    {
+        [Key]
+        public int IdContrato { get; set; }
 
-  [Required(ErrorMessage = "El campo inquilo es obligatorio")]
-  public int IdInquilino { get; set; }
+        [Required(ErrorMessage = "El campo Inquilino es obligatorio.")]
+        public int IdInquilino { get; set; }
 
-  [Required(ErrorMessage = "El campo inmueble es obligatorio")]
-  public int IdInmueble { get; set; }
-  //public Inquilinos inquilino { get; set; }
-  //public Inmuebles inmueble { get; set; }
+        [Required(ErrorMessage = "El campo Inmueble es obligatorio.")]
+        public int IdInmueble { get; set; }
 
-  [Required(ErrorMessage = "El monto es obligatorio")]
-  [Column(TypeName ="decimal(10,0)")] //Para EF le dice que tipo exacto que debe usar en la BD
-  [Range(0.01, double.MaxValue, ErrorMessage = "El monto debe ser mayor a 0")]
-  public decimal Monto { get; set; }
+        // las validate propiedades de navegacion No validan
+        [ValidateNever]
+        public Inquilinos inquilino { get; set; }
 
-  [Required(ErrorMessage = "La fecha de inicio es obligatoria")]
-  [DataType(DataType.Date)]
-  public DateTime FechaInicio { get; set; }
+        [ValidateNever]
+        public Inmueble inmueble { get; set; }
 
-  [Required(ErrorMessage = "La fecha de fin es obligatoria")]
-  [DataType(DataType.Date)]
-  public DateTime FechaFin { get; set; }
+        [Required(ErrorMessage = "El Monto es obligatorio.")]
+        [Range(0.01, double.MaxValue, ErrorMessage = "El Monto debe ser mayor a 0.")]
+        public double Monto { get; set; }
 
-  [DataType(DataType.Date)]
-  public DateTime? FechaAnulacion { get; set; } //nullable en la BD
+        [Required(ErrorMessage = "La Fecha de Inicio es obligatoria.")]
+        [DataType(DataType.Date)]
+        public DateTime FechaInicio { get; set; }
 
-  [Required]
-  public bool Estado { get; set; }
+        [Required(ErrorMessage = "La Fecha de Fin es obligatoria.")]
+        [DataType(DataType.Date)]
+        public DateTime FechaFin { get; set; }
 
-  public decimal? MultaGenerada { get; set; }
+        public DateTime? FechaAnulacion { get; set; }
 
-  public bool? MultaPagada { get; set; }
+        public bool Estado { get; set; } = true;
 
+        public decimal? MultaGenerada { get; set; }
+
+        public bool? MultaPagada { get; set; }
+
+        [ValidateNever]
+        public string EstadoDescripcion { get; set; }
+    }
 }

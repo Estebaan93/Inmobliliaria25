@@ -1,48 +1,70 @@
-﻿/* Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-for details on configuring this project to bundle and minify static web assets. */
-
-a.navbar-brand {
-  white-space: normal;
-  text-align: center;
-  word-break: break-all;
+﻿/* ====== NAVBAR GLASS ====== */
+.navbar-glass {
+    background: rgba(34, 34, 34, 0.75) !important; 
+    backdrop-filter: blur(12px) saturate(160%) !important;
+    -webkit-backdrop-filter: blur(12px) saturate(160%) !important;
+    border-radius: 0 0 12px 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+    padding: 0.5rem 1rem;
+    transition: all 0.3s ease;
 }
 
-a {
-  color: #0077cc;
+.navbar-glass .nav-link {
+    color: #f8f9fa !important; 
+    font-weight: 500;
+    transition: color 0.3s ease;
 }
 
-.btn-primary {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
+.navbar-glass .nav-link:hover {
+    color: #00b4d8 !important;
 }
 
-.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
+
+.navbar-glass .dropdown-menu {
+    background: rgba(30, 30, 30, 0.9);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
 }
 
-.border-top {
-  border-top: 1px solid #e5e5e5;
-}
-.border-bottom {
-  border-bottom: 1px solid #e5e5e5;
+.navbar-glass .dropdown-item {
+    color: #f1f1f1;
+    transition: background 0.2s ease, transform 0.2s ease;
 }
 
-.box-shadow {
-  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+.navbar-glass .dropdown-item:hover {
+    background: rgba(0, 180, 216, 0.3);
+    transform: translateX(4px);
+    border-radius: 8px;
 }
 
-button.accept-policy {
-  font-size: 1rem;
-  line-height: inherit;
+
+/* Iconos */
+.navbar-glass .dropdown-item i {
+    color: #444;
+    min-width: 18px;
+    text-align: center;
 }
 
-.footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  white-space: nowrap;
-  line-height: 60px;
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.titulo-inmobiliaria {
+    margin-top: 5px;   
+    margin-bottom: 15px;
+    font-size: 3rem;
+    font-weight: bold;
+    color: #2c3e50;
+    text-align: center;
+    font-family: 'Segoe UI', sans-serif;
 }

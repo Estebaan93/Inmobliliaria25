@@ -25,7 +25,7 @@ body {
 .titulo-inmobiliaria {
   font-size: 3rem;
   font-weight: bold;
-  color: #2c3e50; /* "Inmobiliaria" normal */
+  color: #2c3e50; 
   text-align: center;
   margin-bottom: 20px;
   font-family: 'Segoe UI', sans-serif;
@@ -41,7 +41,7 @@ body {
   -webkit-text-fill-color: transparent;
   letter-spacing: 3px;
 
-  /* Animación efecto olas */
+  /* efecto olas */
   animation: moverPlaya 120s linear infinite;
 }
 
@@ -92,7 +92,7 @@ body {
   color: white;
 }
 
-/* Ajustes columnas con distribucion uniforme */
+/* ajuste columnas  */
 .table-even-columns th, .table-even-columns td {
   width: 14%;
   text-align: center;
@@ -268,7 +268,7 @@ body {
     box-shadow: 0 0 8px rgba(0, 119, 182, 0.5);
 }
 
-/* Botón degradado */
+/* button degradado */
 .btn-gradient {
     background: linear-gradient(135deg, #0077b6, #00b4d8);
     color: #fff;
@@ -283,5 +283,6 @@ body {
     transform: scale(1.05);
     box-shadow: 0 6px 20px rgba(0, 180, 216, 0.4);
 }
+
 
 

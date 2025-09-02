@@ -10,6 +10,8 @@ builder.Services.AddTransient<RepositorioPropietario>();
 builder.Services.AddTransient<RepositorioInmueble>();
 builder.Services.AddScoped<RepositorioTipo>();
 builder.Services.AddScoped<RepositorioDireccion>();
+builder.Services.AddScoped<RepositorioContrato>();
+builder.Services.AddScoped<RepositorioPago>();
 //builder.Services.AddTransient<RepositorioContrato>();
 
 

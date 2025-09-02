@@ -1,0 +1,81 @@
+@model Inmobiliaria25.Models.PagoContrato
+
+@{
+    ViewData["Title"] = "Pagos";
+}
+
+<h2>Pagos del contrato: @Model.Contrato.inquilino?.Apellido - @Model.Contrato.inmueble?.propietario?.Apellido</h2>
+
+<p>
+    <a asp-action="Crear" asp-route-idContrato="@Model.Contrato.IdContrato" class="btn btn-success">
+        <i class="fa-solid fa-plus"></i> Nuevo Pago
+    </a>
+</p>
+
+<table class="table table-striped table-bordered">
+    <thead class="table-dark">
+        <tr>
+            <th>Fecha de Pago</th>
+            <th>Importe</th>
+            <th>Número de Pago</th>
+            <th>Detalle</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Pagos != null && Model.Pagos.Any())
+        {
+            foreach (var p in Model.Pagos)
+            {
+                <tr>
+                    <td>@p.FechaPago.ToString("dd/MM/yyyy")</td>
+                    <td>$@p.Importe</td>
+                    <td>@p.NumeroPago</td>
+                    <td>@p.Detalle</td>
+                    <td>@(p.Estado ? "Pagado" : "Anulado")</td>
+                    <td>
+                        @if (p.Estado)
+                        {
+                            <a asp-action="Detalle" asp-route-id="@p.IdPago" class="btn btn-info btn-sm">
+                                <i class="fa-solid fa-circle-info"></i>
+                            </a>
+
+                            <button type="button" class="btn btn-warning btn-sm btn-editar" data-id="@p.IdPago"
+                                data-detalle="@p.Detalle" data-fecha="@p.FechaPago.ToString("dd/MM/yyyy")" data-importe="@p.Importe"
+                                data-numero="@p.NumeroPago">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </button>
+
+
+                            <form asp-action="Eliminar" method="post" style="display:inline;">
+                                <input type="hidden" name="id" value="@p.IdPago" />
+                                <input type="hidden" name="idContrato" value="@p.IdContrato" />
+                                <button type="submit" class="btn btn-danger btn-sm">
+                                    <i class="fa-solid fa-ban"></i> Anular
+                                </button>
+                            </form>
+                        }
+                        else
+                        {
+                            <span class="text-muted">---</span>
+                        }
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="6" class="text-center text-danger">No existen pagos todavía.</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-controller="Contrato" asp-action="Index" class="btn btn-secondary">Volver a Contratos</a>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="~/js/site.js"></script>
+}

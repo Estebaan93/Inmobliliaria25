@@ -1,74 +1,121 @@
-﻿<!--Views/Shared/_Layout.cshtml -->
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>@ViewData["Title"] - NETmvc2108</title>
-  <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-  <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-  <link rel="stylesheet" href="~/NETmvc2108.styles.css" asp-append-version="true" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Inmobiliaria</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Inmobiliaria.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    @RenderSection("Styles", required: false)
 </head>
 
 <body>
-  <header>
-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-      <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between"></div>
-      <ul class="navbar-nav flex-grow-1 d-flex flex-row justify-content-between">
-        <div class="d-flex">
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom box-shadow navbar-glass">
+            <div class="container-fluid">
+                <ul class="navbar-nav flex-grow-1 d-flex flex-row justify-content-between">
+                    <div class="d-flex">
+                        <!-- Home -->
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">
+                                <i class="fa-solid fa-house"></i> Home
+                            </a>
+                        </li>
 
-          <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Inicio</a>
-          </li>
+                        <!-- Inquilinos -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" id="inquilinosDropdown" role="button"
+                               data-bs-toggle="dropdown" aria-expanded="false">
+                               <i class="fa-solid fa-user-group"></i> Inquilinos
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="inquilinosDropdown">
+                                <li><a class="dropdown-item" href="/Inquilino/Crear"><i class="fa-solid fa-plus"></i> Crear/Ingresar</a></li>
+                                <li><a class="dropdown-item" href="/Inquilino/Index"><i class="fa-solid fa-list"></i> Listar/Buscar</a></li>
+                            </ul>
+                        </li>
 
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle text-dark" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
-              aria-expanded="false">Inquilinos</a>
-            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <li><a class="dropdown-item" href="/Inquilino/Crear">Crear/Ingresar</a></li>
-              <li><a class="dropdown-item" href="/Inquilino/Index">Listar/Buscar</a></li>
-            </ul>
-          </li>
+                        <!-- Propietarios -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" id="propietariosDropdown" role="button"
+                               data-bs-toggle="dropdown" aria-expanded="false">
+                               <i class="fa-solid fa-user-tie"></i> Propietarios
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="propietariosDropdown">
+                                <li><a class="dropdown-item" href="/Propietario/Crear"><i class="fa-solid fa-plus"></i> Crear/Ingresar</a></li>
+                                <li><a class="dropdown-item" href="/Propietario/Index"><i class="fa-solid fa-list"></i> Listar/Buscar</a></li>
+                            </ul>
+                        </li>
 
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle text-dark" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
-              aria-expanded="false">Propietarios</a>
-            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <li><a class="dropdown-item" href="/Propietario/Crear">Crear/Ingresar</a></li>
-              <li><a class="dropdown-item" href="/Propietario/Index">Listar/Buscar</a></li>
-            </ul>
-          </li>
-          
-          <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle text-dark" id="inmuebleDropdown" role="button" data-bs-toggle="dropdown"
-            aria-expanded="false">Inmuebles</a>
-          <ul class="dropdown-menu" aria-labelledby="inmuebleDropdown">
-            <li><a class="dropdown-item" href="/Inmueble/Crear">Crear/Ingresar</a></li>
-            <li><a class="dropdown-item" href="/Inmueble/Index">Listar/Buscar</a></li>
-            <li><a class="dropdown-item" href="#" id="btnTiposInmuebles">Tipos de Inmuebles</a></li>
-          </ul>
-          </li>
-    </nav>
-  </header>
-  <div class="container">
-    <main role="main" class="pb-3">
-      @RenderBody()
-    </main>
-  </div>
+                        <!-- Inmuebles -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" id="inmuebleDropdown" role="button"
+                               data-bs-toggle="dropdown" aria-expanded="false">
+                               <i class="fa-solid fa-building"></i> Inmuebles
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="inmuebleDropdown">
+                                <li><a class="dropdown-item" href="/Inmueble/Crear"><i class="fa-solid fa-plus"></i> Crear/Ingresar</a></li>
+                                <li><a class="dropdown-item" href="/Inmueble/Index"><i class="fa-solid fa-list"></i> Listar/Buscar</a></li>
+                                <li><a class="dropdown-item" href="#" id="btnTiposInmuebles"><i class="fa-solid fa-tags"></i> Tipos de Inmuebles</a></li>
+                            </ul>
+                        </li>
 
-  <footer class="border-top footer text-muted">
+                        <!-- Contratos -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" id="contratoDropdown" role="button"
+                               data-bs-toggle="dropdown" aria-expanded="false">
+                               <i class="fa-solid fa-file-contract"></i> Contratos
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="contratoDropdown">
+                                <li><a class="dropdown-item" href="/Contrato/Crear"><i class="fa-solid fa-plus"></i> Crear/Ingresar</a></li>
+                                <li><a class="dropdown-item" href="/Contrato/Index"><i class="fa-solid fa-list"></i> Listar/Buscar</a></li>
+                            </ul>
+                        </li>
+                    </div>
+
+                    <!-- Usuario -->
+                    <div class="d-flex">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" id="usuarioDropdown" role="button"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                                <div class="nombreUsuario d-flex align-items-center">
+                                    <img src="@ViewBag.UserAvatar" alt="avatar" class="fotoMiniatura me-2"
+                                        style="width:30px;height:30px;border-radius:50%;">
+                                    <p class="mb-0"><strong>@ViewBag.UserName</strong></p>
+                                    <i class="fa-solid fa-gear ms-2"></i>
+                                </div>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="usuarioDropdown">
+                                <li><a class="dropdown-item" href="/Usuario/Editar/@ViewBag.UserId"><i class="fa-solid fa-user-pen"></i> Editar Perfil</a></li>
+                                <li><a class="dropdown-item" href="/Usuario/Index"><i class="fa-solid fa-users"></i> Listar/Buscar</a></li>
+                                <li><a class="dropdown-item" href="/Usuario/Crear"><i class="fa-solid fa-user-plus"></i> Crear Usuario</a></li>
+                            </ul>
+                        </li>
+                    </div>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
     <div class="container">
-      &copy; 2025 - Inmobiliaria - <a asp-area="" asp-controller="Home" asp-action="Privacy">Contacto</a>
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
     </div>
-  </footer>
-  <script src="~/lib/jquery/dist/jquery.min.js"></script>
-  <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="~/js/site.js" asp-append-version="true"></script>
-  <link rel="stylesheet" href="~/css/sweetalert.css" asp-append-version="true" />
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  @await RenderSectionAsync("Scripts", required: false)
-</body>
 
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2025 - Inmobiliaria - <a asp-area="" asp-controller="Home" asp-action="Privacy">Contacto</a>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <link rel="stylesheet" href="~/css/sweetalert.css" asp-append-version="true" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
 </html>
