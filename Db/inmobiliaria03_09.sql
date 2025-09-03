@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 22-08-2025 a las 20:20:49
+-- Tiempo de generación: 03-09-2025 a las 17:29:33
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -50,9 +50,18 @@ CREATE TABLE `contrato` (
   `monto` decimal(10,0) NOT NULL,
   `fechaInicio` date NOT NULL,
   `fechaFin` date NOT NULL,
-  `fechaAnulacion` date DEFAULT NULL,
+  `FechaAnulacion` datetime DEFAULT NULL,
   `estado` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `contrato`
+--
+
+INSERT INTO `contrato` (`idContrato`, `idInquilino`, `idInmueble`, `monto`, `fechaInicio`, `fechaFin`, `FechaAnulacion`, `estado`) VALUES
+(2, 1, 1, 450000, '2025-09-02', '2026-09-02', NULL, 1),
+(3, 3, 4, 200000, '2025-09-03', '2025-10-10', NULL, 1),
+(4, 2, 4, 200000, '2025-09-03', '2025-08-03', NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -66,8 +75,18 @@ CREATE TABLE `direccion` (
   `altura` int(11) NOT NULL,
   `cp` varchar(12) NOT NULL,
   `ciudad` varchar(100) NOT NULL,
-  `coordenadas` varchar(100) NOT NULL
+  `coordenadas` varchar(250) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `direccion`
+--
+
+INSERT INTO `direccion` (`idDireccion`, `calle`, `altura`, `cp`, `ciudad`, `coordenadas`) VALUES
+(1, 'Pasaje San Vicente', 266, '5700', 'San Luis', '-33.28945885220947, -66.3199532064231'),
+(2, 'Don bosco y Centenario', 400, '5700', 'San Luis', '-33.27974591009094, -66.3330368080857'),
+(3, 'Aristobulo Del Valle ', 202, '5700', 'San Luis', '-33.28678657693836, -66.32073087563543'),
+(4, 'Av. circuito A3', 1000, '5702', 'Potrero de los Funes San Luis', '-33.21934904785864, -66.2305082738294');
 
 -- --------------------------------------------------------
 
@@ -82,15 +101,24 @@ CREATE TABLE `inmueble` (
   `idTipo` int(11) NOT NULL,
   `metros2` varchar(100) NOT NULL,
   `cantidadAmbientes` int(11) NOT NULL,
-  `disponible` tinyint(60) NOT NULL,
   `precio` decimal(10,0) NOT NULL,
   `descripcion` varchar(300) NOT NULL,
   `cochera` tinyint(4) NOT NULL,
   `piscina` tinyint(4) NOT NULL,
   `mascotas` tinyint(4) NOT NULL,
   `urlImagen` varchar(150) NOT NULL,
-  `estado` tinyint(1) NOT NULL DEFAULT 1
+  `estado` tinyint(2) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `inmueble`
+--
+
+INSERT INTO `inmueble` (`idInmueble`, `idPropietario`, `idDireccion`, `idTipo`, `metros2`, `cantidadAmbientes`, `precio`, `descripcion`, `cochera`, `piscina`, `mascotas`, `urlImagen`, `estado`) VALUES
+(1, 1, 1, 1, '120', 2, 450000, 'Lindo lugar', 0, 0, 0, 'https://conceptotallerdearquitectura.com/wp-content/uploads/2022/11/36.jpg', 1),
+(2, 1, 2, 2, '60', 2, 600000, 'Local amplio y buena ubicacion', 1, 0, 0, 'https://areazero20.com/wp-content/uploads/2022/04/diseno-de-locales-comerciales-1024x683.jpg', 1),
+(3, 3, 3, 2, '35', 1, 300000, 'Centro de estetica', 1, 0, 1, 'https://www.vulka.es/imagenes/empresas_fotos/314389_big.jpg', 0),
+(4, 2, 4, 1, '50', 2, 200000, 'luminoiso', 1, 0, 0, 'https://www.cabanias.com.ar/fotos/pinar-del-valle.022.b1.jpg', 1);
 
 -- --------------------------------------------------------
 
@@ -108,6 +136,15 @@ CREATE TABLE `inquilino` (
   `estado` tinyint(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `inquilino`
+--
+
+INSERT INTO `inquilino` (`idInquilino`, `dni`, `apellido`, `nombre`, `telefono`, `correo`, `estado`) VALUES
+(1, '37599292', 'Moreira', 'Esteban', '0114008713', 'esteban@correo.com', 1),
+(2, '31000123', 'Vasquez', 'Nicolas', '01133191239', 'nico@correo.com', 1),
+(3, '39550113', 'Nuñez', 'Facundo', '2664087634', 'facu@correo.com', 1);
+
 -- --------------------------------------------------------
 
 --
@@ -123,6 +160,15 @@ CREATE TABLE `pago` (
   `detalle` varchar(200) NOT NULL,
   `estado` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `pago`
+--
+
+INSERT INTO `pago` (`idPago`, `idContrato`, `fechaPago`, `importe`, `numeroPago`, `detalle`, `estado`) VALUES
+(2, 2, '2025-09-02', 450000, '1', 'ingreso mes adelantado 2025', 0),
+(3, 2, '2025-09-02', 450000, '101', 'ingreso mes adelantado 2025', 1),
+(4, 3, '2025-09-03', 250000, '103', 'mes adelantado + iva', 1);
 
 -- --------------------------------------------------------
 
@@ -140,6 +186,15 @@ CREATE TABLE `propietario` (
   `estado` tinyint(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `propietario`
+--
+
+INSERT INTO `propietario` (`idPropietario`, `dni`, `apellido`, `nombre`, `telefono`, `correo`, `estado`) VALUES
+(1, '37599292', 'Moreira', 'Esteban', '2665044026', 'esteban@correo.com', 1),
+(2, '32001031', 'Iccardi', 'Gimena', '011336648', 'gime@correo.com', 1),
+(3, '39599145', 'Rosales', 'Agustina', '2665008861', 'agus@correo.com', 1);
+
 -- --------------------------------------------------------
 
 --
@@ -150,6 +205,15 @@ CREATE TABLE `tipo` (
   `idTipo` int(11) NOT NULL,
   `observacion` varchar(200) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `tipo`
+--
+
+INSERT INTO `tipo` (`idTipo`, `observacion`) VALUES
+(3, 'Casa'),
+(1, 'Departamento'),
+(2, 'Local');
 
 -- --------------------------------------------------------
 
@@ -249,43 +313,43 @@ ALTER TABLE `auditoria`
 -- AUTO_INCREMENT de la tabla `contrato`
 --
 ALTER TABLE `contrato`
-  MODIFY `idContrato` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idContrato` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `direccion`
 --
 ALTER TABLE `direccion`
-  MODIFY `idDireccion` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idDireccion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `inmueble`
 --
 ALTER TABLE `inmueble`
-  MODIFY `idInmueble` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idInmueble` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `inquilino`
 --
 ALTER TABLE `inquilino`
-  MODIFY `idInquilino` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idInquilino` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `pago`
 --
 ALTER TABLE `pago`
-  MODIFY `idPago` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idPago` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `propietario`
 --
 ALTER TABLE `propietario`
-  MODIFY `idPropietario` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idPropietario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `tipo`
 --
 ALTER TABLE `tipo`
-  MODIFY `idTipo` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idTipo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `usuario`
