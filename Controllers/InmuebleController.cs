@@ -4,148 +4,148 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Inmobiliaria25.Controllers
 {
-    public class InmuebleController : Controller
-    {
-        private readonly RepositorioInmueble _repoInmueble;
-        private readonly RepositorioPropietario _repoPropietario;
-        private readonly RepositorioTipo _repoTipo;
-        private readonly RepositorioDireccion _repoDireccion;
+	public class InmuebleController : Controller
+	{
+		private readonly RepositorioInmueble _repoInmueble;
+		private readonly RepositorioPropietario _repoPropietario;
+		private readonly RepositorioTipo _repoTipo;
+		private readonly RepositorioDireccion _repoDireccion;
 
-        public InmuebleController(
-            RepositorioInmueble repoInmueble,
-            RepositorioPropietario repoPropietario,
-            RepositorioTipo repoTipo, 
-            RepositorioDireccion repoDireccion )
-        {
-            _repoInmueble = repoInmueble;
-            _repoPropietario = repoPropietario;
-            _repoTipo = repoTipo;
-            _repoDireccion = repoDireccion;
-        }
-
-    
-        public IActionResult Index()
-        {
-            var viewModel = new InmuebleViewModel
-            {
-                Inmuebles = _repoInmueble.Listar(), // si querés mostrar de una
-                Propietarios = _repoPropietario.ObtenerActivos()
-            };
-
-            return View(viewModel);
-        }
-
-        // filtros ajax
-        [HttpGet]
-        public IActionResult Filtrar(int? estado = null, int? idPropietario = null)
-        {
-            var inmuebles = _repoInmueble.Listar(estado, idPropietario);
-            return Json(inmuebles);
-        }
-
-        // crear
-public IActionResult Crear()
-{
-    var vm = new InmuebleFormViewModel
-    {
-        Inmueble = new Inmueble(),
-        Propietarios = _repoPropietario.ObtenerActivos() ?? new List<Propietarios>(),
-        Tipos = _repoTipo.Listar() ?? new List<Tipo>()
-    };
-
-    return View(vm);
-}
-
-[HttpPost]
-public IActionResult Crear(InmuebleFormViewModel vm)
-{
-    if (ModelState.IsValid)
-    {
-        
-        int idDireccion = _repoDireccion.Crear(vm.Direccion);
-
-      
-        vm.Inmueble.IdDireccion = idDireccion;
-
-        _repoInmueble.Crear(vm.Inmueble);
-
-        return RedirectToAction("Index");
-    }
-
-    
-    vm.Propietarios = _repoPropietario.ObtenerActivos() ?? new List<Propietarios>();
-    vm.Tipos = _repoTipo.Listar() ?? new List<Tipo>();
-
-    return View(vm);
-}
+		public InmuebleController(
+				RepositorioInmueble repoInmueble,
+				RepositorioPropietario repoPropietario,
+				RepositorioTipo repoTipo,
+				RepositorioDireccion repoDireccion)
+		{
+			_repoInmueble = repoInmueble;
+			_repoPropietario = repoPropietario;
+			_repoTipo = repoTipo;
+			_repoDireccion = repoDireccion;
+		}
 
 
-        // editar get
-       public IActionResult Editar(int id)
-{
-    var inmueble = _repoInmueble.Obtener(id);
-    if (inmueble == null)
-        return NotFound();
+		public IActionResult Index()
+		{
+			var viewModel = new InmuebleViewModel
+			{
+				Inmuebles = _repoInmueble.Listar(), // si querés mostrar de una
+				Propietarios = _repoPropietario.ObtenerActivos()
+			};
 
-    var vm = new InmuebleFormViewModel
-    {
-        Inmueble = inmueble,
-        Direccion = inmueble.direccion, 
-        Propietarios = _repoPropietario.ObtenerActivos(),
-        Tipos = _repoTipo.Listar()
-    };
+			return View(viewModel);
+		}
 
-    return View(vm);
-}
+		// filtros ajax
+		[HttpGet]
+		public IActionResult Filtrar(int? estado = null, int? idPropietario = null)
+		{
+			var inmuebles = _repoInmueble.Listar(estado, idPropietario);
+			return Json(inmuebles);
+		}
 
+		// crear
+		public IActionResult Crear()
+		{
+			var vm = new InmuebleFormViewModel
+			{
+				Inmueble = new Inmueble(),
+				Propietarios = _repoPropietario.ObtenerActivos() ?? new List<Propietarios>(),
+				Tipos = _repoTipo.Listar() ?? new List<Tipo>()
+			};
 
-        // editar
-        
-        [HttpPost]
-[ValidateAntiForgeryToken]
-public IActionResult Editar(InmuebleFormViewModel vm)
-{
-    if (ModelState.IsValid)
-    {
-        try
-        {
-          
-            _repoDireccion.Modificar(vm.Direccion);
+			return View(vm);
+		}
 
-            vm.Inmueble.IdDireccion = vm.Direccion.IdDireccion;
+		[HttpPost]
+		public IActionResult Crear(InmuebleFormViewModel vm)
+		{
+			if (ModelState.IsValid)
+			{
 
-            _repoInmueble.Modificar(vm.Inmueble);
-
-            TempData["Mensaje"] = "Inmueble modificado con éxito.";
-            return RedirectToAction(nameof(Index));
-        }
-        catch (Exception ex)
-        {
-            ModelState.AddModelError("", "Error al modificar el inmueble: " + ex.Message);
-        }
-    }
-
-    // recargar listas si hay error
-    vm.Propietarios = _repoPropietario.ObtenerActivos();
-    vm.Tipos = _repoTipo.Listar();
-
-    return View(vm);
-}
+				int idDireccion = _repoDireccion.Crear(vm.Direccion);
 
 
-        // elimino con (AJAX con SweetAlert)
-        [HttpPost]
-        public IActionResult Borrar(int id)
-        {
-            try
-            {
-                _repoInmueble.Eliminar(id);
-                return Json(new { success = true, mensaje = "Inmueble eliminado correctamente" });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { success = false, mensaje = "Error al eliminar el inmueble: " + ex.Message });
-            }
-        }
-    }
+				vm.Inmueble.IdDireccion = idDireccion;
+
+				_repoInmueble.Crear(vm.Inmueble);
+
+				return RedirectToAction("Index");
+			}
+
+
+			vm.Propietarios = _repoPropietario.ObtenerActivos() ?? new List<Propietarios>();
+			vm.Tipos = _repoTipo.Listar() ?? new List<Tipo>();
+
+			return View(vm);
+		}
+
+
+		// editar get
+		public IActionResult Editar(int id)
+		{
+			var inmueble = _repoInmueble.Obtener(id);
+			if (inmueble == null)
+				return NotFound();
+
+			var vm = new InmuebleFormViewModel
+			{
+				Inmueble = inmueble,
+				Direccion = inmueble.direccion,
+				Propietarios = _repoPropietario.ObtenerActivos(),
+				Tipos = _repoTipo.Listar()
+			};
+
+			return View(vm);
+		}
+
+
+		// editar
+
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public IActionResult Editar(InmuebleFormViewModel vm)
+		{
+			if (ModelState.IsValid)
+			{
+				try
+				{
+
+					_repoDireccion.Modificar(vm.Direccion);
+
+					vm.Inmueble.IdDireccion = vm.Direccion.IdDireccion;
+
+					_repoInmueble.Modificar(vm.Inmueble);
+
+					TempData["Mensaje"] = "Inmueble modificado con éxito.";
+					return RedirectToAction(nameof(Index));
+				}
+				catch (Exception ex)
+				{
+					ModelState.AddModelError("", "Error al modificar el inmueble: " + ex.Message);
+				}
+			}
+
+			// recargar listas si hay error
+			vm.Propietarios = _repoPropietario.ObtenerActivos();
+			vm.Tipos = _repoTipo.Listar();
+
+			return View(vm);
+		}
+
+
+		// elimino con (AJAX con SweetAlert)
+		[HttpPost]
+		public IActionResult Borrar(int id)
+		{
+			try
+			{
+				_repoInmueble.Eliminar(id);
+				return Json(new { success = true, mensaje = "Inmueble eliminado correctamente" });
+			}
+			catch (Exception ex)
+			{
+				return Json(new { success = false, mensaje = "Error al eliminar el inmueble: " + ex.Message });
+			}
+		}
+	}
 }

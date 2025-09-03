@@ -1,49 +1,50 @@
 @model Inmobiliaria25.Models.Pago
 
 @{
-    ViewData["Title"] = "Registrar Pago";
+	ViewData["Title"] = "Registrar Pago";
 }
 
 <h2 class="text-center mb-4">Registrar Pago</h2>
 
 <div class="d-flex justify-content-center">
-    <div class="formulario-card">
-        <form asp-action="Crear" asp-controller="Pago" method="post">
-            @Html.AntiForgeryToken()
+	<div class="formulario-card">
+		<form asp-action="Crear" asp-controller="Pago" method="post">
+			@Html.AntiForgeryToken()
 
-            <input asp-for="IdContrato" type="hidden" />
-            <input asp-for="IdPago" value="0" type="hidden" />
+			<input asp-for="IdContrato" type="hidden" />
+			<input asp-for="IdPago" value="0" type="hidden" />
 
-            <div class="form-group mb-3">
-                <label asp-for="FechaPago" class="form-label"><i class="fa-regular fa-calendar"></i> Fecha de pago</label>
-                <input asp-for="FechaPago" type="date" class="form-control" required />
-                <span asp-validation-for="FechaPago" class="text-danger"></span>
-            </div>
+			<div class="form-group mb-3">
+				<label asp-for="FechaPago" class="form-label"><i class="fa-regular fa-calendar"></i> Fecha de pago</label>
+				<input asp-for="FechaPago" type="date" class="form-control" required />
+				<span asp-validation-for="FechaPago" class="text-danger"></span>
+			</div>
 
-            <div class="form-group mb-3">
-                <label asp-for="Importe" class="form-label"><i class="fa-solid fa-sack-dollar"></i> Importe</label>
-                <input asp-for="Importe" type="number" class="form-control" step="0.01" required />
-                <span asp-validation-for="Importe" class="text-danger"></span>
-            </div>
-            <div class="form-group mb-3">
-                <label asp-for="NumeroPago" class="form-label"><i class="fa-solid fa-hashtag me-2 text-dark"></i>Numero
-                    de Pago</label>
-                <input asp-for="NumeroPago" class="form-control" />
-                <span asp-validation-for="NumeroPago" class="text-danger"></span>
-            </div>
+			<div class="form-group mb-3">
+				<label asp-for="Importe" class="form-label"><i class="fa-solid fa-sack-dollar"></i> Importe</label>
+				<input asp-for="Importe" type="number" class="form-control" step="0.01" required />
+				<span asp-validation-for="Importe" class="text-danger"></span>
+			</div>
+			<div class="form-group mb-3">
+				<label asp-for="NumeroPago" class="form-label"><i class="fa-solid fa-hashtag me-2 text-dark"></i>Numero
+					de Pago</label>
+				<input asp-for="NumeroPago" class="form-control" />
+				<span asp-validation-for="NumeroPago" class="text-danger"></span>
+			</div>
 
 
 
-            <div class="form-group mb-3">
-                <label asp-for="Detalle" class="form-label"><i class="fa-solid fa-file-lines"></i> Detalle</label>
-                <input asp-for="Detalle" class="form-control" placeholder="Ej: Mes Septiembre 2025" required />
-                <span asp-validation-for="Detalle" class="text-danger"></span>
-            </div>
+			<div class="form-group mb-3">
+				<label asp-for="Detalle" class="form-label"><i class="fa-solid fa-file-lines"></i> Detalle</label>
+				<input asp-for="Detalle" class="form-control" placeholder="Ej: Mes Septiembre 2025" required />
+				<span asp-validation-for="Detalle" class="text-danger"></span>
+			</div>
 
-            <div class="d-flex justify-content-between">
-                <button type="submit" class="btn btn-gradient">Registrar Pago</button>
-                <a asp-action="Index" asp-controller="Pago" asp-route-idContrato="@Model.IdContrato" class="btn btn-secondary">Cancelar</a>
-            </div>
-        </form>
-    </div>
+			<div class="d-flex justify-content-between">
+				<button type="submit" class="btn btn-gradient">Registrar Pago</button>
+				<a asp-action="Index" asp-controller="Pago" asp-route-idContrato="@Model.IdContrato"
+					class="btn btn-secondary">Cancelar</a>
+			</div>
+		</form>
+	</div>
 </div>

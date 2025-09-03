@@ -1,107 +1,110 @@
-
 .titulo-detalle {
-    margin-bottom: 20px;
-    font-weight: bold;
-    color: #221a1a;
+	margin-bottom: 20px;
+	font-weight: bold;
+	color: #221a1a;
 }
 
 
-.contrato-card , .pago-card {
-    padding: 25px;
-    border-radius: 20px;
-    background: rgba(104, 96, 96, 0.349); /* Transparencia */
-    backdrop-filter: blur(12px); /* Difuminado */
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.3); 
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); 
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+.contrato-card,
+.pago-card {
+	padding: 25px;
+	border-radius: 20px;
+	background: rgba(104, 96, 96, 0.349);
+	/* Transparencia */
+	backdrop-filter: blur(12px);
+	/* Difuminado */
+	-webkit-backdrop-filter: blur(12px);
+	border: 1px solid rgba(255, 255, 255, 0.3);
+	box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+	transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 
-.contrato-card:hover , .pago-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.25);
+.contrato-card:hover,
+.pago-card:hover {
+	transform: translateY(-5px);
+	box-shadow: 0 12px 25px rgba(0, 0, 0, 0.25);
 }
 
 
 .contrato-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 30px;
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-start;
+	gap: 30px;
 }
 
 
 .contrato-info {
-    flex: 2;
-    font-size: 1.05rem;
+	flex: 2;
+	font-size: 1.05rem;
 }
 
 
 .contrato-img {
-    margin-top: 50px;
-    flex: 1;
-    text-align: right;
+	margin-top: 50px;
+	flex: 1;
+	text-align: right;
 }
 
 .contrato-img img {
-    max-width: 300px;
-    max-height: 200px;
-    object-fit: cover;
-    border-radius: 15px;
-    border: 2px solid rgba(255, 255, 255, 0.4);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
-    transition: transform 0.4s ease, box-shadow 0.4s ease;
+	max-width: 300px;
+	max-height: 200px;
+	object-fit: cover;
+	border-radius: 15px;
+	border: 2px solid rgba(255, 255, 255, 0.4);
+	box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
+	transition: transform 0.4s ease, box-shadow 0.4s ease;
 }
 
 
 .contrato-img img:hover {
-    transform: scale(1.05);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.35);
+	transform: scale(1.05);
+	box-shadow: 0 10px 20px rgba(0, 0, 0, 0.35);
 }
 
 .badge {
-    padding: 6px 12px;
-    border-radius: 12px;
-    font-size: 0.9rem;
-    font-weight: bold;
-    color: white;
-    display: inline-block;
-    box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+	padding: 6px 12px;
+	border-radius: 12px;
+	font-size: 0.9rem;
+	font-weight: bold;
+	color: white;
+	display: inline-block;
+	box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
 }
 
 /* para estados */
 .badge-vigente {
-    background: linear-gradient(135deg, #90dfa3, #218838);
+	background: linear-gradient(135deg, #90dfa3, #218838);
 }
 
 .badge-anulado {
-    background: linear-gradient(135deg, #dc3545, #a71d2a);
+	background: linear-gradient(135deg, #dc3545, #a71d2a);
 }
 
 .badge-finalizado {
-    background: linear-gradient(135deg, #ffc107, #d39e00);
-    color: #212529; 
+	background: linear-gradient(135deg, #ffc107, #d39e00);
+	color: #212529;
 }
 
 /* vista detalle pago */
 
 
 .pago-info p {
-    font-size: 1.05rem;
-    margin: 0.6rem 0;
-    border-bottom: 1px solid rgba(0,0,0,0.1);
-    padding-bottom: 6px;
+	font-size: 1.05rem;
+	margin: 0.6rem 0;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+	padding-bottom: 6px;
 }
 
 .pago-info p:last-child {
-    border-bottom: none;
+	border-bottom: none;
 }
 
 .pago-info i {
-    min-width: 20px;
+	min-width: 20px;
 }
 
 h2 {
-    text-align: center;
+	text-align: center;
 }

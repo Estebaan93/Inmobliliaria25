@@ -1,89 +1,88 @@
 @model Inmobiliaria25.Models.ContratoViewModel
 
 @{
-    ViewData["Title"] = "Nuevo Contrato";
+	ViewData["Title"] = "Nuevo Contrato";
 }
 
 
-    <h2 class="text-center mb-4"> Crear Contrato</h2>
+<h2 class="text-center mb-4"> Crear Contrato</h2>
 
 <div class="formulario-card mx-auto">
-    <form asp-action="Crear" method="post">
-        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+	<form asp-action="Crear" method="post">
+		<div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-        <!-- Inquilino -->
-        <div class="mb-3">
-            <label asp-for="Contrato.IdInquilino" class="form-label fw-bold">Inquilino</label>
-            <select asp-for="Contrato.IdInquilino" class="form-select"
-                    asp-items="@(new SelectList(Model.Inquilinos, "IdInquilino", "Apellido"))">
-                <option value="">-- Seleccione un inquilino --</option>
-            </select>
-            <span asp-validation-for="Contrato.IdInquilino" class="text-danger"></span>
-        </div>
+		<!-- Inquilino -->
+		<div class="mb-3">
+			<label asp-for="Contrato.IdInquilino" class="form-label fw-bold">Inquilino</label>
+			<select asp-for="Contrato.IdInquilino" class="form-select"
+				asp-items="@(new SelectList(Model.Inquilinos, "IdInquilino", "Apellido"))">
+				<option value="">-- Seleccione un inquilino --</option>
+			</select>
+			<span asp-validation-for="Contrato.IdInquilino" class="text-danger"></span>
+		</div>
 
-        <!-- Inmueble -->
-        <div class="mb-3">
-            <label asp-for="Contrato.IdInmueble" class="form-label fw-bold">Inmueble</label>
-            <select asp-for="Contrato.IdInmueble" class="form-select" id="selectInmueble">
-                <option value="">-- Seleccione un inmueble --</option>
-                @foreach (var i in Model.Inmuebles)
-                {
-                    <option value="@i.IdInmueble"
-                            data-propietario="@($"{i.propietario?.Apellido} {i.propietario?.Nombre}")"
-                            data-precio="@i.Precio">
-                        @i.DescripcionCompleta
-                    </option>
-                }
-            </select>
-            <span asp-validation-for="Contrato.IdInmueble" class="text-danger"></span>
-        </div>
+		<!-- Inmueble -->
+		<div class="mb-3">
+			<label asp-for="Contrato.IdInmueble" class="form-label fw-bold">Inmueble</label>
+			<select asp-for="Contrato.IdInmueble" class="form-select" id="selectInmueble">
+				<option value="">-- Seleccione un inmueble --</option>
+				@foreach (var i in Model.Inmuebles)
+				{
+					<option value="@i.IdInmueble" data-propietario="@($"{i.propietario?.Apellido} {i.propietario?.Nombre}")"
+						data-precio="@i.Precio">
+						@i.DescripcionCompleta
+					</option>
+				}
+			</select>
+			<span asp-validation-for="Contrato.IdInmueble" class="text-danger"></span>
+		</div>
 
-        <!-- Propietario automático -->
-        <div class="mb-3">
-            <label class="form-label fw-bold">Propietario</label>
-            <input type="text" id="PropietarioNombre" class="form-control" readonly />
-        </div>
+		<!-- Propietario automático -->
+		<div class="mb-3">
+			<label class="form-label fw-bold">Propietario</label>
+			<input type="text" id="PropietarioNombre" class="form-control" readonly />
+		</div>
 
-        <!-- Precio automático -->
-        <div class="mb-3">
-            <label class="form-label fw-bold">Precio</label>
-            <input type="text" id="PrecioVisible" class="form-control" readonly />
-        </div>
+		<!-- Precio automático -->
+		<div class="mb-3">
+			<label class="form-label fw-bold">Precio</label>
+			<input type="text" id="PrecioVisible" class="form-control" readonly />
+		</div>
 
-        <!-- Oculto: monto real -->
-        <input asp-for="Contrato.Monto" type="hidden" id="MontoHidden" />
-        <span asp-validation-for="Contrato.Monto" class="text-danger"></span>
+		<!-- Oculto: monto real -->
+		<input asp-for="Contrato.Monto" type="hidden" id="MontoHidden" />
+		<span asp-validation-for="Contrato.Monto" class="text-danger"></span>
 
-        <!-- Fechas -->
-        <div class="row">
-            <div class="col-md-6 mb-3">
-                <label asp-for="Contrato.FechaInicio" class="form-label fw-bold">Fecha Inicio</label>
-                <input asp-for="Contrato.FechaInicio" type="date" class="form-control" />
-                <span asp-validation-for="Contrato.FechaInicio" class="text-danger"></span>
-            </div>
-            <div class="col-md-6 mb-3">
-                <label asp-for="Contrato.FechaFin" class="form-label fw-bold">Fecha Fin</label>
-                <input asp-for="Contrato.FechaFin" type="date" class="form-control" />
-                <span asp-validation-for="Contrato.FechaFin" class="text-danger"></span>
-            </div>
-        </div>
+		<!-- Fechas -->
+		<div class="row">
+			<div class="col-md-6 mb-3">
+				<label asp-for="Contrato.FechaInicio" class="form-label fw-bold">Fecha Inicio</label>
+				<input asp-for="Contrato.FechaInicio" type="date" class="form-control" />
+				<span asp-validation-for="Contrato.FechaInicio" class="text-danger"></span>
+			</div>
+			<div class="col-md-6 mb-3">
+				<label asp-for="Contrato.FechaFin" class="form-label fw-bold">Fecha Fin</label>
+				<input asp-for="Contrato.FechaFin" type="date" class="form-control" />
+				<span asp-validation-for="Contrato.FechaFin" class="text-danger"></span>
+			</div>
+		</div>
 
-        <!-- Ocultos -->
-        <input type="hidden" asp-for="Contrato.Estado" value="true" />
-        <input type="hidden" asp-for="Contrato.FechaAnulacion" value="" />
+		<!-- Ocultos -->
+		<input type="hidden" asp-for="Contrato.Estado" value="true" />
+		<input type="hidden" asp-for="Contrato.FechaAnulacion" value="" />
 
-        <!-- Botones -->
-        <div class="d-flex justify-content-between mt-4">
-            <a asp-action="Index" class="btn btn-secondary">
-                <i class="fa-solid fa-xmark"></i> Cancelar
-            </a>
-            <button type="submit" class="btn-gradient">
-                <i class="fa-solid fa-floppy-disk"></i> Guardar
-            </button>
-        </div>
-    </form>
+		<!-- Botones -->
+		<div class="d-flex justify-content-between mt-4">
+			<a asp-action="Index" class="btn btn-secondary">
+				<i class="fa-solid fa-xmark"></i> Cancelar
+			</a>
+			<button type="submit" class="btn-gradient">
+				<i class="fa-solid fa-floppy-disk"></i> Guardar
+			</button>
+		</div>
+	</form>
 </div>
 
 @section Scripts {
-    <script src="~/js/site.js"></script>
+	<script src="~/js/site.js"></script>
 }
