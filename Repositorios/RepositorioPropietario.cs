@@ -13,6 +13,53 @@ namespace Inmobiliaria25.Repositorios
       _context = context;
     }
 
+        //Para la paginacion
+    public int ContarActivos()
+    {
+      using var conn = _context.GetConnection();
+      conn.Open();
+      const string sql = "SELECT COUNT(*) FROM Propietario WHERE estado=1";
+      using var cmd = new MySqlCommand(sql, conn);
+      return Convert.ToInt32(cmd.ExecuteScalar());
+    }
+    public List<Propietarios> ObtenerActivosPaginado(int page, int pageSize)
+    {
+      var lista = new List<Propietarios>();
+      int offset = (page - 1) * pageSize;
+
+      using var conn = _context.GetConnection();
+      conn.Open();
+      const string sql = @"
+        SELECT idPropietario, dni, apellido, nombre, telefono, correo, estado
+        FROM Propietario
+        WHERE estado = 1
+        ORDER BY apellido, nombre
+        LIMIT @limit OFFSET @offset;";
+
+      using var cmd = new MySqlCommand(sql, conn);
+      cmd.Parameters.AddWithValue("@limit", pageSize);
+      cmd.Parameters.AddWithValue("@offset", offset);
+
+      using var reader = cmd.ExecuteReader();
+          while (reader.Read())
+    {
+        lista.Add(new Propietarios
+        {
+              IdPropietario = reader.GetInt32("idPropietario"),
+              Apellido = reader.GetString("apellido"),
+              Nombre = reader.GetString("nombre"),
+              Dni = reader.GetString("dni"),
+              Telefono = reader.GetString("telefono"),
+              Correo = reader.GetString("correo"),
+              Estado = reader.GetBoolean("estado")
+        });
+    }
+    return lista;
+
+    }
+
+
+
     // SOLO ACTIVOS 
     public List<Propietarios> ObtenerActivos()
     {

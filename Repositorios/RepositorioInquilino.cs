@@ -14,6 +14,50 @@ namespace Inmobiliaria25.Repositorios
       _context = context;
     }
 
+      //Para la paginacion
+    public int ContarActivos()
+{
+    using var conn = _context.GetConnection();
+    conn.Open();
+    const string sql = "SELECT COUNT(*) FROM Inquilino WHERE estado = 1";
+    using var cmd = new MySqlCommand(sql, conn);
+    return Convert.ToInt32(cmd.ExecuteScalar());
+}
+public List<Inquilinos> ObtenerActivosPaginado(int page, int pageSize)
+{
+    var lista = new List<Inquilinos>();
+    int offset = (page - 1) * pageSize;
+
+    using var conn = _context.GetConnection();
+    conn.Open();
+    const string sql = @"
+        SELECT idInquilino, apellido, nombre, dni, telefono, correo, estado
+        FROM Inquilino
+        WHERE estado = 1
+        ORDER BY apellido, nombre
+        LIMIT @limit OFFSET @offset;";
+
+    using var cmd = new MySqlCommand(sql, conn);
+    cmd.Parameters.AddWithValue("@limit", pageSize);
+    cmd.Parameters.AddWithValue("@offset", offset);
+
+    using var reader = cmd.ExecuteReader();
+    while (reader.Read())
+    {
+        lista.Add(new Inquilinos
+        {
+            IdInquilino = reader.GetInt32("idInquilino"),
+            Apellido = reader.GetString("apellido"),
+            Nombre = reader.GetString("nombre"),
+            Dni = reader.GetString("dni"),
+            Telefono = reader.IsDBNull(reader.GetOrdinal("telefono")) ? null : reader.GetString("telefono"),
+            Correo = reader.GetString("correo"),
+            Estado = reader.GetBoolean("estado")
+        });
+    }
+    return lista;
+}
+
     // SOLO ACTIVOS (estado = 1)
     //metodo q devuelve una lista de obj, me trae todos los inqu con estado 1
     public List<Inquilinos> ObtenerActivos()

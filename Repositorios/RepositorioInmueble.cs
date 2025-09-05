@@ -1,3 +1,4 @@
+//Repositorios/RepositorioInmueble.cs
 using Inmobiliaria25.Db;
 using MySql.Data.MySqlClient;
 using Inmobiliaria25.Models;
@@ -12,6 +13,75 @@ namespace Inmobiliaria25.Repositorios
 		{
 			_context = context;
 		}
+
+		//Para la paginacion
+		/*public int ContarActivos()
+		{
+			using var conn = _context.GetConnection();
+			conn.Open();
+			const string sql = "SELECT COUNT(*) FROM Inmueble";
+			using var cmd = new MySqlCommand(sql, conn);
+			return Convert.ToInt32(cmd.ExecuteScalar());
+		}
+		public List<Inmueble> ObtenerActivosPaginado(int page, int pageSize)
+		{
+			var lista = new List<Inmueble>();
+			int offset = (page - 1) * pageSize;
+
+			using var conn = _context.GetConnection();
+			conn.Open();
+			const string sql = @"
+				SELECT i.idInmueble,i.idPropietario 
+				AS i_idPropietario,	i.idDireccion        
+				AS i_idDireccion,	i.idTipo             
+				AS i_idTipo, i.descripcion,	i.cantidadAmbientes, i.precio, i.cochera,	i.piscina,
+						i.mascotas,	i.estado,	i.metros2, i.UrlImagen,	p.idPropietario      
+				AS p_idPropietario,	p.apellido,	p.nombre,	t.idTipo             
+				AS t_idTipo, t.observacion        
+				AS t_observacion 
+				FROM Inmueble i
+					INNER JOIN Propietario p ON i.idPropietario = p.idPropietario
+					INNER JOIN Tipo t        ON i.idTipo        = t.idTipo
+				ORDER BY i.idInmueble DESC
+				LIMIT @limit OFFSET @offset;";
+
+			using var cmd = new MySqlCommand(sql, conn);
+			cmd.Parameters.AddWithValue("@limit", pageSize);
+			cmd.Parameters.AddWithValue("@offset", offset);
+			using var reader = cmd.ExecuteReader();
+			while (reader.Read())
+			{
+				lista.Add(new Inmueble
+				{
+					IdInmueble = reader.GetInt32("idInmueble"),
+					IdPropietario = reader.GetInt32("i_idPropietario"),
+					IdDireccion = reader.GetInt32("i_idDireccion"),
+					IdTipo = reader.GetInt32("i_idTipo"),
+					Descripcion = reader.GetString("descripcion"),
+					CantidadAmbientes = reader.GetInt32("cantidadAmbientes"),
+					Precio = reader.GetDecimal("precio"),
+					Cochera = reader.GetBoolean("cochera"),
+					Piscina = reader.GetBoolean("piscina"),
+					Mascotas = reader.GetBoolean("mascotas"),
+					estado = (EstadoInmueble)reader.GetInt32("estado"),
+					Metros2 = reader["metros2"]?.ToString() ?? "",
+					UrlImagen = reader["UrlImagen"]?.ToString() ?? "",
+					propietario = new Propietarios
+					{
+						IdPropietario = reader.GetInt32("p_idPropietario"),
+						Apellido = reader.GetString("apellido"),
+						Nombre = reader.GetString("nombre")
+					},
+					tipo = new Tipo
+					{
+						IdTipo = reader.GetInt32("t_idTipo"),
+						Observacion = reader.GetString("t_observacion")
+					}
+				});
+			}
+			return lista;
+
+		}*/
 
 		// =====================
 		//  listo (con filtros opcionales)

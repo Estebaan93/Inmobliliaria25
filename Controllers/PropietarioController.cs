@@ -13,12 +13,32 @@ namespace Inmobiliaria25.Controllers
       this.repo = repo;
     }
 
+       //Listar activos paginado
+    public IActionResult Index(int page = 1)
+    {
+      const int pageSize = 5;
+
+      int total = repo.ContarActivos();
+      int totalPages = (int)Math.Ceiling(total / (double)pageSize);
+      if (page < 1) page = 1;
+      if (totalPages > 0 && page > totalPages) page = totalPages;
+
+      var lista = repo.ObtenerActivosPaginado(page, pageSize);
+
+      ViewBag.CurrentPage = page;
+      ViewBag.TotalPages = totalPages;
+      ViewBag.TotalItems = total;
+      ViewBag.PageSize = pageSize;
+
+      return View(lista);
+    }
+
     // listar activos
-    public IActionResult Index()
+    /*public IActionResult Index()
     {
       var lista = repo.ObtenerActivos();
       return View(lista);
-    }
+    }*/
 
     // crear (GET)
     public IActionResult Crear()
@@ -26,46 +46,55 @@ namespace Inmobiliaria25.Controllers
       return View();
     }
 
-    [HttpPost]
-    public IActionResult Guardar(Propietarios propietario)
-    {
-      try
-      {
-        if (propietario.IdPropietario > 0)
+     [HttpPost]
+        public IActionResult Guardar(Propietarios propietario)
         {
-          // editar
-          if (repo.ExisteDni(propietario.Dni, propietario.IdPropietario))
-          {
-            ModelState.AddModelError("dni", "El DNI ya está registrado en otro propietario.");
-            return View("Editar", propietario);
-          }
+            try
+            {
+                // vslido modelo primero
+                if (!ModelState.IsValid)
+                {
+                    if (propietario.IdPropietario > 0)
+                    {
+                        return View("Editar", propietario);
+                    }
+                    return View("Crear", propietario);
+                }
 
-          repo.Modificar(propietario);
-          TempData["Mensaje"] = "Propietario modificado con éxito";
+                // valido duplicados de DNI
+                if (propietario.IdPropietario > 0)
+                {
+                    // EDITAR
+                    if (repo.ExisteDni(propietario.Dni, propietario.IdPropietario))
+                    {
+                        ModelState.AddModelError("Dni", "El DNI ya está registrado en otro propietario.");
+                        return View("Editar", propietario);
+                    }
+
+                    repo.Modificar(propietario);
+                    TempData["Mensaje"] = "Propietario modificado con éxito";
+                }
+                else
+                {
+                    // CREAR
+                    if (repo.ExisteDni(propietario.Dni))
+                    {
+                        ModelState.AddModelError("Dni", "El DNI ya está registrado. Revise la tabla de propietarios.");
+                        return View("Crear", propietario);
+                    }
+
+                    repo.Alta(propietario);
+                    TempData["Mensaje"] = "Propietario creado con éxito";
+                }
+
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = ex.Message;
+                return RedirectToAction("Index");
+            }
         }
-        else
-        {
-          // crear
-          if (repo.ExisteDni(propietario.Dni))
-          {
-            ModelState.AddModelError("dni", "El DNI ya está registrado. Revise la tabla de propietarios.");
-            return View("Crear", propietario);
-          }
-
-          repo.Alta(propietario);
-          TempData["Mensaje"] = "Propietario creado con éxito";
-        }
-
-        return RedirectToAction("Index");
-
-      }
-      catch (Exception ex)
-      {
-        TempData["Error"] = ex.Message;
-        return RedirectToAction("Index");
-      }
-    }
-
 
     // editar (GET)
     public IActionResult Editar(int id)
@@ -78,20 +107,6 @@ namespace Inmobiliaria25.Controllers
       return View(propietario);
     }
 
-    // Editar (POST)
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public IActionResult Editar(Propietarios propietario)
-    {
-      if (!ModelState.IsValid)
-      {
-        return View(propietario);
-      }
-
-      repo.Modificar(propietario);
-      TempData["Success"] = "Propietario modificado correctamente.";
-      return RedirectToAction(nameof(Index));
-    }
 
     // baja logica
     [HttpPost]

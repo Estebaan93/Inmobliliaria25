@@ -1,3 +1,4 @@
+//wwwroot/js/inmueble.js
 document.addEventListener("DOMContentLoaded", function () {
 	const selEstado = document.getElementById("selectFiltroEstado");
 	const selPropietario = document.getElementById("selectFiltroPorPropietario");

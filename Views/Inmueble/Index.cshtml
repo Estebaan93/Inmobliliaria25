@@ -1,3 +1,4 @@
+<!-- Views/Inmueble/index.cshtml-->
 @model Inmobiliaria25.Models.InmuebleViewModel
 
 <h2 class="h2-tipos-background">Administrar Inmuebles</h2>
@@ -50,6 +51,33 @@
     <!-- se llena por AJAX -->
   </tbody>
 </table>
+
+<!-- 
+@if (ViewBag.TotalPages > 1) 
+{
+    <nav aria-label="Paginación de inmuebles">
+        <ul class="pagination">
+            <li class="page-item @(ViewBag.CurrentPage <= 1 ? "disabled" : "")">
+                <a class="page-link" href="@Url.Action("Index", new { page = ViewBag.CurrentPage - 1 })">Anterior</a>
+            </li> 
+
+            @for (int p = 1; p <= (int)ViewBag.TotalPages; p++)
+            {
+                <li class="page-item @(p == (int)ViewBag.CurrentPage ? "active" : "")">
+                    <a class="page-link" href="@Url.Action("Index", new { page = p })">@p</a>
+                </li> 
+            }
+
+            <li class="page-item @(ViewBag.CurrentPage >= ViewBag.TotalPages ? "disabled" : "")">
+                <a class="page-link" href="@Url.Action("Index", new { page = ViewBag.CurrentPage + 1 })">Siguiente</a>
+            </li>
+        </ul>
+    </nav> 
+} 
+-->
+
+
+
 @section Scripts {
   <script src="~/js/inmueble.js"></script>
 }

@@ -85,6 +85,30 @@
     }
   </tbody>
 </table>
+
+<!-- Para la paginacion-->
+@if (ViewBag.TotalPages != null && ViewBag.TotalPages > 1)
+{
+  <nav aria-label="Paginación de inquilinos">
+    <ul class="pagination">
+      <li class="page-item @(ViewBag.CurrentPage > 1 ? "" : "disabled")">
+        <a class="page-link" href="@Url.Action("Index", new { page = (int)ViewBag.CurrentPage - 1 })">« Anterior</a>
+      </li>
+
+      @for (int p = 1; p <= (int)ViewBag.TotalPages; p++)
+      {
+        <li class="page-item @(p == (int)ViewBag.CurrentPage ? "active" : "")">
+          <a class="page-link" href="@Url.Action("Index", new { page = p })">@p</a>
+        </li>
+      }
+
+      <li class="page-item @(ViewBag.CurrentPage < ViewBag.TotalPages ? "" : "disabled")">
+        <a class="page-link" href="@Url.Action("Index", new { page = (int)ViewBag.CurrentPage + 1 })">Siguiente »</a>
+      </li>
+    </ul>
+  </nav>
+}
+
 @section Scripts {
   <script src="~/js/site.js"></script>
 }
