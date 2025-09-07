@@ -164,6 +164,15 @@ public IActionResult Index(int page = 1)
 			return View(vm);
 		}
 
+    //Detalles
+    public IActionResult Detalle(int id){
+      var inmueble= _repoInmueble.Obtener(id);
+      if(inmueble== null)
+        return NotFound();
+
+      return View(inmueble);
+    }
+
 
 		// elimino con (AJAX con SweetAlert)
 		[HttpPost]

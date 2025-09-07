@@ -334,9 +334,7 @@ namespace Inmobiliaria25.Repositorios
 			using var conn = _context.GetConnection();
 			conn.Open();
 			string sql = @"
-        SELECT i.IdInmueble, i.Descripcion, i.Precio,
-               p.IdPropietario, p.Nombre, p.Apellido,
-               t.IdTipo, t.Observacion
+        SELECT i.IdInmueble, i.Descripcion, i.Precio, i.CantidadAmbientes, i.Cochera, i.UrlImagen, p.IdPropietario, p.Nombre, p.Apellido, t.IdTipo, t.Observacion
         FROM Inmueble i
         INNER JOIN Propietario p ON i.IdPropietario = p.IdPropietario
         INNER JOIN Tipo t ON i.IdTipo = t.IdTipo
@@ -351,6 +349,10 @@ namespace Inmobiliaria25.Repositorios
 					IdInmueble = reader.GetInt32("IdInmueble"),
 					Descripcion = reader.GetString("Descripcion"),
 					Precio = reader.GetDecimal("Precio"),
+					CantidadAmbientes= reader.GetInt32("CantidadAmbientes"),
+					Cochera= reader.GetBoolean("Cochera"),
+          UrlImagen= reader["UrlImagen"].ToString() ?? "",
+
 					propietario = new Propietarios
 					{
 						IdPropietario = reader.GetInt32("IdPropietario"),
