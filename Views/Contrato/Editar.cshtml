@@ -1,0 +1,54 @@
+@model Inmobiliaria25.Models.ContratoViewModel
+
+@{
+    ViewData["Title"] = "Editar Contrato";
+}
+
+<h2>Editar Contrato</h2>
+
+<form asp-action="Editar" method="post">
+    <input type="hidden" asp-for="Contrato.IdContrato" />
+
+    <div class="form-group">
+        <label asp-for="Contrato.IdInquilino" class="form-label">Inquilino</label>
+        <select asp-for="Contrato.IdInquilino" class="form-control"
+                asp-items="@(new SelectList(Model.Inquilinos, "IdInquilino", "Apellido", Model.Contrato.IdInquilino))">
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Contrato.IdInmueble" class="form-label">Inmueble</label>
+        <select asp-for="Contrato.IdInmueble" class="form-control"
+                asp-items="@(new SelectList(Model.Inmuebles, "IdInmueble", "Descripcion", Model.Contrato.IdInmueble))">
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Contrato.Monto" class="form-label">Monto</label>
+        <input asp-for="Contrato.Monto" class="form-control" />
+        <span asp-validation-for="Contrato.Monto" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Contrato.FechaInicio" class="form-label">Fecha Inicio</label>
+        <input asp-for="Contrato.FechaInicio" type="date" class="form-control" />
+        <span asp-validation-for="Contrato.FechaInicio" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Contrato.FechaFin" class="form-label">Fecha Fin</label>
+        <input asp-for="Contrato.FechaFin" type="date" class="form-control" />
+        <span asp-validation-for="Contrato.FechaFin" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Contrato.Estado" class="form-label">Estado</label>
+        <select asp-for="Contrato.Estado" class="form-control">
+            <option value="true">Vigente</option>
+            <option value="false">Anulado</option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-3">Actualizar</button>
+    <a asp-action="Index" class="btn btn-secondary mt-3">Cancelar</a>
+</form>
