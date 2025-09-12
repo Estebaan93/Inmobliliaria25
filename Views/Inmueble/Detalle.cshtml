@@ -1,55 +1,49 @@
 @model Inmobiliaria25.Models.Inmueble
 
 @{
-    ViewData["Title"] = "Detalles del Inmueble";
+  ViewData["Title"] = "Detalles del Inmueble";
 }
 
 <div class="container my-4">
-    <div class="card shadow-lg">
-        <img src="@(string.IsNullOrEmpty(Model.UrlImagen) ? Url.Content("~/img/no-image.jpg") : Model.UrlImagen)"
-             class="card-img-top"
-             style="max-height:400px; object-fit:cover;" />
+  <div class="card shadow-lg">
+    <img src="@(string.IsNullOrEmpty(Model.UrlImagen) ? Url.Content("~/img/no-image.jpg") : Model.UrlImagen)"
+      class="card-img-top" style="max-height:400px; object-fit:cover;" />
 
-        <div class="card-body">
-            <h3 class="card-title">@Model.tipo?.Observacion</h3>
-            <p class="card-text">@Model.Descripcion</p>
+    <div class="card-body">
+      <h3 class="card-title">@Model.tipo?.Observacion</h3>
+      <p class="card-text">@Model.Descripcion</p>
 
-            <ul class="list-group list-group-flush mb-3">
-                <li class="list-group-item"><strong>Precio:</strong> $@Model.Precio</li>
-                <li class="list-group-item"><strong>Ambientes:</strong> @Model.CantidadAmbientes</li>
-                <li class="list-group-item"><strong>Cochera:</strong> @(Model.Cochera ? "Sí" : "No")</li>
-                <li class="list-group-item"><strong>Piscina:</strong> @(Model.Piscina ? "Sí" : "No")</li>
-                <li class="list-group-item"><strong>Mascotas:</strong> @(Model.Mascotas ? "Sí" : "No")</li>
-                <li class="list-group-item"><strong>Metros cuadrados:</strong> @Model.Metros2 m²</li>
-                <li class="list-group-item">
-                    <strong>Dirección:</strong> @Model.direccion?.Calle @Model.direccion?.Altura,
-                    @Model.direccion?.Ciudad
-                </li>
-                <li class="list-group-item">
-                    <strong>Propietario:</strong> @Model.propietario?.Apellido, @Model.propietario?.Nombre
-                </li>
-            </ul>
-            <!-- Mapa de Google -->
-            @if (!string.IsNullOrEmpty(Model.direccion?.Coordenadas))
-            {
-                var coords = Model.direccion.Coordenadas.Replace(" ", "");
-                <div class="mt-4">
-                    <h5>Ubicación en el mapa</h5>
-                    <iframe
-                        width="100%"
-                        height="350"
-                        style="border:0"
-                        loading="lazy"
-                        allowfullscreen
-                        referrerpolicy="no-referrer-when-downgrade"
-                        src="https://maps.google.com/maps?q=@coords&hl=es&z=16&output=embed ">
-                    </iframe>
-                </div>
-            }
-
-
-
-            <a href="@Url.Action("Index","Home")" class="btn btn-secondary">Volver</a>
+      <ul class="list-group list-group-flush mb-3">
+        <li class="list-group-item"><strong>Precio:</strong> $@Model.Precio</li>
+        <li class="list-group-item"><strong>Ambientes:</strong> @Model.CantidadAmbientes</li>
+        <li class="list-group-item"><strong>Cochera:</strong> @(Model.Cochera ? "Sí" : "No")</li>
+        <li class="list-group-item"><strong>Piscina:</strong> @(Model.Piscina ? "Sí" : "No")</li>
+        <li class="list-group-item"><strong>Mascotas:</strong> @(Model.Mascotas ? "Sí" : "No")</li>
+        <li class="list-group-item"><strong>Metros cuadrados:</strong> @Model.Metros2 m²</li>
+        <li class="list-group-item">
+          <strong>Dirección:</strong> @Model.direccion?.Calle @Model.direccion?.Altura,
+          @Model.direccion?.Ciudad
+        </li>
+        <li class="list-group-item">
+          <strong>Propietario:</strong> @Model.propietario?.Apellido, @Model.propietario?.Nombre
+        </li>
+      </ul>
+      <!-- Mapa de Google -->
+      @if (!string.IsNullOrEmpty(Model.direccion?.Coordenadas))
+      {
+        var coords = Model.direccion.Coordenadas.Replace(" ", "");
+        <div class="mt-4">
+          <h5>Ubicación en el mapa</h5>
+          <iframe width="100%" height="350" style="border:0" loading="lazy" allowfullscreen
+            referrerpolicy="no-referrer-when-downgrade"
+            src="https://maps.google.com/maps?q=@coords&hl=es&z=16&output=embed ">
+          </iframe>
         </div>
+      }
+
+
+
+      <a href="@Url.Action("Index", "Home")" class="btn btn-secondary">Volver</a>
     </div>
+  </div>
 </div>

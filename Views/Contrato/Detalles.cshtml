@@ -3,53 +3,72 @@
 <h2 class="titulo-detalle">Detalles del Contrato</h2>
 
 <div class="card contrato-card">
-	<div class="contrato-content">
-		<div class="contrato-info">
-			<h4>📑 Contrato N° @Model.IdContrato</h4>
-			<p><b>👨‍👩‍👦 Inquilino:</b> @Model.inquilino?.Apellido @Model.inquilino?.Nombre</p>
-			<p><b>🧑‍💼 Propietario:</b> @Model.inmueble?.propietario?.Apellido @Model.inmueble?.propietario?.Nombre</p>
-			<p><b>🏠 Inmueble:</b> @Model.inmueble?.Descripcion</p>
-			<p><b>💰 Monto:</b> $@Model.Monto</p>
-			<p><b>📅 Fecha Inicio:</b> @Model.FechaInicio.ToString("dd/MM/yyyy")</p>
-			<p><b>📅 Fecha Fin:</b> @Model.FechaFin.ToString("dd/MM/yyyy")</p>
-			<p><b>📅 Fecha Anulación:</b> @(Model.FechaAnulacion?.ToString("dd/MM/yyyy") ?? "---")</p>
+  <div class="contrato-content">
+    <div class="contrato-info">
+      <h4>📑 Contrato N° @Model.IdContrato</h4>
+      <p><b>👨‍👩‍👦 Inquilino:</b> @Model.inquilino?.Apellido @Model.inquilino?.Nombre</p>
+      <p><b>🧑‍💼 Propietario:</b> @Model.inmueble?.propietario?.Apellido @Model.inmueble?.propietario?.Nombre</p>
+      <p><b>🏠 Inmueble:</b> @Model.inmueble?.Descripcion</p>
+      <p><b>💰 Monto:</b> $@Model.Monto</p>
+      <p><b>📅 Fecha Inicio:</b> @Model.FechaInicio.ToString("dd/MM/yyyy")</p>
+      <p><b>📅 Fecha Fin:</b> @Model.FechaFin.ToString("dd/MM/yyyy")</p>
+      <p><b>📅 Fecha Anulación:</b> @(Model.FechaAnulacion?.ToString("dd/MM/yyyy") ?? "---")</p>
 
-			<p><b>📑 Estado:</b>
-				@if (Model.FechaAnulacion.HasValue)
-				{
-					<span class="badge badge-anulado">Anulado</span>
-				}
-				else if (Model.FechaFin < DateTime.Today)
-				{
-					<span class="badge badge-finalizado">Finalizado</span>
-				}
-				else
-				{
-					<span class="badge badge-vigente">Vigente</span>
-				}
-			</p>
+      <p><b>📑 Estado:</b>
+        @if (Model.FechaAnulacion.HasValue)
+        {
+          <span class="badge badge-anulado">Anulado</span>
+        }
+        else if (Model.FechaFin < DateTime.Today)
+        {
+          <span class="badge badge-finalizado">Finalizado</span>
+        }
+        else
+        {
+          <span class="badge badge-vigente">Vigente</span>
+        }
+      </p>
 
-			<!-- anular cotrato -->
-			<div class="mt-3">
-				<form asp-action="Finalizar" asp-route-id="@Model.IdContrato" method="post" style="display:inline;">
-					<button type="submit" class="btn btn-outline-warning">
-						<i class="fa-solid fa-flag-checkered"></i> Anular Contrato
-					</button>
-				</form>
-			</div>
-		</div>
+            <!-- condicional -->
+            <div class="mt-3">
+                @if (!Model.FechaAnulacion.HasValue)
+                {
+                    <!-- buttonm con SweetAlert -->
+                    <form id="formAnularContrato" asp-action="Finalizar" asp-route-id="@Model.IdContrato" method="post">
+                    <button type="button" id="btnAnularContrato" class="btn btn-outline-warning" data-multa="@ViewBag.Multa"
+                        data-deuda="@ViewBag.Deuda" data-total="@ViewBag.TotalMulta">
+                        <i class="fa-solid fa-flag-checkered"></i> Anular Contrato
+                    </button>
 
-		@if (!string.IsNullOrEmpty(Model.inmueble?.UrlImagen))
-		{
-			<div class="contrato-img">
-				<img src="@Model.inmueble.UrlImagen" alt="Imagen del inmueble" />
-			</div>
-		}
-	</div>
+                    </form>
+                }
+                else
+                {
+                    <div class="alert alert-warning mt-2">
+                        Contrato anulado el @Model.FechaAnulacion?.ToString("dd/MM/yyyy")<br />
+                        Multa generada: $@ViewBag.Multa <br />
+                        Deuda acumulada: $@ViewBag.Deuda <br />
+                        <b>Total a pagar: $@ViewBag.TotalMulta</b>
+                    </div>
+                }
+            </div>
+
+        </div>
+
+        @if (!string.IsNullOrEmpty(Model.inmueble?.UrlImagen))
+        {
+            <div class="contrato-img">
+                <img src="@Model.inmueble.UrlImagen" alt="Imagen del inmueble" />
+            </div>
+        }
+    </div>
 </div>
 
 <a asp-action="Index" class="btn btn-secondary mt-3">Volver</a>
 
 @section Styles {
-	<link rel="stylesheet" href="~/css/contrato.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/contrato.css" asp-append-version="true" />
+}
+@section Scripts {
+    <script src="~/js/site.js"></script>
 }
