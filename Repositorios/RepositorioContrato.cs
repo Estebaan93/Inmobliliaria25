@@ -188,14 +188,22 @@ namespace Inmobiliaria25.Repositorios
 			return cmd.ExecuteNonQuery();
 		}
 
-		//Anular contrato
+		//Anular contrato + mulota
 		public int AnularContrato(int idContrato)
 		{
-			using var conn= _context.GetConnection();
+			using var conn = _context.GetConnection();
+			conn.Open();
 
+			string sql = @"UPDATE contrato 
+                   SET fechaAnulacion = @fechaAnulacion, 
+                       estado = false
+                   WHERE idContrato = @idContrato";
 
+			using var cmd = new MySqlCommand(sql, conn);
+			cmd.Parameters.AddWithValue("@fechaAnulacion", DateTime.Today);
+			cmd.Parameters.AddWithValue("@idContrato", idContrato);
 
-			return;
+			return cmd.ExecuteNonQuery();
 		}
 
 

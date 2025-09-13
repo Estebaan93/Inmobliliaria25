@@ -1,54 +1,54 @@
 @model List<Inmobiliaria25.Models.Usuario>
 @{
-  ViewData["Title"]= "Usuarios";
+  ViewData["Title"] = "Usuarios";
 }
 
 <h2 class="mb-3">Gestión de Usuarios</h2>
 
 <a class="btn btn-primary mb-3" href="/Usuario/Crear">
-    <i class="fa-solid fa-plus"></i> Crear Usuario
+  <i class="fa-solid fa-plus"></i> Crear Usuario
 </a>
 
 <table class="table table-striped table-hover table-bordered">
-    <thead class="table-dark">
-        <tr>
-            <th>Nombre</th>
-            <th>Apellido</th>
-            <th>Email</th>
-            <th>Rol</th>
-            <th>Avatar</th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach(var u in Model)
-        {
-            <tr>
-                <td>@u.Nombre</td>
-                <td>@u.Apellido</td>
-                <td>@u.Email</td>
-                <td>@u.Rol</td>
-                <td>
-                    @if (!string.IsNullOrEmpty(u.Avatar))
-                    {
-                        <img src="@u.Avatar" class="img-thumbnail" style="max-width:60px;" />
-                    }
-                </td>
-                <td>
-                    <a href="@Url.Action("Editar", "Usuario", new { id = u.IdUsuario })" class="btn btn-warning btn-sm mx-1">
-                        <i class="fa-solid fa-pen-to-square"></i>
-                    </a>
-                    <form asp-action="Borrar" method="post" style="display:inline;">
-                        <input type="hidden" name="idUsuario" value="@u.IdUsuario" />
-                        <button type="submit" class="btn btn-danger btn-sm mx-1">
-                            <i class="fa-solid fa-trash"></i>
-                        </button>
-                    </form>
-                    <a class="btn btn-info btn-sm mx-1" href="@Url.Action("Detalle", "Usuario", new { id = u.IdUsuario })">
-                        <i class="fa-solid fa-list"></i>
-                    </a>
-                </td>
-            </tr>
-        }
-    </tbody>
+  <thead class="table-dark">
+    <tr>
+      <th>Nombre</th>
+      <th>Apellido</th>
+      <th>Email</th>
+      <th>Rol</th>
+      <th>Avatar</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    @foreach (var u in Model)
+    {
+      <tr>
+        <td>@u.Nombre</td>
+        <td>@u.Apellido</td>
+        <td>@u.Email</td>
+        <td>@u.Rol</td>
+        <td>
+          @if (!string.IsNullOrEmpty(u.Avatar))
+          {
+            <img src="@u.Avatar" class="img-thumbnail" style="max-width:60px;" />
+          }
+        </td>
+        <td>
+          <a href="@Url.Action("Editar", "Usuario", new { id = u.IdUsuario })" class="btn btn-warning btn-sm mx-1">
+            <i class="fa-solid fa-pen-to-square"></i>
+          </a>
+          <form asp-action="Borrar" method="post" style="display:inline;">
+            <input type="hidden" name="idUsuario" value="@u.IdUsuario" />
+            <button type="submit" class="btn btn-danger btn-sm mx-1">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </form>
+          <a class="btn btn-info btn-sm mx-1" href="@Url.Action("Detalle", "Usuario", new { id = u.IdUsuario })">
+            <i class="fa-solid fa-list"></i>
+          </a>
+        </td>
+      </tr>
+    }
+  </tbody>
 </table>

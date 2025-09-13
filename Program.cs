@@ -17,8 +17,18 @@ builder.Services.AddScoped<RepositorioAuditoria>();
 builder.Services.AddScoped<RepositorioUsuario>();
 builder.Services.AddScoped<RepositorioLogin>();
 
+//Autenticacion cookies
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+  .AddCookie(options =>
+  {
+    options.LoginPath = "/Login/Index"; // si no está logueado redirige acá
+    options.LogoutPath = "/Login/Logout";
+    options.AccessDeniedPath = "/Home/AccessDenied";
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(60); // tiempo de sesión 
+  });
 
-// Add services to the container.
+
+// controlador con vistas
 builder.Services.AddControllersWithViews(); //CONTROLADOR
 
 
@@ -37,6 +47,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

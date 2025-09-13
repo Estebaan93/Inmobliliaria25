@@ -150,74 +150,72 @@ namespace Inmobiliaria25.Controllers
     }
 
     public IActionResult Detalles(int id)
-        {
-            var contrato = _repoContrato.Obtener(id);
-            if (contrato == null) return NotFound();
+    {
+      var contrato = _repoContrato.Obtener(id);
+      if (contrato == null) return NotFound();
 
-            // monto mensual
-            decimal montoMensual = (decimal)contrato.Monto;
+      // monto mensual
+      decimal montoMensual = (decimal)contrato.Monto;
 
-            // deuda hasta la fecha
-            decimal deuda = _repoPago.CalcularDeuda(contrato.IdContrato, (double)montoMensual, contrato.FechaInicio);
+      // deuda hasta la fecha
+      decimal deuda = _repoPago.CalcularDeuda(contrato.IdContrato, (double)montoMensual, contrato.FechaInicio);
 
-            // multa
-            int diasTotales = (contrato.FechaFin - contrato.FechaInicio).Days;
-            int diasTranscurridos = (DateTime.Today - contrato.FechaInicio).Days;
+      // multa
+      int diasTotales = (contrato.FechaFin - contrato.FechaInicio).Days;
+      int diasTranscurridos = (DateTime.Today - contrato.FechaInicio).Days;
 
-            decimal multa = (diasTranscurridos < diasTotales / 2) ? montoMensual * 2 : montoMensual;
+      decimal multa = (diasTranscurridos < diasTotales / 2) ? montoMensual * 2 : montoMensual;
 
-            decimal totalMulta = deuda + multa;
+      decimal totalMulta = deuda + multa;
 
-            // paso los datos
-            ViewBag.Multa = multa;
-            ViewBag.Deuda = deuda;
-            ViewBag.TotalMulta = totalMulta;
+      // paso los datos
+      ViewBag.Multa = multa;
+      ViewBag.Deuda = deuda;
+      ViewBag.TotalMulta = totalMulta;
 
-            return View(contrato);
-        }
+      return View(contrato);
+    }
 
-          [HttpPost]
-        public IActionResult Finalizar(int id)
-        {
-            var contrato = _repoContrato.Obtener(id);
-            if (contrato == null) return NotFound();
+    [HttpPost]
+    public IActionResult Finalizar(int id)
+    {
+      var contrato = _repoContrato.Obtener(id);
+      if (contrato == null) return NotFound();
 
-            //El monto del contrato es mensual
-            decimal montoMensual = (decimal)contrato.Monto;
+      //El monto del contrato es mensual
+      decimal montoMensual = (decimal)contrato.Monto;
 
-            //Calcular deuda de alquiler hasta hoy
-            decimal deuda = _repoPago.CalcularDeuda(id, (double)montoMensual, contrato.FechaInicio);
+      //Calcular deuda de alquiler hasta hoy
+      decimal deuda = _repoPago.CalcularDeuda(id, (double)montoMensual, contrato.FechaInicio);
 
-            //Calcular multa
-            int diasTotales = (contrato.FechaFin - contrato.FechaInicio).Days;
-            int diasTranscurridos = (DateTime.Today - contrato.FechaInicio).Days;
+      //Calcular multa
+      int diasTotales = (contrato.FechaFin - contrato.FechaInicio).Days;
+      int diasTranscurridos = (DateTime.Today - contrato.FechaInicio).Days;
 
-            decimal multa = diasTranscurridos < (diasTotales / 2)
-                ? montoMensual * 2   // menos de la mitad
-                : montoMensual;      // más de la mitad
+      decimal multa = diasTranscurridos < (diasTotales / 2)
+          ? montoMensual * 2   // menos de la mitad
+          : montoMensual;      // más de la mitad
 
-            //Total
-            decimal totalMulta = deuda + multa;
+      //Total
+      decimal totalMulta = deuda + multa;
 
-            //Anular contrato
-            _repoContrato.AnularContrato(id);
+      //Anular contrato
+      _repoContrato.AnularContrato(id);
 
-            //Registrar pago como pendiente
-            var pago = new Pago
-            {
-                IdContrato = id,
-                FechaPago = DateTime.Today,
-                Importe = totalMulta,
-                NumeroPago = "Multa",
-                Detalle = $"Multa por contrato anulado (incluye deuda: {deuda})",
-                Estado = false
-            };
-            _repoPago.CrearPagoSinValidacion(pago);
+      //Registrar pago como pendiente
+      var pago = new Pago
+      {
+        IdContrato = id,
+        FechaPago = DateTime.Today,
+        Importe = totalMulta,
+        NumeroPago = "Multa",
+        Detalle = $"Multa por contrato anulado (incluye deuda: {deuda})",
+        Estado = false
+      };
+      _repoPago.CrearPagoSinValidacion(pago);
 
-            TempData["Mensaje"] = $"Contrato N° {id} anulado. Multa: ${multa}, deuda: ${deuda}, total: ${totalMulta}.";
-            return RedirectToAction("Detalles", new { id });
-        }
-
-
+      TempData["Mensaje"] = $"Contrato N° {id} anulado. Multa: ${multa}, deuda: ${deuda}, total: ${totalMulta}.";
+      return RedirectToAction("Detalles", new { id });
+    }
   }
 }
