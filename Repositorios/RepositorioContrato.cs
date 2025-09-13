@@ -187,5 +187,17 @@ namespace Inmobiliaria25.Repositorios
 
 			return cmd.ExecuteNonQuery();
 		}
+
+		//Anular contrato
+		public int AnularContrato(int idContrato)
+		{
+			using var conn= _context.GetConnection();
+
+
+
+			return;
+		}
+
+
 	}
 }

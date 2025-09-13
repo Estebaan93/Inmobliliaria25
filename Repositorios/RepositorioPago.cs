@@ -98,5 +98,95 @@ namespace Inmobiliaria25.Repositorios
 			cmd.Parameters.AddWithValue("@idPago", idPago);
 			return cmd.ExecuteNonQuery();
 		}
+
+		//Pagos sin validacion
+		public int CrearPagoSinValidacion(Pago pago)
+		{
+			using var conn = _context.GetConnection();
+			conn.Open();
+			{
+
+				const string sql = @"
+            INSERT INTO pago 
+            (idContrato, fechaPago, importe, numeroPago, detalle, estado)
+            VALUES (@IdContrato, @FechaPago, @Importe, @NumeroPago, @Detalle, @Estado);
+            SELECT LAST_INSERT_ID();";
+
+				using (var cmd = new MySqlCommand(sql, conn))
+				{
+
+					cmd.Parameters.AddWithValue("@idContrato", pago.IdContrato);
+					cmd.Parameters.AddWithValue("@FechaPago", pago.FechaPago);
+					cmd.Parameters.AddWithValue("@Importe", pago.Importe);
+					cmd.Parameters.AddWithValue("@NumeroPago", pago.NumeroPago);
+					cmd.Parameters.AddWithValue("@Detalle", pago.Detalle);
+					cmd.Parameters.AddWithValue("@Estado", pago.Estado);
+
+					return Convert.ToInt32(cmd.ExecuteScalar());
+				}
+			}
+		}
+
+
+		public Pago ObtenerMultaPorContrato(int idContrato)
+		{
+			Pago pago = null;
+			using var conn = _context.GetConnection();
+			conn.Open();
+
+			string sql = @"SELECT * FROM pago 
+                   WHERE idContrato = @idContrato 
+                   AND numeroPago = 'Multa' 
+                   ORDER BY fechaPago DESC LIMIT 1";
+
+			using var cmd = new MySqlCommand(sql, conn);
+			cmd.Parameters.AddWithValue("@idContrato", idContrato);
+
+			using var reader = cmd.ExecuteReader();
+			if (reader.Read())
+			{
+				pago = new Pago
+				{
+					IdPago = reader.GetInt32("idPago"),
+					IdContrato = reader.GetInt32("idContrato"),
+					FechaPago = reader.GetDateTime("fechaPago"),
+					Importe = reader.GetDecimal("importe"),
+					NumeroPago = reader.GetString("numeroPago"),
+					Detalle = reader.GetString("detalle"),
+					Estado = reader.GetBoolean("estado")
+				};
+			}
+
+			return pago;
+		}
+
+		public decimal CalcularDeuda(int idContrato, double montoMensual, DateTime fechaInicio)
+		{
+			decimal totalPagado = 0;
+
+			using var conn = _context.GetConnection();
+			conn.Open();
+
+			string sql = @"SELECT IFNULL(SUM(importe), 0) 
+                   FROM pago 
+                   WHERE idContrato = @idContrato AND estado = 1";
+
+			using var cmd = new MySqlCommand(sql, conn);
+			cmd.Parameters.AddWithValue("@idContrato", idContrato);
+
+			totalPagado = Convert.ToDecimal(cmd.ExecuteScalar());
+
+			// calcular meses transcurridos hasta HOY
+			int mesesTranscurridos = ((DateTime.Today.Year - fechaInicio.Year) * 12)
+														 + DateTime.Today.Month - fechaInicio.Month + 1;
+
+			decimal totalEsperado = (decimal)montoMensual * mesesTranscurridos;
+
+			// deuda = lo que debería haber pagado – lo que efectivamente pagó
+			decimal deuda = totalEsperado - totalPagado;
+
+			return deuda < 0 ? 0 : deuda;
+		}
+
 	}
 }

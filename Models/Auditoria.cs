@@ -9,6 +9,8 @@ public class Auditoria
   [Required]
   public int IdUsuario { get; set; }
 
+  public Usuario Usuario { get; set; }
+
   [Required]
   public string Accion { get; set; } = string.Empty;
 

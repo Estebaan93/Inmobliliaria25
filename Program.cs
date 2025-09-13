@@ -1,5 +1,6 @@
 using Inmobiliaria25.Db;
 using Inmobiliaria25.Repositorios;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,7 +13,9 @@ builder.Services.AddScoped<RepositorioTipo>();
 builder.Services.AddScoped<RepositorioDireccion>();
 builder.Services.AddScoped<RepositorioContrato>();
 builder.Services.AddScoped<RepositorioPago>();
-//builder.Services.AddTransient<RepositorioContrato>();
+builder.Services.AddScoped<RepositorioAuditoria>();
+builder.Services.AddScoped<RepositorioUsuario>();
+builder.Services.AddScoped<RepositorioLogin>();
 
 
 // Add services to the container.
