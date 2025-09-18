@@ -28,6 +28,7 @@ namespace Inmobiliaria25.Controllers
     }
 
     //  Crear (GET)
+    [Authorize(Policy = "Administrador")]
     public IActionResult Crear()
     {
       return View(new Usuario());
@@ -60,6 +61,12 @@ namespace Inmobiliaria25.Controllers
       var usuario = _repo.Obtener(id);
       if (usuario == null) return NotFound();
 
+      //Obt rol del usuario actual
+      var userRol = User.FindFirst(ClaimTypes.Role)?.Value;
+      var puedeEditarRol = userRol == "Administrador";
+
+      ViewBag.PuedeEditarRol = puedeEditarRol;
+
       var vm = new UsuarioEditar
       {
         IdUsuario = usuario.IdUsuario,
@@ -80,6 +87,15 @@ namespace Inmobiliaria25.Controllers
 
       var usuario = _repo.Obtener(vm.IdUsuario);
       if (usuario == null) return NotFound();
+
+      //Obt rol del usuario actual
+      var userRol = User.FindFirst(ClaimTypes.Role)?.Value;
+      var esAdministrador = userRol == "Administrador";
+
+      //Si no es adm mantiene el rol
+      if (!esAdministrador) {
+        vm.Rol = usuario.Rol;
+      }
 
       usuario.Nombre = vm.Nombre;
       usuario.Apellido = vm.Apellido;

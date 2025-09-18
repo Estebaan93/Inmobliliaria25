@@ -2,6 +2,7 @@
 @model Inmobiliaria25.Models.UsuarioEditar
 @{
   ViewData["Title"] = "Editar Usuario";
+  var puedeEditarRol = ViewBag.PuedeEditarRol as bool? ?? false;
 }
 
 <h2 class="mb-3">Editar Usuario</h2>
@@ -24,13 +25,25 @@
     <input asp-for="Email" class="form-control" />
     <span asp-validation-for="Email" class="text-danger"></span>
   </div>
-  <div class="form-group mb-3">
-    <label asp-for="Rol"></label>
-    <select asp-for="Rol" class="form-control">
-      <option value="Administrador">Administrador</option>
-      <option value="Empleado">Empleado</option>
-    </select>
-  </div>
+  @if (puedeEditarRol)
+  {
+    <div class="form-group mb-3">
+      <label asp-for="Rol"></label>
+      <select asp-for="Rol" class="form-control">
+        <option value="Administrador">Administrador</option>
+        <option value="Empleado">Empleado</option>
+      </select>
+    </div>
+  }
+  else
+  {
+    <input type="hidden" asp-for="Rol" />
+    <div class="form-group mb-3">
+      <label>Rol</label>
+      <input type="text" class="form-control" value="@Model.Rol" disabled style="background-color: #f8f9fa; color: #7d6c6c;"/>
+      <small class="text-muted" style="color: #c02626 !important;">Solo los administradores pueden modificar el rol</small>
+    </div>
+  }
   <div class="form-group mb-3">
     <label>Avatar</label>
     @if (!string.IsNullOrEmpty(Model.Avatar))

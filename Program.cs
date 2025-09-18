@@ -29,11 +29,13 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     options.ExpireTimeSpan = TimeSpan.FromMinutes(60); // tiempo de sesión 
   });
 
-//Politicsa de autorizaxion
+//Politicsa de autorizaxion administradores
   builder.Services.AddAuthorization(options=>{
+    //solo administradores
     options.AddPolicy("Administrador", policy=>
       policy.RequireClaim(ClaimTypes.Role, "Administrador"));
   });
+
 
 
 // controlador con vistas
