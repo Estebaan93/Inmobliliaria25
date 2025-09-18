@@ -1,9 +1,16 @@
+//Controllers/UsuarioController.cs
 using Inmobiliaria25.Models;
 using Inmobiliaria25.Repositorios;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Security.Claims;
+
 
 namespace Inmobiliaria25.Controllers
 {
+  [Authorize] //todas las acciones requieren autenticacion
   public class UsuarioController : Controller
   {
     private readonly RepositorioUsuario _repo;

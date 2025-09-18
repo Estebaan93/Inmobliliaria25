@@ -1,3 +1,4 @@
+//Repositorios/RepositorioUsuario.cs
 using Inmobiliaria25.Db;
 using MySql.Data.MySqlClient;
 using Inmobiliaria25.Models;
@@ -21,6 +22,11 @@ namespace Inmobiliaria25.Repositorios
       using var conn = _context.GetConnection();
       conn.Open();
 
+      //Definimos un avatar por defecto
+      string avatar= string.IsNullOrEmpty(usuario.Avatar)
+        ? "img/avatars/default.jpg"
+        : usuario.Avatar;
+
       string sql = @"
                 INSERT INTO usuario (email, password, rol, avatar, nombre, apellido, estado)
                 VALUES (@EmailUsuario, @PasswordUsuario, @RolUsuario, @AvatarUsuario, 
@@ -31,7 +37,7 @@ namespace Inmobiliaria25.Repositorios
       cmd.Parameters.AddWithValue("@EmailUsuario", usuario.Email);
       cmd.Parameters.AddWithValue("@PasswordUsuario", Encriptar(usuario.Password));
       cmd.Parameters.AddWithValue("@RolUsuario", usuario.Rol);
-      cmd.Parameters.AddWithValue("@AvatarUsuario", (object)usuario.Avatar ?? DBNull.Value);
+      cmd.Parameters.AddWithValue("@AvatarUsuario", avatar);
       cmd.Parameters.AddWithValue("@NombreUsuario", usuario.Nombre);
       cmd.Parameters.AddWithValue("@ApellidoUsuario", usuario.Apellido);
       cmd.Parameters.AddWithValue("@EstadoUsuario", true);
@@ -116,6 +122,11 @@ namespace Inmobiliaria25.Repositorios
       using var conn = _context.GetConnection();
       conn.Open();
 
+      //Definimos avatar por defecto si no se proporciona uno
+      string avatar= string.IsNullOrEmpty(usuario.Avatar)
+        ? "img/avatars/default.jpg"
+        : usuario.Avatar;
+
       string sql = @"UPDATE usuario 
                            SET email=@EmailUsuario, rol=@RolUsuario, avatar=@AvatarUsuario, 
                                nombre=@NombreUsuario, apellido=@ApellidoUsuario";
@@ -133,7 +144,7 @@ namespace Inmobiliaria25.Repositorios
         cmd.Parameters.AddWithValue("@PasswordUsuario", Encriptar(nuevaPassword));
 
       cmd.Parameters.AddWithValue("@RolUsuario", usuario.Rol);
-      cmd.Parameters.AddWithValue("@AvatarUsuario", (object)usuario.Avatar ?? DBNull.Value);
+      cmd.Parameters.AddWithValue("@AvatarUsuario", avatar);
       cmd.Parameters.AddWithValue("@NombreUsuario", usuario.Nombre);
       cmd.Parameters.AddWithValue("@ApellidoUsuario", usuario.Apellido);
       cmd.Parameters.AddWithValue("@IdUsuario", usuario.IdUsuario);

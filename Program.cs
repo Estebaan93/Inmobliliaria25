@@ -1,5 +1,6 @@
 using Inmobiliaria25.Db;
 using Inmobiliaria25.Repositorios;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,6 +28,12 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     options.ExpireTimeSpan = TimeSpan.FromMinutes(60); // tiempo de sesión 
   });
 
+//Politicsa de autorizaxion
+  builder.Services.AddAuthorization(options=>{
+    options.AddPolicy("Administrador", policy=>
+      policy.RequireClaim(ClaimTypes.Role, "Administrador"));
+  });
+
 
 // controlador con vistas
 builder.Services.AddControllersWithViews(); //CONTROLADOR
@@ -47,6 +54,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+//El orden en este sentido
 app.UseAuthentication();
 app.UseAuthorization();
 
