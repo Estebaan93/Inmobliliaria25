@@ -1,3 +1,4 @@
+//Models/InmuebleFormViewModel.cs
 namespace Inmobiliaria25.Models
 {
 	public class InmuebleFormViewModel

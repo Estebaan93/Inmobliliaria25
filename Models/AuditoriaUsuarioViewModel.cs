@@ -1,3 +1,4 @@
+//Models/AuditoriaUsuarioViewModel.cs
 using System.Collections.Generic;
 
 namespace Inmobiliaria25.Models

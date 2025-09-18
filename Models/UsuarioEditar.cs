@@ -1,3 +1,4 @@
+//Models/UsuarioEditar.cs
 using System.ComponentModel.DataAnnotations;
 namespace Inmobiliaria25.Models
 {

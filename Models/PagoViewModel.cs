@@ -1,3 +1,4 @@
+//Models/PagoViewModel.cs
 namespace Inmobiliaria25.Models
 {
 	public class PagoViewModel

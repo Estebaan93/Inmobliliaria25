@@ -1,3 +1,4 @@
+//Controllers/InquilinoController.cs
 using Inmobiliaria25.Models;
 using Inmobiliaria25.Repositorios;
 using Microsoft.AspNetCore.Mvc;
@@ -17,9 +18,9 @@ namespace Inmobiliaria25.Controllers
       this.repo = repo;
     }
 
-       //Listar activos (paginado)
+    //Listar activos (paginado)
 
-        public IActionResult Index(int page = 1)
+    public IActionResult Index(int page = 1)
     {
       const int pageSize = 5;
 
@@ -52,56 +53,56 @@ namespace Inmobiliaria25.Controllers
       return View();
     }
 
-     [HttpPost]
-        public IActionResult Guardar(Inquilinos inquilino)
+    [HttpPost]
+    public IActionResult Guardar(Inquilinos inquilino)
+    {
+      try
+      {
+
+        if (!ModelState.IsValid)
         {
-            try
-            {
 
-                if (!ModelState.IsValid)
-                {
-
-                    if (inquilino.IdInquilino > 0)
-                    {
-                        return View("Editar", inquilino);
-                    }
-                    return View("Crear", inquilino);
-                }
-
-
-                if (inquilino.IdInquilino > 0)
-                {
-                    // EDItAR // consulta al repo si hay otro inq con ese dni aparte del que se edita
-                    if (repo.ObtenerPorDni(inquilino.Dni, inquilino.IdInquilino))
-                    {
-                        ModelState.AddModelError("Dni", "El DNI ya está registrado");
-                        return View("Editar", inquilino);
-                    }
-
-                    repo.Modificar(inquilino);
-                    TempData["Mensaje"] = "Inquilino modificado con éxito";
-                }
-                else
-                {
-                    // CREAR // consulta al repo si hay un inqu con ese dni
-                    if (repo.ObtenerPorDni(inquilino.Dni))
-                    {
-                        ModelState.AddModelError("Dni", "El DNI ya está registrado. Revise la tabla de propietarios.");
-                        return View("Crear", inquilino);
-                    }
-
-                    repo.Alta(inquilino);
-                    TempData["Mensaje"] = "Inquilino creado con éxito";
-                }
-
-                return RedirectToAction("Index");
-            }
-            catch (Exception ex)
-            {
-                TempData["Error"] = ex.Message;
-                return RedirectToAction("Index");
-            }
+          if (inquilino.IdInquilino > 0)
+          {
+            return View("Editar", inquilino);
+          }
+          return View("Crear", inquilino);
         }
+
+
+        if (inquilino.IdInquilino > 0)
+        {
+          // EDItAR // consulta al repo si hay otro inq con ese dni aparte del que se edita
+          if (repo.ObtenerPorDni(inquilino.Dni, inquilino.IdInquilino))
+          {
+            ModelState.AddModelError("Dni", "El DNI ya está registrado");
+            return View("Editar", inquilino);
+          }
+
+          repo.Modificar(inquilino);
+          TempData["Mensaje"] = "Inquilino modificado con éxito";
+        }
+        else
+        {
+          // CREAR // consulta al repo si hay un inqu con ese dni
+          if (repo.ObtenerPorDni(inquilino.Dni))
+          {
+            ModelState.AddModelError("Dni", "El DNI ya está registrado. Revise la tabla de propietarios.");
+            return View("Crear", inquilino);
+          }
+
+          repo.Alta(inquilino);
+          TempData["Mensaje"] = "Inquilino creado con éxito";
+        }
+
+        return RedirectToAction("Index");
+      }
+      catch (Exception ex)
+      {
+        TempData["Error"] = ex.Message;
+        return RedirectToAction("Index");
+      }
+    }
 
     // editar (GET)
     // cuando hago click

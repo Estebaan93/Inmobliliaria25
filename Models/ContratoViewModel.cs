@@ -1,3 +1,4 @@
+//Models/ContratoViewModel.cs
 using System.ComponentModel.DataAnnotations;
 using Inmobiliaria25.Models;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;

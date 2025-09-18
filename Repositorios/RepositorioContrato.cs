@@ -1,3 +1,4 @@
+//Repositorio/RepositorioContrato.cs
 using Inmobiliaria25.Db;
 using MySql.Data.MySqlClient;
 using Inmobiliaria25.Models;

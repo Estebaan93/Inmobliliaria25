@@ -1,3 +1,4 @@
+//Repositorio/RepositorioPago.cs
 using Inmobiliaria25.Db;
 using Inmobiliaria25.Models;
 using MySql.Data.MySqlClient;

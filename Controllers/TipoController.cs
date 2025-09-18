@@ -1,4 +1,4 @@
-//tipocontroller
+////Controllers/TipoController.cs
 using Inmobiliaria25.Models;
 using Inmobiliaria25.Repositorios;
 using Microsoft.AspNetCore.Mvc;
