@@ -9,7 +9,7 @@ namespace Inmobiliaria25.Repositorios
     {
         private readonly DataContext _context;
         private readonly RepositorioUsuario _repoUsuario;
-        
+
         public RepositorioAuditoria(DataContext context)
         {
             _context = context;
@@ -58,7 +58,7 @@ namespace Inmobiliaria25.Repositorios
         }
 
         // Listar auditorías por tipo de entidad y ID de entidad
-        public List<Auditoria> ListarPorEntidad(string tipoEntidad, int idEntidad)
+        public List<Auditoria> ListarPorEntidad(TipoEntidad tipoEntidad, int idEntidad)
         {
             var auditorias = new List<Auditoria>();
 
@@ -67,7 +67,7 @@ namespace Inmobiliaria25.Repositorios
 
             string sql = "SELECT * FROM auditoria WHERE tipoEntidad = @tipoEntidad AND idEntidad = @idEntidad ORDER BY fechaYHora DESC";
             using var cmd = new MySqlCommand(sql, conn);
-            cmd.Parameters.AddWithValue("@tipoEntidad", tipoEntidad);
+            cmd.Parameters.AddWithValue("@tipoEntidad", tipoEntidad.ToString());
             cmd.Parameters.AddWithValue("@idEntidad", idEntidad);
 
             using var reader = cmd.ExecuteReader();
@@ -114,8 +114,8 @@ namespace Inmobiliaria25.Repositorios
 
             using var cmd = new MySqlCommand(sql, conn);
             cmd.Parameters.AddWithValue("@IdEntidad", auditoria.IdEntidad);
-            cmd.Parameters.AddWithValue("@TipoEntidad", auditoria.TipoEntidad);
-            cmd.Parameters.AddWithValue("@Accion", auditoria.Accion);
+            cmd.Parameters.AddWithValue("@TipoEntidad", auditoria.TipoEntidad.ToString());
+            cmd.Parameters.AddWithValue("@Accion", auditoria.Accion.ToString());
             cmd.Parameters.AddWithValue("@IdUsuario", auditoria.IdUsuario);
             cmd.Parameters.AddWithValue("@Observacion", (object)auditoria.Observacion ?? DBNull.Value);
             cmd.Parameters.AddWithValue("@FechaYHora", auditoria.FechaYHora);
@@ -127,7 +127,7 @@ namespace Inmobiliaria25.Repositorios
         }
 
         // Método auxiliar para registrar auditorías fácilmente
-        public int RegistrarAuditoria(int idEntidad, string tipoEntidad, string accion, int idUsuario, string? observacion = null)
+        public int RegistrarAuditoria(int idEntidad, TipoEntidad tipoEntidad, AccionAuditoria accion, int idUsuario, string? observacion = null)
         {
             var auditoria = new Auditoria
             {
@@ -153,9 +153,10 @@ namespace Inmobiliaria25.Repositorios
             {
                 IdAuditoria = reader.GetInt32("idAuditoria"),
                 IdEntidad = reader.GetInt32("idEntidad"),
-                TipoEntidad = reader.GetString("tipoEntidad"),
-                Accion = reader.GetString("accion"),
+                TipoEntidad = Enum.Parse<TipoEntidad>(reader.GetString("tipoEntidad")),
+                Accion = Enum.Parse<AccionAuditoria>(reader.GetString("accion")),
                 IdUsuario = idUsuario,
+                Usuario = usuario,
                 Observacion = reader.IsDBNull(reader.GetOrdinal("observacion")) ? null : reader.GetString("observacion"),
                 FechaYHora = reader.GetDateTime("fechaYHora"),
                 Estado = reader.GetBoolean("estado")

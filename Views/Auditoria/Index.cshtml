@@ -1,47 +1,203 @@
 <!-- Views/ Auditoria/index.cshtml-->
 @model Inmobiliaria25.Models.AuditoriaUsuarioViewModel
 
-<h2>Auditoría</h2>
+@{
+    ViewData["Title"] = "Auditoría del Sistema";
+}
 
-<form asp-action="Index" method="get" class="mb-3">
-  <select class="form-select" name="idUsuario" onchange="this.form.submit()">
-    <option value="">-- Filtrar por usuario --</option>
-    @foreach (var u in Model.Usuarios)
-    {
-      <option value="@u.IdUsuario">@u.Apellido @u.Nombre</option>
-    }
-  </select>
-</form>
+<h2>Auditoría del Sistema</h2>
 
-<table class="table table-even-columns table-striped table-hover table-bordered">
-  <thead class="table-dark">
-    <tr>
-      <th>Nro</th>
-      <th>Usuario</th>
-      <th>Acción</th>
-      <th>Observación</th>
-      <th>Fecha y hora</th>
-    </tr>
-  </thead>
-  <tbody>
-    @if (Model.Auditorias.Count > 0)
-    {
-      foreach (var a in Model.Auditorias)
-      {
-        <tr>
-          <td>@a.IdAuditoria</td>
-          <td>@a.Usuario.Apellido @a.Usuario.Nombre</td>
-          <td>@a.Accion</td>
-          <td>@a.Observacion</td>
-          <td>@a.FechaYHora</td>
-        </tr>
-      }
-    }
-    else
-    {
-      <tr>
-        <td colspan="5" class="text-center">No existen auditorías para este usuario.</td>
-      </tr>
-    }
-  </tbody>
-</table>
+<!-- Filtros -->
+<div class="card mb-4">
+    <div class="card-header bg-primary text-white">
+        <i class="fas fa-filter"></i> Filtros
+    </div>
+    <div class="card-body">
+        <form asp-action="Index" method="get" class="row g-3">
+            <div class="col-md-4">
+                <label class="form-label">Filtrar por usuario:</label>
+                <select class="form-select" name="idUsuario" onchange="this.form.submit()">
+                    <option value="">-- Todos los usuarios --</option>
+                    @foreach (var u in Model.Usuarios)
+                    {
+                        <option value="@u.IdUsuario" selected="@(Context.Request.Query["idUsuario"] == u.IdUsuario.ToString() ? "selected" : null)">
+                            @u.Apellido @u.Nombre
+                        </option>
+                    }
+                </select>
+            </div>
+            
+            <div class="col-md-4">
+                <label class="form-label">Filtrar por tipo:</label>
+                <select class="form-select" name="tipoEntidad" onchange="this.form.submit()">
+                    <option value="">-- Todos los tipos --</option>
+                    <option value="contrato" selected="@(Context.Request.Query["tipoEntidad"] == "contrato" ? "selected" : null)">Contratos</option>
+                    <option value="pago" selected="@(Context.Request.Query["tipoEntidad"] == "pago" ? "selected" : null)">Pagos</option>
+                </select>
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label">ID de entidad:</label>
+                <div class="input-group">
+                    <input type="number" class="form-control" name="idEntidad" value="@Context.Request.Query["idEntidad"]" placeholder="ID específico">
+                    <button type="submit" class="btn btn-outline-secondary">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Información del filtro aplicado -->
+@if (!string.IsNullOrEmpty(ViewBag.Filtro as string))
+{
+    <div class="alert alert-info">
+        <i class="fas fa-info-circle"></i> @ViewBag.Filtro
+    </div>
+}
+
+<!-- Tabla de auditorías -->
+<div class="card">
+    <div class="card-header bg-dark text-white">
+        <i class="fas fa-history"></i> Registros de Auditoría
+        <span class="badge bg-secondary float-end">@Model.Auditorias.Count registros</span>
+    </div>
+    
+    <div class="table-responsive">
+        <table class="table table-striped table-hover table-bordered mb-0">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Entidad</th>
+                    <th>Usuario</th>
+                    <th>Acción</th>
+                    <th>Observación</th>
+                    <th>Fecha y Hora</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Auditorias.Count > 0)
+                {
+                    foreach (var a in Model.Auditorias)
+                    {
+                        <tr>
+                            <td>@a.IdAuditoria</td>
+                            <td>
+                                <span class="badge bg-info">@a.TipoEntidad.ToString().ToUpper()</span> <!-- Corregido: .ToString() -->
+                                <br>
+                                <small>ID: @a.IdEntidad</small>
+                            </td>
+                            <td>
+                                @if (a.Usuario != null)
+                                {
+                                    <text>@a.Usuario.Apellido @a.Usuario.Nombre</text>
+                                    <br>
+                                    <small class="text-muted">(@a.Usuario.Rol)</small>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">Usuario no encontrado</span>
+                                }
+                            </td>
+                            <td>
+                                @{
+                                    var badgeClass = a.Accion.ToString().ToLower() switch // Corregido: .ToString()
+                                    {
+                                        "crear" => "bg-success",
+                                        "terminar" => "bg-warning", 
+                                        "anular" => "bg-danger",
+                                        _ => "bg-secondary"
+                                    };
+                                    var accionTexto = a.Accion.ToString().ToLower() switch // Corregido: .ToString()
+                                    {
+                                        "crear" => "CREACIÓN",
+                                        "terminar" => "TERMINACIÓN",
+                                        "anular" => "ANULACIÓN",
+                                        _ => a.Accion.ToString().ToUpper()
+                                    };
+                                }
+                                <span class="badge @badgeClass">@accionTexto</span>
+                            </td>
+                            <td>@(a.Observacion ?? "Sin observaciones")</td>
+                            <td>@a.FechaYHora.ToString("dd/MM/yyyy HH:mm:ss")</td>
+                            <td>
+                                @if (a.Estado)
+                                {
+                                    <span class="badge bg-success">Activo</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">Inactivo</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="7" class="text-center py-4">
+                            <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                            <br>
+                            <span class="text-muted">No se encontraron registros de auditoría</span>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Paginación (opcional para muchos registros) -->
+@if (Model.Auditorias.Count > 50)
+{
+    <nav aria-label="Page navigation" class="mt-3">
+        <ul class="pagination justify-content-center">
+            <li class="page-item disabled">
+                <a class="page-link" href="#" tabindex="-1">Anterior</a>
+            </li>
+            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item">
+                <a class="page-link" href="#">Siguiente</a>
+            </li>
+        </ul>
+    </nav>
+}
+
+@section Scripts {
+    <script>
+        // Mantener los valores seleccionados en los filtros
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            
+            // Seleccionar opciones en los dropdowns
+            const selects = document.querySelectorAll('select');
+            selects.forEach(select => {
+                const paramName = select.getAttribute('name');
+                const paramValue = urlParams.get(paramName);
+                if (paramValue) {
+                    select.value = paramValue;
+                }
+            });
+        });
+    </script>
+}
+
+@section Styles {
+    <style>
+        .table th {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        .badge {
+            font-size: 0.75em;
+        }
+        .card-header {
+            font-weight: 600;
+        }
+    </style>
+}
