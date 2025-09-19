@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Security.Claims;
+using System.Data;
 
 
 namespace Inmobiliaria25.Controllers
@@ -64,8 +65,14 @@ namespace Inmobiliaria25.Controllers
       //Obt rol del usuario actual
       var userRol = User.FindFirst(ClaimTypes.Role)?.Value;
       var puedeEditarRol = userRol == "Administrador";
+      var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+      // Usuarios solo pueden editar su propio nombre si son administradores
+      var puedeEditarNombre = puedeEditarRol || (currentUserId != id.ToString());
+
 
       ViewBag.PuedeEditarRol = puedeEditarRol;
+      ViewBag.puedeEditarNombre = puedeEditarNombre;
 
       var vm = new UsuarioEditar
       {
@@ -79,9 +86,11 @@ namespace Inmobiliaria25.Controllers
       return View(vm);
     }
 
+
+
     // Editar (POST)
     [HttpPost]
-    public IActionResult GuardarEditar(UsuarioEditar vm)
+    public async Task<IActionResult> GuardarEditar(UsuarioEditar vm)
     {
       if (!ModelState.IsValid) return View("Editar", vm);
 
@@ -91,10 +100,19 @@ namespace Inmobiliaria25.Controllers
       //Obt rol del usuario actual
       var userRol = User.FindFirst(ClaimTypes.Role)?.Value;
       var esAdministrador = userRol == "Administrador";
+      var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-      //Si no es adm mantiene el rol
-      if (!esAdministrador) {
-        vm.Rol = usuario.Rol;
+      //Si no es adm mantiene datos sensibles
+      if (!esAdministrador && currentUserId == vm.IdUsuario.ToString())
+      {
+        vm.Rol = usuario.Rol; //
+        if (currentUserId == vm.IdUsuario.ToString())
+        {
+          vm.Nombre = usuario.Nombre; //Mantiene su nombre
+          vm.Apellido = usuario.Apellido; //appelid
+        }
+
+
       }
 
       usuario.Nombre = vm.Nombre;
@@ -117,8 +135,39 @@ namespace Inmobiliaria25.Controllers
       }
 
       _repo.Actualizar(usuario);
-      return RedirectToAction("Index", "Home");
+
+      //Actualizar los claims del usuario para el avatar
+      if (User.FindFirst(ClaimTypes.NameIdentifier)?.Value == vm.IdUsuario.ToString())
+      {
+        var identity = User.Identity as ClaimsIdentity;
+
+        // Crear una nueva identidad con los claims actualizados
+        var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.NameIdentifier, usuario.IdUsuario.ToString()),
+            new Claim(ClaimTypes.Name, $"{usuario.Nombre} {usuario.Apellido}"),
+            new Claim(ClaimTypes.Email, usuario.Email),
+            new Claim(ClaimTypes.Role, usuario.Rol),
+            new Claim("AvatarUrl", usuario.Avatar ?? "/img/avatars/default.jpg")
+        };
+
+        var newIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+        // Cerrar sesión actual y volver a autenticar con los nuevos claims
+        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        await HttpContext.SignInAsync(
+            CookieAuthenticationDefaults.AuthenticationScheme,
+            new ClaimsPrincipal(newIdentity),
+            new AuthenticationProperties
+            {
+              IsPersistent = true,
+              ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(60)
+            });
+      }
+      return RedirectToAction("Index", "Home", new { t = DateTime.Now.Ticks });
     }
+
+
 
     //  Detalle
     public IActionResult Detalle(int id)

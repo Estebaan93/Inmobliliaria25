@@ -3,6 +3,7 @@
 @{
   ViewData["Title"] = "Editar Usuario";
   var puedeEditarRol = ViewBag.PuedeEditarRol as bool? ?? false;
+  var puedeEditarNombre = ViewBag.PuedeEditarNombre as bool? ?? true;
 }
 
 <h2 class="mb-3">Editar Usuario</h2>
@@ -10,16 +11,36 @@
 <form asp-action="GuardarEditar" method="post" enctype="multipart/form-data">
   <input type="hidden" asp-for="IdUsuario" />
 
-  <div class="form-group mb-3">
-    <label asp-for="Nombre"></label>
-    <input asp-for="Nombre" class="form-control" />
-    <span asp-validation-for="Nombre" class="text-danger"></span>
-  </div>
-  <div class="form-group mb-3">
-    <label asp-for="Apellido"></label>
-    <input asp-for="Apellido" class="form-control" />
-    <span asp-validation-for="Apellido" class="text-danger"></span>
-  </div>
+  @if (puedeEditarNombre)
+  {
+    <div class="form-group mb-3">
+      <label asp-for="Nombre"></label>
+      <input asp-for="Nombre" class="form-control" />
+      <span asp-validation-for="Nombre" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-3">
+      <label asp-for="Apellido"></label>
+      <input asp-for="Apellido" class="form-control" />
+      <span asp-validation-for="Apellido" class="text-danger"></span>
+    </div>
+  }
+  else
+  {
+    <input type="hidden" asp-for="Nombre" />
+    <input type="hidden" asp-for="Apellido" />
+    <div class="form-group mb-3">
+      <label>Nombre</label>
+      <input type="text" class="form-control" value="@Model.Nombre" disabled
+        style="background-color: #f8f9fa; color: #7d6c6c;" />
+
+    </div>
+    <div class="form-group mb-3">
+      <label>Apellido</label>
+      <input type="text" class="form-control" value="@Model.Apellido" disabled
+        style="background-color: #f8f9fa; color: #7d6c6c;" />
+
+    </div>
+  }
   <div class="form-group mb-3">
     <label asp-for="Email"></label>
     <input asp-for="Email" class="form-control" />
@@ -40,15 +61,15 @@
     <input type="hidden" asp-for="Rol" />
     <div class="form-group mb-3">
       <label>Rol</label>
-      <input type="text" class="form-control" value="@Model.Rol" disabled style="background-color: #f8f9fa; color: #7d6c6c;"/>
-      <small class="text-muted" style="color: #c02626 !important;">Solo los administradores pueden modificar el rol</small>
+      <input type="text" class="form-control" value="@Model.Rol" disabled
+        style="background-color: #f8f9fa; color: #7d6c6c;" />
     </div>
   }
   <div class="form-group mb-3">
     <label>Avatar</label>
     @if (!string.IsNullOrEmpty(Model.Avatar))
     {
-      <img src="@Model.Avatar" class="img-thumbnail mb-2" style="max-width:100px;" />
+      <img src="@Model.Avatar?t=@DateTime.Now.Ticks" class="img-thumbnail mb-2" style="max-width:100px;" />
     }
     <input type="file" asp-for="AvatarFile" class="form-control" />
     <div class="form-check mt-2">

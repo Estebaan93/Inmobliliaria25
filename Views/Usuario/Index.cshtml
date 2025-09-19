@@ -1,3 +1,4 @@
+<!--Views/Usuario/Index.cshtml -->
 @model List<Inmobiliaria25.Models.Usuario>
 @{
   ViewData["Title"] = "Usuarios";
@@ -31,7 +32,7 @@
         <td>
           @if (!string.IsNullOrEmpty(u.Avatar))
           {
-            <img src="@u.Avatar" class="img-thumbnail" style="max-width:60px;" />
+            <img src="@u.Avatar?t=@DateTime.Now.Ticks" class="img-thumbnail" style="max-width:60px;" />
           }
         </td>
         <td>

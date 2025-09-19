@@ -23,8 +23,8 @@ namespace Inmobiliaria25.Repositorios
       conn.Open();
 
       //Definimos un avatar por defecto
-      string avatar= string.IsNullOrEmpty(usuario.Avatar)
-        ? "img/avatars/default.jpg"
+      string avatar = string.IsNullOrEmpty(usuario.Avatar)
+        ? "/img/avatars/default.jpg"
         : usuario.Avatar;
 
       string sql = @"
@@ -123,8 +123,8 @@ namespace Inmobiliaria25.Repositorios
       conn.Open();
 
       //Definimos avatar por defecto si no se proporciona uno
-      string avatar= string.IsNullOrEmpty(usuario.Avatar)
-        ? "img/avatars/default.jpg"
+      string avatar = string.IsNullOrEmpty(usuario.Avatar)
+        ? "/img/avatars/default.jpg"
         : usuario.Avatar;
 
       string sql = @"UPDATE usuario 

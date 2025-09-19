@@ -1,9 +1,17 @@
-﻿@using System.Security.Claims
+﻿<!--Views/Shared/_Layout.cshtml -->
+@using System.Security.Claims
 @{
 	var identity = User.Identity as ClaimsIdentity;
-	var avatar = identity?.FindFirst("AvatarUrl")?.Value ?? "/img/avatars/default.png";
+	var avatar = identity?.FindFirst("AvatarUrl")?.Value ?? "/img/avatars/default.jpg";
 	var nombre = identity?.FindFirst(ClaimTypes.Name)?.Value ?? "Invitado";
 	var userId = identity?.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0";
+   // Obtener el parámetro de la URL para forzar recarga
+    var timestamp = Context.Request.Query["t"].ToString();
+    if (string.IsNullOrEmpty(timestamp))
+    {
+        timestamp = DateTime.Now.Ticks.ToString();
+    }
+
 }
 
 <!DOCTYPE html>
@@ -109,7 +117,7 @@
 							<a class="nav-link dropdown-toggle text-dark" id="usuarioDropdown" role="button" data-bs-toggle="dropdown"
 								aria-expanded="false">
 								<div class="nombreUsuario d-flex align-items-center">
-									<img src="@avatar" alt="avatar" class="fotoMiniatura me-2"
+									<img src="@avatar?t=@DateTime.Now.Ticks" alt="avatar" class="fotoMiniatura me-2"
 										style="width:30px;height:30px;border-radius:50%;">
 									<p class="mb-0"><strong>@nombre</strong></p>
 									<i class="fa-solid fa-gear ms-2"></i>

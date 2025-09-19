@@ -41,7 +41,7 @@ namespace Inmobiliaria25.Controllers
                     new Claim(ClaimTypes.Name, $"{u.Nombre} {u.Apellido}"),
                     new Claim(ClaimTypes.Role, u.Rol),
                     new Claim(ClaimTypes.NameIdentifier, u.IdUsuario.ToString()),
-                    new Claim("AvatarUrl", u.Avatar ?? "")
+                    new Claim("AvatarUrl", u.Avatar ?? "/img/avatars/default.jpg")
                 };
 
         var identidad = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
