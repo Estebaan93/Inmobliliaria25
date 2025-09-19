@@ -101,30 +101,37 @@ namespace Inmobiliaria25.Repositorios
         }
 
         // Guardar nueva auditoría
-        public int GuardarAuditoria(Auditoria auditoria)
-        {
-            int filasAfectadas = 0;
+public int GuardarAuditoria(Auditoria auditoria)
+{
+    try
+    {
+        using var conn = _context.GetConnection();
+        conn.Open();
 
-            using var conn = _context.GetConnection();
-            conn.Open();
+        string sql = @"INSERT INTO auditoria 
+                      (idEntidad, tipoEntidad, accion, idUsuario, observacion, fechaYHora, estado) 
+                      VALUES (@IdEntidad, @TipoEntidad, @Accion, @IdUsuario, @Observacion, @FechaYHora, @Estado)";
 
-            string sql = @"INSERT INTO auditoria 
-                          (idEntidad, tipoEntidad, accion, idUsuario, observacion, fechaYHora, estado) 
-                          VALUES (@IdEntidad, @TipoEntidad, @Accion, @IdUsuario, @Observacion, @FechaYHora, @Estado)";
+        using var cmd = new MySqlCommand(sql, conn);
+        cmd.Parameters.AddWithValue("@IdEntidad", auditoria.IdEntidad);
+        cmd.Parameters.AddWithValue("@TipoEntidad", auditoria.TipoEntidad.ToString());
+        cmd.Parameters.AddWithValue("@Accion", auditoria.Accion.ToString());
+        cmd.Parameters.AddWithValue("@IdUsuario", auditoria.IdUsuario);
+        cmd.Parameters.AddWithValue("@Observacion", (object?)auditoria.Observacion ?? DBNull.Value);
+        cmd.Parameters.AddWithValue("@FechaYHora", auditoria.FechaYHora);
+        cmd.Parameters.AddWithValue("@Estado", auditoria.Estado);
 
-            using var cmd = new MySqlCommand(sql, conn);
-            cmd.Parameters.AddWithValue("@IdEntidad", auditoria.IdEntidad);
-            cmd.Parameters.AddWithValue("@TipoEntidad", auditoria.TipoEntidad.ToString());
-            cmd.Parameters.AddWithValue("@Accion", auditoria.Accion.ToString());
-            cmd.Parameters.AddWithValue("@IdUsuario", auditoria.IdUsuario);
-            cmd.Parameters.AddWithValue("@Observacion", (object)auditoria.Observacion ?? DBNull.Value);
-            cmd.Parameters.AddWithValue("@FechaYHora", auditoria.FechaYHora);
-            cmd.Parameters.AddWithValue("@Estado", auditoria.Estado);
+        var filas = cmd.ExecuteNonQuery();
+        Console.WriteLine($"✔ Auditoría insertada: {filas} fila(s)");
+        return filas;
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"❌ ERROR al guardar auditoría: {ex.Message}");
+        throw;
+    }
+}
 
-            filasAfectadas = cmd.ExecuteNonQuery();
-
-            return filasAfectadas;
-        }
 
         // Método auxiliar para registrar auditorías fácilmente
         public int RegistrarAuditoria(int idEntidad, TipoEntidad tipoEntidad, AccionAuditoria accion, int idUsuario, string? observacion = null)

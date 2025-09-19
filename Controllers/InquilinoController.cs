@@ -2,6 +2,7 @@
 using Inmobiliaria25.Models;
 using Inmobiliaria25.Repositorios;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Inmobiliaria25.Controllers
 {
@@ -55,6 +56,79 @@ namespace Inmobiliaria25.Controllers
 
     [HttpPost]
     public IActionResult Guardar(Inquilinos inquilino)
+{
+  try
+  {
+    if (!ModelState.IsValid)
+    {
+      if (inquilino.IdInquilino > 0) return View("Editar", inquilino);
+      return View("Crear", inquilino);
+    }
+
+    int usuarioId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+
+    if (inquilino.IdInquilino > 0)
+    {
+      if (repo.ObtenerPorDni(inquilino.Dni, inquilino.IdInquilino))
+      {
+        ModelState.AddModelError("Dni", "El DNI ya está registrado");
+        return View("Editar", inquilino);
+      }
+
+      var filas = repo.Modificar(inquilino);
+      if (filas > 0)
+      {
+        AuditoriaController.RegistrarAuditoriaDesdeExterno(
+          HttpContext.RequestServices,
+          inquilino.IdInquilino,
+          TipoEntidad.inquilino,
+          AccionAuditoria.modificar, // verifica que exista en tu enum
+          usuarioId,
+          "Inquilino modificado"
+        );
+        TempData["Mensaje"] = "Inquilino modificado con éxito";
+      }
+    }
+    else
+    {
+      if (repo.ObtenerPorDni(inquilino.Dni))
+      {
+        ModelState.AddModelError("Dni", "El DNI ya está registrado. Revise la tabla de propietarios.");
+        return View("Crear", inquilino);
+      }
+
+      var id = repo.Alta(inquilino); // ahora devuelve id y asigna inquilino.IdInquilino
+      if (id > 0)
+      {
+        AuditoriaController.RegistrarAuditoriaDesdeExterno(
+          HttpContext.RequestServices,
+          inquilino.IdInquilino,
+          TipoEntidad.inquilino,
+          AccionAuditoria.crear,
+          usuarioId,
+          "Inquilino creado"
+        );
+        TempData["Mensaje"] = "Inquilino creado con éxito";
+      }
+      else
+      {
+        ModelState.AddModelError("", "No se pudo crear el inquilino.");
+        return View("Crear", inquilino);
+      }
+    }
+
+    return RedirectToAction("Index");
+  }
+  catch (Exception ex)
+  {
+    TempData["Error"] = ex.Message;
+    return RedirectToAction("Index");
+  }
+}
+
+
+
+    /*public IActionResult Guardar(Inquilinos inquilino)
     {
       try
       {
@@ -102,7 +176,7 @@ namespace Inmobiliaria25.Controllers
         TempData["Error"] = ex.Message;
         return RedirectToAction("Index");
       }
-    }
+    }*/
 
     // editar (GET)
     // cuando hago click

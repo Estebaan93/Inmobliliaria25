@@ -53,7 +53,6 @@ namespace Inmobiliaria25.Controllers
                 try
                 {
                     var tipoEntidadEnum = Enum.Parse<TipoEntidad>(tipoEntidad);
-                    // Necesitarías implementar este método en el repositorio
                     auditorias = _repoAuditoria.Listar().Where(a => a.TipoEntidad.ToString() == tipoEntidad).ToList();
                     filtroAplicado = $"Auditorías de {tipoEntidad.ToUpper()}S";
                 }

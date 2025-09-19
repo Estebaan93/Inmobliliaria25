@@ -19,6 +19,7 @@ builder.Services.AddScoped<RepositorioAuditoria>();
 builder.Services.AddScoped<RepositorioUsuario>();
 builder.Services.AddScoped<RepositorioLogin>();
 
+
 //Autenticacion cookies
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
   .AddCookie(options =>
@@ -41,6 +42,8 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 // controlador con vistas
 builder.Services.AddControllersWithViews(); //CONTROLADOR
 
+//Inyectar HttpContext en los controladores
+builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 

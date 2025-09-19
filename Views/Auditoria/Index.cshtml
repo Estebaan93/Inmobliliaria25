@@ -14,6 +14,7 @@
     </div>
     <div class="card-body">
         <form asp-action="Index" method="get" class="row g-3">
+            <!-- Filtro por usuario -->
             <div class="col-md-4">
                 <label class="form-label">Filtrar por usuario:</label>
                 <select class="form-select" name="idUsuario" onchange="this.form.submit()">
@@ -27,15 +28,20 @@
                 </select>
             </div>
             
+            <!-- Filtro por tipo -->
             <div class="col-md-4">
                 <label class="form-label">Filtrar por tipo:</label>
                 <select class="form-select" name="tipoEntidad" onchange="this.form.submit()">
                     <option value="">-- Todos los tipos --</option>
+                    <option value="inquilino" selected="@(Context.Request.Query["tipoEntidad"] == "inquilino" ? "selected" : null)">Inquilinos</option>
+                    <option value="propietario" selected="@(Context.Request.Query["tipoEntidad"] == "propietario" ? "selected" : null)">Propietarios</option>
+                    <option value="inmueble" selected="@(Context.Request.Query["tipoEntidad"] == "inmueble" ? "selected" : null)">Inmuebles</option>
                     <option value="contrato" selected="@(Context.Request.Query["tipoEntidad"] == "contrato" ? "selected" : null)">Contratos</option>
                     <option value="pago" selected="@(Context.Request.Query["tipoEntidad"] == "pago" ? "selected" : null)">Pagos</option>
                 </select>
             </div>
 
+            <!-- Filtro por ID -->
             <div class="col-md-4">
                 <label class="form-label">ID de entidad:</label>
                 <div class="input-group">
@@ -82,10 +88,20 @@
                 {
                     foreach (var a in Model.Auditorias)
                     {
+                        var entidadClass = a.TipoEntidad.ToString().ToLower() switch
+                        {
+                            "inquilino"   => "bg-info",
+                            "propietario" => "bg-primary",
+                            "inmueble"    => "bg-secondary",
+                            "contrato"    => "bg-warning text-dark",
+                            "pago"        => "bg-success",
+                            _             => "bg-dark"
+                        };
+
                         <tr>
                             <td>@a.IdAuditoria</td>
                             <td>
-                                <span class="badge bg-info">@a.TipoEntidad.ToString().ToUpper()</span> <!-- Corregido: .ToString() -->
+                                <span class="badge @entidadClass">@a.TipoEntidad.ToString().ToUpper()</span>
                                 <br>
                                 <small>ID: @a.IdEntidad</small>
                             </td>
@@ -103,19 +119,19 @@
                             </td>
                             <td>
                                 @{
-                                    var badgeClass = a.Accion.ToString().ToLower() switch // Corregido: .ToString()
+                                    var badgeClass = a.Accion.ToString().ToLower() switch
                                     {
-                                        "crear" => "bg-success",
-                                        "terminar" => "bg-warning", 
-                                        "anular" => "bg-danger",
-                                        _ => "bg-secondary"
+                                        "crear"     => "bg-success",
+                                        "terminar"  => "bg-warning", 
+                                        "anular"    => "bg-danger",
+                                        _           => "bg-secondary"
                                     };
-                                    var accionTexto = a.Accion.ToString().ToLower() switch // Corregido: .ToString()
+                                    var accionTexto = a.Accion.ToString().ToLower() switch
                                     {
-                                        "crear" => "CREACIÓN",
-                                        "terminar" => "TERMINACIÓN",
-                                        "anular" => "ANULACIÓN",
-                                        _ => a.Accion.ToString().ToUpper()
+                                        "crear"     => "CREACIÓN",
+                                        "terminar"  => "TERMINACIÓN",
+                                        "anular"    => "ANULACIÓN",
+                                        _           => a.Accion.ToString().ToUpper()
                                     };
                                 }
                                 <span class="badge @badgeClass">@accionTexto</span>
@@ -149,55 +165,3 @@
         </table>
     </div>
 </div>
-
-<!-- Paginación (opcional para muchos registros) -->
-@if (Model.Auditorias.Count > 50)
-{
-    <nav aria-label="Page navigation" class="mt-3">
-        <ul class="pagination justify-content-center">
-            <li class="page-item disabled">
-                <a class="page-link" href="#" tabindex="-1">Anterior</a>
-            </li>
-            <li class="page-item active"><a class="page-link" href="#">1</a></li>
-            <li class="page-item"><a class="page-link" href="#">2</a></li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>
-            <li class="page-item">
-                <a class="page-link" href="#">Siguiente</a>
-            </li>
-        </ul>
-    </nav>
-}
-
-@section Scripts {
-    <script>
-        // Mantener los valores seleccionados en los filtros
-        document.addEventListener('DOMContentLoaded', function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            
-            // Seleccionar opciones en los dropdowns
-            const selects = document.querySelectorAll('select');
-            selects.forEach(select => {
-                const paramName = select.getAttribute('name');
-                const paramValue = urlParams.get(paramName);
-                if (paramValue) {
-                    select.value = paramValue;
-                }
-            });
-        });
-    </script>
-}
-
-@section Styles {
-    <style>
-        .table th {
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-        .badge {
-            font-size: 0.75em;
-        }
-        .card-header {
-            font-weight: 600;
-        }
-    </style>
-}

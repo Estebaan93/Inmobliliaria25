@@ -63,13 +63,19 @@ public class Auditoria
 // Enums
 public enum TipoEntidad
 {
-    contrato,
-    pago
+  contrato,
+  pago,
+  inquilino,
+  propietario,
+  inmueble
 }
 
 public enum AccionAuditoria
 {
-    crear,
-    terminar,
-    anular
+  crear,
+  modificar,
+  terminar,
+  anular,
+  baja,
+  reactivar
 }
