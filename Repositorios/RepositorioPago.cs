@@ -189,5 +189,49 @@ namespace Inmobiliaria25.Repositorios
 			return deuda < 0 ? 0 : deuda;
 		}
 
+
+		//ASignar numror pago automatico
+		public string GenerarNumeroPago(int idContrato)
+		{
+			using var conn = _context.GetConnection();
+			conn.Open();
+
+			// Obtener el máximo número ya guardado (ignora las cadenas no numéricas como 'Multa')
+			const string sql = @"
+        SELECT COALESCE(MAX(CAST(NULLIF(numeroPago,'Multa') AS UNSIGNED)), 0) + 1
+        FROM pago
+        WHERE idContrato = @idContrato";
+			using var cmd = new MySqlCommand(sql, conn);
+			cmd.Parameters.AddWithValue("@idContrato", idContrato);
+
+			int siguienteNumero = Convert.ToInt32(cmd.ExecuteScalar());
+			return siguienteNumero.ToString();
+		}
+
+		public int ActualizarPagoCompleto(int idPagoOriginal, Pago pago)
+		{
+			using var conn = _context.GetConnection();
+			conn.Open();
+
+			const string sql = @"
+        UPDATE pago
+        SET fechaPago = @fechaPago,
+            importe = @importe,
+            numeroPago = @numeroPago,
+            detalle = @detalle,
+            estado = @estado
+        WHERE idPago = @idPago;";
+			using var cmd = new MySqlCommand(sql, conn);
+			cmd.Parameters.AddWithValue("@fechaPago", pago.FechaPago);
+			cmd.Parameters.AddWithValue("@importe", pago.Importe);
+			cmd.Parameters.AddWithValue("@numeroPago", pago.NumeroPago);
+			cmd.Parameters.AddWithValue("@detalle", (object?)pago.Detalle ?? DBNull.Value);
+			cmd.Parameters.AddWithValue("@estado", pago.Estado ? 1 : 0);
+			cmd.Parameters.AddWithValue("@idPago", idPagoOriginal);
+
+			return cmd.ExecuteNonQuery();
+		}
+
+
 	}
 }

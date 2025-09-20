@@ -61,9 +61,20 @@ namespace Inmobiliaria25.Controllers
       Console.WriteLine($"FechaAnulacion: {contrato.FechaAnulacion}");
       Console.WriteLine("============================");
 
+
+
       if (contrato.FechaInicio < DateTime.Today)
       {
         ModelState.AddModelError("Contrato.FechaInicio", "La fecha de inicio no puede ser anterior a hoy.");
+      }
+
+      // Validar superposición de fechas
+      if (_repoContrato.ExisteContratoSuperpuesto(contrato.IdInmueble, contrato.FechaInicio, contrato.FechaFin))
+      {
+        ModelState.AddModelError("Contrato.IdInmueble", "El inmueble ya está alquilado en el período seleccionado.");
+        vm.Inquilinos = _repoInquilino.ObtenerActivos();
+        vm.Inmuebles = _repoInmueble.ListarDisponible();
+        return View(vm);
       }
 
       if (!ModelState.IsValid)
@@ -77,8 +88,6 @@ namespace Inmobiliaria25.Controllers
       contrato.FechaAnulacion = null;
 
       int id = _repoContrato.Crear(contrato);
-      Console.WriteLine($"Contrato insertado con ID {id}");
-
       return RedirectToAction("Index");
     }
 

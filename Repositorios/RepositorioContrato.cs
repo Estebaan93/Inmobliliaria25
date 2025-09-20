@@ -208,5 +208,37 @@ namespace Inmobiliaria25.Repositorios
 		}
 
 
+		//Disponibilidad del inmueble
+		public bool ExisteContratoSuperpuesto(int idInmueble, DateTime fechaInicio, DateTime fechaFin, int? idContratoExcluir = null)
+		{
+			using var conn = _context.GetConnection();
+			conn.Open();
+
+			string sql = @"SELECT COUNT(*) 
+                   FROM contrato 
+                   WHERE idInmueble = @idInmueble 
+                   AND estado = 1 
+                   AND fechaAnulacion IS NULL
+                   AND NOT (fechaFin < @fechaInicio OR fechaInicio > @fechaFin)";
+
+			if (idContratoExcluir.HasValue)
+			{
+				sql += " AND idContrato != @idContratoExcluir";
+			}
+
+			using var cmd = new MySqlCommand(sql, conn);
+			cmd.Parameters.AddWithValue("@idInmueble", idInmueble);
+			cmd.Parameters.AddWithValue("@fechaInicio", fechaInicio);
+			cmd.Parameters.AddWithValue("@fechaFin", fechaFin);
+
+			if (idContratoExcluir.HasValue)
+			{
+				cmd.Parameters.AddWithValue("@idContratoExcluir", idContratoExcluir.Value);
+			}
+
+			int count = Convert.ToInt32(cmd.ExecuteScalar());
+			return count > 0;
+		}
+
 	}
 }

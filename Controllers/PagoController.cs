@@ -48,16 +48,61 @@ namespace Inmobiliaria25.Controllers
 			var contrato = _repoContrato.Obtener(idContrato);
 			if (contrato == null) return RedirectToAction("Index", "Contrato");
 
+			var pagos = _repoPago.ListarPorContrato(idContrato);
+			var multaPendiente = pagos.FirstOrDefault(p => p.NumeroPago == "Multa" && !p.Estado);
+
+			// siempre mostrar un número secuencial en el formulario
+			var numeroGenerado = _repoPago.GenerarNumeroPago(idContrato);
+
 			var pago = new Pago
 			{
 				IdContrato = idContrato,
 				Contrato = contrato,
-				FechaPago = DateTime.Today
+				FechaPago = DateTime.Today,
+				Importe = multaPendiente?.Importe ?? 0,
+				NumeroPago = numeroGenerado,                // mostrado en readonly
+				Detalle = multaPendiente?.Detalle ?? "",
+				IdPago = multaPendiente?.IdPago ?? 0        // si existe multa, la actualizaremos en el POST
 			};
 
 			return View(pago);
 		}
 
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public IActionResult Crear(Pago pago)
+		{
+			if (!ModelState.IsValid) return View(pago);
+
+			try
+			{
+				// garantizar número secuencial (no confiar en entrada del cliente)
+				pago.NumeroPago = _repoPago.GenerarNumeroPago(pago.IdContrato);
+
+				if (pago.IdPago > 0)
+				{
+					// actualizar el registro de multa original con el número y marcar como pagado
+					pago.Estado = true;
+					_repoPago.ActualizarPagoCompleto(pago.IdPago, pago);
+				}
+				else
+				{
+					// crear nuevo pago normal
+					pago.Estado = true;
+					_repoPago.Crear(pago);
+				}
+
+				TempData["Exito"] = "Pago registrado correctamente.";
+				return RedirectToAction("Index", new { idContrato = pago.IdContrato });
+			}
+			catch (Exception ex)
+			{
+				TempData["Error"] = "Error al registrar pago: " + ex.Message;
+				return View(pago);
+			}
+		}
+
+		/*
 		// post crear
 		[HttpPost]
 		[ValidateAntiForgeryToken]
@@ -78,6 +123,9 @@ namespace Inmobiliaria25.Controllers
 				return View(pago);
 			}
 		}
+*/
+
+
 
 		// editar
 		public IActionResult Editar(int id)
@@ -87,6 +135,7 @@ namespace Inmobiliaria25.Controllers
 
 			return View(pago);
 		}
+
 
 		[HttpPost]
 		public IActionResult Editar([FromBody] Pago pago)
