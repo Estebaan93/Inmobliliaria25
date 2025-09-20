@@ -177,39 +177,7 @@ public List<Inquilinos> ObtenerActivosPaginado(int page, int pageSize)
     }
 
     // Alta
-
-  public int Alta(Inquilinos i)
-{
-  if (ObtenerPorDni(i.Dni))
-    throw new Exception("El DNI ya está registrado. Revise la tabla de inquilinos.");
-
-  using (var conn = _context.GetConnection())
-  {
-    conn.Open();
-    string sqlInsert = @"
-      INSERT INTO Inquilino (apellido, nombre, dni, telefono, correo, estado)
-      VALUES (@apellido, @nombre, @dni, @telefono, @correo, 1);
-      SELECT LAST_INSERT_ID();";
-    using (var cmd = new MySqlCommand(sqlInsert, conn))
-    {
-      cmd.Parameters.AddWithValue("@apellido", i.Apellido ?? "");
-      cmd.Parameters.AddWithValue("@nombre", i.Nombre ?? "");
-      cmd.Parameters.AddWithValue("@dni", i.Dni ?? "");
-      cmd.Parameters.AddWithValue("@telefono", i.Telefono ?? "");
-      cmd.Parameters.AddWithValue("@correo", i.Correo ?? "");
-
-      var result = cmd.ExecuteScalar();
-      if (result == null) return -1;
-      var id = Convert.ToInt32(result);
-      i.IdInquilino = id;
-      return id;
-    }
-  }
-}
-
-
-
-    /*public int Alta(Inquilinos i)
+    public int Alta(Inquilinos i)
     {
       int res = -1;
       if (ObtenerPorDni(i.Dni))
@@ -232,7 +200,7 @@ public List<Inquilinos> ObtenerActivosPaginado(int page, int pageSize)
       }
 
       return res;
-    }*/
+    }
 
     // Modificar (NO toca estado)
     public int Modificar(Inquilinos i)

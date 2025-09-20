@@ -230,3 +230,26 @@ function Editar(idPago, detalle, fecha, importe, numero) {
 		}
 	});
 }
+// FUNCION SWEET ALERT PARA MOSTRAR LA MULTA 
+
+document.getElementById("btnAnularContrato")?.addEventListener("click", function (e) {
+    e.preventDefault();
+
+    let multa = this.getAttribute("data-multa");
+    let deuda = this.getAttribute("data-deuda");
+    let total = this.getAttribute("data-total");
+
+    Swal.fire({
+        title: "¿Está seguro?",
+        text: `Se aplicará una multa de $${multa} + deuda de $${deuda}. Total: $${total}. Esta acción no se puede deshacer.`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Sí, anular contrato"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById("formAnularContrato").submit();
+        }
+    });
+});
