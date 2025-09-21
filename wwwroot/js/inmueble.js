@@ -1,8 +1,15 @@
 //wwwroot/js/inmueble.js
+console.log("inmueble.js: loaded", location.href);
 document.addEventListener("DOMContentLoaded", function () {
 	const selEstado = document.getElementById("selectFiltroEstado");
 	const selPropietario = document.getElementById("selectFiltroPorPropietario");
 	const tabla = document.getElementById("tablaInmuebles");
+
+	//Flags administrador
+	//const esAdmin= !!window.esAdministrador;
+	const esAdmin = (typeof window.esAdministrador === 'boolean' && window.esAdministrador === true) || String(window.esAdministrador).toLowerCase() === 'true';
+	console.log('window.esAdministrador ->', window.esAdministrador, 'typeof ->', typeof window.esAdministrador);
+	console.log('esAdmin ->', esAdmin);
 
 	//  FUNCION global dentro del scope del DOMContentLoaded
 	function cargarInmuebles() {
@@ -25,6 +32,11 @@ document.addEventListener("DOMContentLoaded", function () {
 							: item.estado === 0
 								? "No disponible"
 								: "Alquilado";
+					
+					//Construimos el btn eliminar 
+					const btnEliminar = esAdmin
+						? `<button type="button" class="btn btn-sm btn-danger btn-eliminar" data-id="${item.idInmueble}" title="Eliminar"><i class="fa-solid fa-trash"></i></button>`
+                        : '';
 
 					tabla.innerHTML += `
                         <tr>
@@ -37,16 +49,12 @@ document.addEventListener("DOMContentLoaded", function () {
                             <td>${item.mascotas ? "Sí" : "No"}</td>
                             <td>${estadoTexto}</td>
                             <td>
-                                <div class="d-flex gap-2">
+                        				<div class="d-flex gap-2">
                                     <a href="/Inmueble/Editar/${item.idInmueble}" 
                                        class="btn btn-sm btn-primary" title="Editar">
                                         <i class="fa-solid fa-pen-to-square"></i>
                                     </a>
-                                    <button type="button" 
-                                            class="btn btn-sm btn-danger btn-eliminar" 
-                                            data-id="${item.idInmueble}" title="Eliminar">
-                                        <i class="fa-solid fa-trash"></i>
-                                    </button>
+                                    ${btnEliminar}
                                 </div>
                             </td>
                         </tr>`;

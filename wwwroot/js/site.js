@@ -1,4 +1,6 @@
-﻿document.addEventListener("DOMContentLoaded", function () {
+﻿//wwwroot/js/site.js
+document.addEventListener("DOMContentLoaded", function () {
+	try{
 	//  Confirmación para Inquilinos
 	document.querySelectorAll("form.form-borrar-inquilino").forEach(form => {
 		form.addEventListener("submit", function (e) {
@@ -168,7 +170,9 @@
 		document.getElementById("PrecioVisible").value = precio;
 		document.getElementById("MontoHidden").value = precio; //  AHORA se guarda en Contrato.Monto
 	});
-
+	}catch(error){
+		console.error("Error en site.js:", error);
+	}
 
 });
 

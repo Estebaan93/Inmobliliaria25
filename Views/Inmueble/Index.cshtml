@@ -79,5 +79,10 @@
 
 
 @section Scripts {
+    <script>
+    // expone a JS si el usuario es administrador
+     window.esAdministrador = @System.Text.Json.JsonSerializer.Serialize(User.IsInRole("Administrador"));
+
+  </script>
   <script src="~/js/inmueble.js"></script>
 }
