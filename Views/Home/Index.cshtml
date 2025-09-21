@@ -41,6 +41,39 @@
 
 <!-- Cards de inmuebles disponibles -->
 <h2 class="mb-3">Inmuebles Disponibles</h2>
+<h3>Filtrar inmuebles</h3>
+<div class="d-flex align-items-center mb-3 my-2">
+  <select id="selectTipos" class="form-select me-2">
+    <option value="0" selected>Tipo</option>
+    @foreach (var item in ViewBag.Tipos as List<Inmobiliaria25.Models.Tipo>)
+    {
+      <option value="@item.IdTipo">@item.Observacion</option>
+    }
+  </select>
+
+  <select id="selectAmbientes" class="form-select me-2">
+    <option value="0" selected>Ambientes</option>
+    <option value="1">1</option>
+    <option value="2">2</option>
+    <option value="3">3</option>
+    <option value="4">4+</option>
+  </select>
+
+  <select id="selectCochera" class="form-select me-2">
+    <option value="" selected>Cochera</option>
+    <option value="true">Sí</option>
+    <option value="false">No</option>
+  </select>
+
+  <select id="selectOrdenPrecio" class="form-select me-2">
+    <option value="" selected>Ordenar por precio</option>
+    <option value="asc">Menor a mayor</option>
+    <option value="desc">Mayor a menor</option>
+  </select>
+
+  <button type="button" class="btn btn-primary" id="btnFiltrarInmueblesIndex">Buscar</button>
+  <button type="button" class="btn btn-danger" id="limpiarFiltros">Limpiar</button>
+</div>
 <div class="containerInmueble row">
   @if (Model.Inmuebles != null && Model.Inmuebles.Any())
   {
@@ -76,39 +109,7 @@
 
 <!-- Filtros -->
 <hr />
-<h3>Filtrar inmuebles</h3>
-<div class="d-flex align-items-center mb-3 my-2">
-  <select id="selectTipos" class="form-select me-2">
-    <option value="0" selected>Tipo</option>
-    @foreach (var item in ViewBag.Tipos as List<Inmobiliaria25.Models.Tipo>)
-    {
-      <option value="@item.IdTipo">@item.Observacion</option>
-    }
-  </select>
 
-  <select id="selectAmbientes" class="form-select me-2">
-    <option value="0" selected>Ambientes</option>
-    <option value="1">1</option>
-    <option value="2">2</option>
-    <option value="3">3</option>
-    <option value="4">4+</option>
-  </select>
-
-  <select id="selectCochera" class="form-select me-2">
-    <option value="" selected>Cochera</option>
-    <option value="true">Sí</option>
-    <option value="false">No</option>
-  </select>
-
-  <select id="selectOrdenPrecio" class="form-select me-2">
-    <option value="" selected>Ordenar por precio</option>
-    <option value="asc">Menor a mayor</option>
-    <option value="desc">Mayor a menor</option>
-  </select>
-
-  <button type="button" class="btn btn-primary" id="btnFiltrarInmueblesIndex">Buscar</button>
-  <button type="button" class="btn btn-danger" id="limpiarFiltros">Limpiar</button>
-</div>
 
 @section Scripts {
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>

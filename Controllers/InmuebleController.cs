@@ -165,14 +165,15 @@ public IActionResult Index(int page = 1)
 			return View(vm);
 		}
 
-    //Detalles
-    public IActionResult Detalle(int id){
-      var inmueble= _repoInmueble.Obtener(id);
-      if(inmueble== null)
-        return NotFound();
+		//Detalles
+		public IActionResult Detalle(int id)
+		{
+			var inmueble = _repoInmueble.Obtener(id);
+			if (inmueble == null)
+				return NotFound();
 
-      return View(inmueble);
-    }
+			return View(inmueble);
+		}
 
 
 		// elimino con (AJAX con SweetAlert)
@@ -190,5 +191,21 @@ public IActionResult Index(int page = 1)
 				return Json(new { success = false, mensaje = "Error al eliminar el inmueble: " + ex.Message });
 			}
 		}
+
+		[HttpGet]
+    public IActionResult ListarDisponible()
+    {
+        try
+        {
+            var inmuebles = _repoInmueble.ListarDisponible();
+            return Json(inmuebles);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { error = ex.Message });
+        }
+    }
+
+
 	}
 }
