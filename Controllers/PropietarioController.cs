@@ -2,6 +2,7 @@
 using Inmobiliaria25.Models;
 using Inmobiliaria25.Repositorios;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization; 
 
 namespace Inmobiliaria25.Controllers
 {
@@ -111,6 +112,7 @@ namespace Inmobiliaria25.Controllers
 
     // baja logica
     [HttpPost]
+    [Authorize(Roles="Administrador")]
     public IActionResult Borrar(int id)
     {
       repo.Baja(id);

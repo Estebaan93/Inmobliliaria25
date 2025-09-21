@@ -68,16 +68,22 @@
           <a href="@Url.Action("Editar", "Inquilino", new { id = item.IdInquilino })" class="btn btn-editbt mx-1">
             <i class="fa-solid fa-pen-to-square"></i>
           </a>
-          @*  @if(User.IsInRole("Administrador")){
-                        }  NO OLVIDAR!!!!CUANDO AVANCE NO OLVIDAR ACTIVAR, EL ADMIN SOLO ELIMINA AHORA PRUEBO NADA MAS*@
-          <form asp-action="Borrar" class="mx-1 form-borrar-inquilino" method="post" style="display:inline;">
+          @if(User.IsInRole("Administrador"))
+          {
+            <form asp-action="Borrar" class="mx-1 form-borrar-inquilino" method="post" style="display:inline;">
             <input type="hidden" name="id" value="@item.IdInquilino" />
             <button type="submit" class="btn btn-borrarbt" title="Borrar">
               <i class="fa-solid fa-trash"></i>
             </button>
-          </form>
-
-          <a class="btn btn-detallebt mx-1" href="/Inquilino/Detalles/@item.IdInquilino">
+          </form>         
+          }
+           else
+          {
+            <button class="btn btn-borrarbt disabled mx-1" title="Sin permiso" disabled>
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          }
+         <a class="btn btn-detallebt mx-1" href="/Inquilino/Detalles/@item.IdInquilino">
             <i class="fa-solid fa-list"></i>
           </a>
         </td>

@@ -2,6 +2,7 @@
 using Inmobiliaria25.Models;
 using Inmobiliaria25.Repositorios;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Inmobiliaria25.Controllers
 {
@@ -176,6 +177,7 @@ public IActionResult Index(int page = 1)
 
 		// elimino con (AJAX con SweetAlert)
 		[HttpPost]
+		[Authorize(Roles = "Administrador")] // solo admin puede borrar
 		public IActionResult Borrar(int id)
 		{
 			try
