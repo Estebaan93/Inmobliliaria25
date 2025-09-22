@@ -1,0 +1,40 @@
+-- Inmuebles con contrato vigente (alquilados)
+SELECT 
+  i.*,
+  c.idContrato, c.idInquilino, c.monto, c.fechaInicio, c.fechaFin, c.estado AS contratoEstado,
+  t.idTipo, t.observacion AS tipoObservacion,
+  p.idPropietario, p.nombre AS propietarioNombre, p.apellido AS propietarioApellido,
+  d.idDireccion, d.calle, d.altura, d.ciudad, d.cp
+FROM inmueble i
+INNER JOIN contrato c ON c.idInmueble = i.idInmueble
+LEFT JOIN tipo t ON i.idTipo = t.idTipo
+LEFT JOIN propietario p ON i.idPropietario = p.idPropietario
+LEFT JOIN direccion d ON i.idDireccion = d.idDireccion
+WHERE c.estado = 1
+  AND (c.fechaAnulacion IS NULL OR c.fechaAnulacion = '0000-00-00')
+  AND c.fechaInicio <= CURDATE()
+  AND c.fechaFin >= CURDATE()
+ORDER BY i.idInmueble;
+
+
+
+-- Inmuebles disponibles (estado tabla = 1 y sin contrato vigente)
+SELECT 
+  i.*,
+  t.observacion AS tipoObservacion,
+  p.nombre AS propietarioNombre, p.apellido AS propietarioApellido,
+  d.calle, d.altura, d.ciudad, d.cp
+FROM inmueble i
+LEFT JOIN tipo t ON i.idTipo = t.idTipo
+LEFT JOIN propietario p ON i.idPropietario = p.idPropietario
+LEFT JOIN direccion d ON i.idDireccion = d.idDireccion
+WHERE i.estado = 1
+  AND NOT EXISTS (
+    SELECT 1 FROM contrato c
+    WHERE c.idInmueble = i.idInmueble
+      AND c.estado = 1
+      AND (c.fechaAnulacion IS NULL OR c.fechaAnulacion = '0000-00-00')
+      AND c.fechaInicio <= CURDATE()
+      AND c.fechaFin >= CURDATE()
+  )
+ORDER BY i.idInmueble;

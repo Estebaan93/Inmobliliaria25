@@ -17,7 +17,7 @@ namespace Inmobiliaria25.Models
 		[Key]
 		public int IdInmueble { get; set; }
 		public int IdPropietario { get; set; }
-		public int IdDireccion { get; set; }
+		public int? IdDireccion { get; set; }
 		public int IdTipo { get; set; }
 		public string Metros2 { get; set; }
 		public int CantidadAmbientes { get; set; }

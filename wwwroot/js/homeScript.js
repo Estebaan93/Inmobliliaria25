@@ -135,6 +135,7 @@ document.addEventListener("DOMContentLoaded", function () {
     try {
       cacheInmuebles = await fetchJson("/Inmueble/ListarDisponible");
       console.log("cargarTodos -> recibidos:", cacheInmuebles.length);
+      console.log("cacheInmuebles:", cacheInmuebles);
       llenarCartasInmuebles(cacheInmuebles);
     } catch (err) {
       console.error("Error cargarTodos:", err);

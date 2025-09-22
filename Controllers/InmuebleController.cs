@@ -207,21 +207,21 @@ public IActionResult Index(int page = 1)
         }
     }
 		
-		// filtros ajax
+		// filtros ajax para la vista inmuebles enriquecidos con direccion
         [HttpGet]
         public IActionResult Filtrar(int? estado = null, int? idPropietario = null)
-		{
-    try
-    {
+        {
+            try
+            {
         // Usar la versión que devuelve inmuebles ya enriquecidos con direccion/tipo/propietario
         var inmuebles = _repoInmueble.ListarConDireccion(estado, idPropietario);
-        return Json(inmuebles);
-    }
-    catch (Exception ex)
-    {
-        return StatusCode(500, new { error = ex.Message });
-    }
-}
+                return Json(inmuebles);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
+            }
+        }
 
 	}
 }
