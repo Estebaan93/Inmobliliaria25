@@ -239,6 +239,56 @@ namespace Inmobiliaria25.Repositorios
 			int count = Convert.ToInt32(cmd.ExecuteScalar());
 			return count > 0;
 		}
+		
+		// Listar contratos que vencen en los próximos N días (incluye hoy)
+        public List<Contrato> ListarVencenEnDias(int dias)
+        {
+            var lista = new List<Contrato>();
+            using var conn = _context.GetConnection();
+            conn.Open();
+
+            string sql = @"SELECT * FROM contrato
+                           WHERE estado = 1
+                             AND fechaAnulacion IS NULL
+                             AND DATEDIFF(fechaFin, CURDATE()) BETWEEN 0 AND @dias";
+
+            using var cmd = new MySqlCommand(sql, conn);
+            cmd.Parameters.AddWithValue("@dias", dias);
+
+            using var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                var contrato = new Contrato
+                {
+                    IdContrato = reader.GetInt32("idContrato"),
+                    IdInquilino = reader.GetInt32("idInquilino"),
+                    IdInmueble = reader.GetInt32("idInmueble"),
+                    Monto = reader.GetDouble("monto"),
+                    FechaInicio = reader.GetDateTime("fechaInicio"),
+                    FechaFin = reader.GetDateTime("fechaFin"),
+                    FechaAnulacion = reader.IsDBNull(reader.GetOrdinal("fechaAnulacion"))
+                                ? (DateTime?)null
+                                : reader.GetDateTime("fechaAnulacion"),
+                    Estado = reader.GetBoolean("estado")
+                };
+
+                contrato.inquilino = _repoInquilino.ObtenerPorId(contrato.IdInquilino);
+                contrato.inmueble = _repoInmueble.Obtener(contrato.IdInmueble);
+
+                if (contrato.FechaAnulacion.HasValue)
+                    contrato.EstadoDescripcion = "Anulado";
+                else if (contrato.FechaFin < DateTime.Today)
+                    contrato.EstadoDescripcion = "Finalizado";
+                else
+                    contrato.EstadoDescripcion = "Vigente";
+
+                lista.Add(contrato);
+            }
+
+            return lista;
+        }
+
+
 
 	}
 }

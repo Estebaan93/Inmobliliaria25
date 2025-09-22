@@ -11,7 +11,7 @@ namespace Inmobiliaria25.Models
     public string Calle { get; set; }
 
     [Required]
-    public int Altura { get; set; }
+    public int? Altura { get; set; }
 
     public string? Cp { get; set; }
     public string? Ciudad { get; set; }

@@ -11,6 +11,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const btnFiltrar = document.querySelector("#btnFiltrarInmueblesIndex");
   const btnLimpiar = document.querySelector("#limpiarFiltros");
   const container = document.querySelector(".containerInmueble");
+  const selContratoDias = document.querySelector("#selectContratoDias");
 
   let cacheInmuebles = []; // cache de todos los inmuebles recibidos
 
@@ -19,10 +20,12 @@ document.addEventListener("DOMContentLoaded", function () {
     const ambientesRaw = selAmbientes?.value;
     const cocheraRaw = selCochera?.value;
     const ordenRaw = selOrden?.value;
+    const contratoRow = selContratoDias?.value;
 
     return {
       idTipo: idTipoRaw && idTipoRaw !== "0" ? parseInt(idTipoRaw, 10) : null,
       ambientes: ambientesRaw && ambientesRaw !== "0" ? parseInt(ambientesRaw, 10) : null,
+      contratoDias: contratoRow && contratoRow !=="" ? parseInt(contratoRow, 10) : null,
       cochera: cocheraRaw === "true" ? true : (cocheraRaw === "false" ? false : null),
       ordenPrecio: ordenRaw || null
     };
@@ -58,6 +61,23 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     if (filters.cochera !== null) {
       resultado = resultado.filter(i => !!(i.cochera ?? i.Cochera) === filters.cochera);
+    }
+
+        // filtro por dias de contrato (intenta diversos nombres de propiedad)
+    if (filters.contratoDias !== null) {
+      resultado = resultado.filter(i => {
+        const dias =
+          i.contratoDias ??
+          i.DiasContrato ??
+          i.diasContrato ??
+          i.diasRestantes ??
+          i.diasRestantesContrato ??
+          i.diasParaFinContrato ??
+          i.diasParaVencimiento ??
+          null;
+        if (dias == null) return false; // si no hay info de contratos, ocultar por seguridad
+        return Number(dias) === Number(filters.contratoDias);
+      });
     }
 
     if (filters.ordenPrecio === "asc") {
@@ -139,13 +159,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // listeners
   if (btnFiltrar) btnFiltrar.addEventListener("click", aplicarFiltro);
-  else [selTipo, selAmbientes, selCochera, selOrden].forEach(s => s?.addEventListener("change", aplicarFiltro));
+  else [selTipo, selAmbientes, selCochera, selContratoDias,selOrden].forEach(s => s?.addEventListener("change", aplicarFiltro));
 
   if (btnLimpiar) {
     btnLimpiar.addEventListener("click", async () => {
       if (selTipo) selTipo.value = "0";
       if (selAmbientes) selAmbientes.value = "0";
       if (selCochera) selCochera.value = "";
+      if(selContratoDias) selContratoDias.value = "";
       if (selOrden) selOrden.value = "";
       await cargarTodos();
     });

@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
+
 namespace Inmobiliaria25.Models
 {
 	public enum EstadoInmueble
@@ -35,5 +36,23 @@ namespace Inmobiliaria25.Models
 
 		[ValidateNever]  // lo pomgo para inmueble, aqui le digo a ASPNET no me toques esta propiedad la manejo yo, PERO SI LA USO PARA CONTRATO PORQUE AHI SE HACE JOIN 
 		public string DescripcionCompleta => $"{tipo.Observacion} - {Descripcion}";
+
+		[ValidateNever]
+		public string DireccionCompleta
+		{
+			get
+			{
+				if (direccion == null) return Descripcion ?? "---";
+				var partes = new List<string>();
+				if (!string.IsNullOrWhiteSpace(direccion.Calle)) partes.Add(direccion.Calle + (direccion.Altura.HasValue ? " " + direccion.Altura.Value : ""));
+				if (!string.IsNullOrWhiteSpace(direccion.Ciudad)) partes.Add(direccion.Ciudad);
+				if (!string.IsNullOrWhiteSpace(direccion.Cp)) partes.Add("CP " + direccion.Cp);
+				var res = partes.Count > 0 ? string.Join(", ", partes) : (direccion.Coordenadas ?? Descripcion ?? "---");
+				return res;
+			}
+		}
+
+
+
 	}
 }

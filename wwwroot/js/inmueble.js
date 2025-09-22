@@ -19,6 +19,7 @@ document.addEventListener("DOMContentLoaded", function () {
 		fetch(`/Inmueble/Filtrar?estado=${estado}&idPropietario=${propietarioId}`)
 			.then((res) => res.json())
 			.then((data) => {
+				console.log("Inmuebles recibidos:", data);
 				tabla.innerHTML = "";
 				if (data.length === 0) {
 					tabla.innerHTML = `<tr><td colspan="9" class="text-center">No se encontraron inmuebles.</td></tr>`;
@@ -37,10 +38,16 @@ document.addEventListener("DOMContentLoaded", function () {
 					const btnEliminar = esAdmin
 						? `<button type="button" class="btn btn-sm btn-danger btn-eliminar" data-id="${item.idInmueble}" title="Eliminar"><i class="fa-solid fa-trash"></i></button>`
                         : '';
+					// Solo calle + altura (intenta distintos nombres posibles)
+          const calle = item?.direccion?.Calle ?? item?.direccion?.calle ?? "";
+          const alturaVal = item?.direccion?.Altura ?? item?.direccion?.altura ?? item?.Altura ?? item?.altura ?? "";
+          const altura = (alturaVal === null || alturaVal === undefined) ? "" : String(alturaVal);
+          const direccion = calle ? (altura ? `${calle} ${altura}` : calle) : (item.descripcion ?? '---');
 
 					tabla.innerHTML += `
                         <tr>
                             <td>${item.tipo.observacion}</td>
+														<td>${direccion}</td>
                             <td>${item.descripcion}</td>
                             <td>${item.cantidadAmbientes}</td>
                             <td>$${item.precio}</td>

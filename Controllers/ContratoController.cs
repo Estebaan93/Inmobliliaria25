@@ -27,11 +27,30 @@ namespace Inmobiliaria25.Controllers
 
     // listar
 
-    public IActionResult Index()
+    /*public IActionResult Index()
     {
       var contratos = _repoContrato.Listar();
       return View(contratos);
+    }*/
+    public IActionResult Index(int? dias= null)
+    {
+      IEnumerable<Contrato> contratos;
+      if (dias.HasValue)
+      {
+        contratos = _repoContrato.ListarVencenEnDias(dias.Value);
+        ViewBag.FiltroDias = dias.Value;
+      }
+      else
+      {
+        contratos = _repoContrato.Listar();
+        ViewBag.FiltroDias = null;
+     }
+      return View(contratos);
     }
+
+
+
+
 
     // crear
 

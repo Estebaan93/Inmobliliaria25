@@ -3,7 +3,7 @@
 @{
 	var identity = User.Identity as ClaimsIdentity;
 	var avatar = identity?.FindFirst("AvatarUrl")?.Value ?? "/img/avatars/default.jpg";
-	var nombre = identity?.FindFirst(ClaimTypes.Name)?.Value ?? "Invitado";
+	var nombre = identity?.FindFirst(ClaimTypes.Name)?.Value ?? "Usuario";
 	var userId = identity?.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0";
    // Obtener el parámetro de la URL para forzar recarga
     var timestamp = Context.Request.Query["t"].ToString();

@@ -3,9 +3,24 @@
 
 @{
 	ViewData["Title"] = "Contratos";
+	int? filtroDias = ViewBag.FiltroDias != null ? (int?)ViewBag.FiltroDias : null;
 }
 
 <h2>Gestión de Contratos</h2>
+
+<div class="mb-3 d-flex align-items-center">
+    <form method="get" class="d-flex align-items-center">
+        <label class="me-2 mb-0">Vencen en:</label>
+        <select name="dias" class="form-select me-2" style="width:120px;">
+            <option value="" selected='@(filtroDias == null ? "selected" : "")'>Todos</option>
+            <option value="30" selected='@(filtroDias == 30 ? "selected" : "")'>30 días</option>
+            <option value="60" selected='@(filtroDias == 60 ? "selected" : "")'>60 días</option>
+            <option value="90" selected='@(filtroDias == 90 ? "selected" : "")'>90 días</option>
+        </select>
+        <button type="submit" class="btn btn-primary me-2">Filtrar</button>
+        <a href="@Url.Action("Index", "Contrato")" class="btn btn-outline-secondary">Limpiar</a>
+    </form>
+</div>
 
 <p>
 	<a asp-action="Crear" class="btn btn-primary">Nuevo Contrato</a>
@@ -15,10 +30,11 @@
 	<thead class="table-dark">
 		<tr>
 			<th>Inquilino</th>
-			<th>Inmueble</th>
+			<th>Inmueble Direc.</th>
 			<th>Monto</th>
 			<th>Fecha Inicio</th>
 			<th>Fecha Fin</th>
+			<th>Dias de vencimiento</th>
 			<th>Fecha Anulación</th>
 			<th>Estado</th>
 			<th>Acciones</th>
@@ -26,33 +42,52 @@
 		</tr>
 	</thead>
 	<tbody>
-		@foreach (var c in Model)
-		{
-			<tr>
-				<td>@c.inquilino?.Apellido @c.inquilino?.Nombre</td>
-				<td>@c.inmueble?.Descripcion</td>
-				<td>$@c.Monto</td>
-				<td>@c.FechaInicio.ToString("dd/MM/yyyy")</td>
-				<td>@c.FechaFin.ToString("dd/MM/yyyy")</td>
-				<td>@(c.FechaAnulacion?.ToString("dd/MM/yyyy") ?? "---")</td>
-				<td>@c.EstadoDescripcion</td>
-				<td class="text-center">
-					<div class="btn-group" role="group">
-						<a asp-action="Detalles" asp-route-id="@c.IdContrato" class="btn btn-info btn-sm" title="Detalles">
-							<i class="fa-solid fa-circle-info"></i>
-						</a>
-						<a asp-action="Editar" asp-route-id="@c.IdContrato" class="btn btn-warning btn-sm" title="Renovar">
-							<i class="fa-solid fa-pen-to-square"></i>
-						</a>
-					</div>
-				</td>
-				<td class="text-center">
-					<a asp-controller="Pago" asp-action="Index" asp-route-idContrato="@c.IdContrato" class="btn btn-success btn-sm"
-						title="Ver Pagos">
-						<i class="fa-solid fa-money-bill-wave"></i> Pagos
-					</a>
-				</td>
-			</tr>
-		}
+        @foreach (var c in Model)
+        {
+            var diasRestantes = (c.FechaFin.Date - DateTime.Today).Days;
+            var diasTexto = diasRestantes >= 0 ? diasRestantes.ToString() : ("-" + Math.Abs(diasRestantes).ToString());
+        <tr>
+            <td>@c.inquilino?.Apellido @c.inquilino?.Nombre</td>
+						<td>	
+                @{
+                    var calle = c.inmueble?.direccion?.Calle ?? c.inmueble?.direccion?.Calle ?? "";
+                    var alturaObj = c.inmueble?.direccion?.Altura ?? (object?) (c.inmueble?.direccion?.Altura);
+                    string altura = alturaObj != null ? alturaObj.ToString() : "";
+                    var direccion = string.IsNullOrWhiteSpace(calle)
+                        ? "---"
+                        : (string.IsNullOrWhiteSpace(altura) ? calle : $"{calle} {altura}");
+                }
+                @direccion
+						</td>
+            <td>$@c.Monto</td>
+            <td>@c.FechaInicio.ToString("dd/MM/yyyy")</td>
+            <td>@c.FechaFin.ToString("dd/MM/yyyy")</td>
+            <td>
+                @if (c.FechaAnulacion.HasValue) {
+                    <span class="text-muted">Anulado</span>
+                } else {
+                    <span>@diasTexto</span>
+                }
+            </td>
+            <td>@(c.FechaAnulacion?.ToString("dd/MM/yyyy") ?? "---")</td>
+            <td>@c.EstadoDescripcion</td>
+            <td class="text-center">
+                <div class="btn-group" role="group">
+                    <a asp-action="Detalles" asp-route-id="@c.IdContrato" class="btn btn-info btn-sm" title="Detalles">
+                        <i class="fa-solid fa-circle-info"></i>
+                    </a>
+                    <a asp-action="Editar" asp-route-id="@c.IdContrato" class="btn btn-warning btn-sm" title="Renovar">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                    </a>
+                </div>
+            </td>
+            <td class="text-center">
+                <a asp-controller="Pago" asp-action="Index" asp-route-idContrato="@c.IdContrato" class="btn btn-success btn-sm"
+                    title="Ver Pagos">
+                    <i class="fa-solid fa-money-bill-wave"></i> Pagos
+                </a>
+            </td>
+        </tr>
+        }
 	</tbody>
 </table>
