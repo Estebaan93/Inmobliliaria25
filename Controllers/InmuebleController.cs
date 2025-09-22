@@ -69,12 +69,13 @@ public IActionResult Index(int page = 1)
 		}
 
 		// filtros ajax
+		/*
 		[HttpGet]
 		public IActionResult Filtrar(int? estado = null, int? idPropietario = null)
 		{
 			var inmuebles = _repoInmueble.Listar(estado, idPropietario);
 			return Json(inmuebles);
-		}
+		}*/
 
 		// crear
 		public IActionResult Crear()
@@ -205,7 +206,53 @@ public IActionResult Index(int page = 1)
             return StatusCode(500, new { error = ex.Message });
         }
     }
+		
+		// filtros ajax
+        [HttpGet]
+        public IActionResult Filtrar(int? estado = null, int? idPropietario = null)
+        {
+            try
+            {
+                List<Inmueble> inmuebles;
 
+                if (estado.HasValue)
+                {
+                    if (estado.Value == 2) // Alquilado
+                    {
+                        // devuelve inmuebles que tienen contrato vigente
+                        inmuebles = _repoInmueble.ListarDisponible("alquilados");
+                    }
+                    else if (estado.Value == 1) // Disponible: estado=1 y SIN contrato vigente
+                    {
+                        inmuebles = _repoInmueble.ListarDisponible("disponible");
+                    }
+                    else // estado == 0 -> No disponible por estado
+                    {
+                        inmuebles = _repoInmueble.Listar(0, idPropietario);
+                        // ya filtró por propietario si idPropietario tiene valor
+                        // devolvemos directamente
+                        return Json(inmuebles);
+                    }
+                }
+                else
+                {
+                    // sin filtro de estado -> todos (puede aplicar propietario abajo)
+                    inmuebles = _repoInmueble.Listar();
+                }
+
+                // aplicar filtro por propietario si se pidió (para los listados obtenidos por ListarDisponible)
+                if (idPropietario.HasValue)
+                {
+                    inmuebles = inmuebles.Where(i => i.IdPropietario == idPropietario.Value).ToList();
+                }
+
+                return Json(inmuebles);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
+            }
+        }
 
 	}
 }
