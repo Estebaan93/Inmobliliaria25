@@ -460,25 +460,62 @@ namespace Inmobiliaria25.Repositorios
 
 
     public List<Inmueble> ListarConDireccion(int? estado = null, int? idPropietario = null)
-{
+    {
     var lista = new List<Inmueble>();
     using var conn = _context.GetConnection();
     conn.Open();
 
-    string sql = @"
-        SELECT i.idInmueble, i.idPropietario, i.idDireccion, i.idTipo, i.descripcion, i.cantidadAmbientes,
-               i.precio, i.cochera, i.piscina, i.mascotas, i.estado, i.metros2, i.UrlImagen,
-               d.idDireccion AS d_id, d.calle AS d_calle, d.altura AS d_altura
-        FROM inmueble i
-        LEFT JOIN direccion d ON i.idDireccion = d.idDireccion
-        WHERE (@estado IS NULL OR i.estado = @estado)
-          AND (@idPropietario IS NULL OR i.idPropietario = @idPropietario)
-        ORDER BY i.idInmueble DESC;
-    ";
+    // condición que detecta contrato vigente hoy (igual que en otros métodos)
+    string contratoCond = @"EXISTS (
+        SELECT 1 FROM contrato c
+        WHERE c.idInmueble = i.idInmueble
+          AND c.estado = 1
+          AND (c.fechaAnulacion IS NULL OR c.fechaAnulacion = '' OR c.fechaAnulacion = '0000-00-00' OR c.fechaAnulacion = '0000-00-00 00:00:00')
+          AND c.fechaInicio <= CURDATE()
+          AND c.fechaFin >= CURDATE()
+    )";
 
-    using var cmd = new MySqlCommand(sql, conn);
-    cmd.Parameters.AddWithValue("@estado", (object?)estado ?? DBNull.Value);
-    cmd.Parameters.AddWithValue("@idPropietario", (object?)idPropietario ?? DBNull.Value);
+    var sql = new System.Text.StringBuilder();
+    sql.AppendLine(@"
+        SELECT DISTINCT
+            i.idInmueble, i.idPropietario, i.idDireccion, i.idTipo, i.descripcion, i.cantidadAmbientes,
+            i.precio, i.cochera, i.piscina, i.mascotas, i.estado AS estado_tabla, i.metros2, i.UrlImagen,
+            d.idDireccion AS d_id, d.calle AS d_calle, d.altura AS d_altura, d.cp AS d_cp, d.ciudad AS d_ciudad, d.coordenadas AS d_coords,
+            t.idTipo AS t_id, t.observacion AS t_obs,
+            p.idPropietario AS p_id, p.nombre AS p_nombre, p.apellido AS p_apellido,
+            CASE
+                WHEN " + contratoCond + @" THEN 2
+                WHEN i.estado = 0 THEN 0
+                ELSE 1
+            END AS estado_calculado
+        FROM Inmueble i
+        LEFT JOIN Direccion d ON i.idDireccion = d.idDireccion
+        INNER JOIN Tipo t ON i.idTipo = t.idTipo
+        INNER JOIN Propietario p ON i.idPropietario = p.idPropietario
+    ");
+
+    var whereParts = new List<string>();
+    if (estado.HasValue)
+    {
+        if (estado.Value == 2) // alquilados
+            whereParts.Add($"{contratoCond}");
+        else if (estado.Value == 1) // disponibles (activo y sin contrato vigente)
+            whereParts.Add($"i.estado = 1 AND NOT ({contratoCond})");
+        else if (estado.Value == 0) // no disponible por estado
+            whereParts.Add("i.estado = 0");
+    }
+
+    if (idPropietario.HasValue)
+        whereParts.Add("i.idPropietario = @idPropietario");
+
+    if (whereParts.Count > 0)
+        sql.AppendLine(" WHERE " + string.Join(" AND ", whereParts));
+
+    sql.AppendLine(" ORDER BY i.idInmueble DESC;");
+
+    using var cmd = new MySqlCommand(sql.ToString(), conn);
+    if (idPropietario.HasValue)
+        cmd.Parameters.AddWithValue("@idPropietario", idPropietario.Value);
 
     using var reader = cmd.ExecuteReader();
     while (reader.Read())
@@ -497,7 +534,18 @@ namespace Inmobiliaria25.Repositorios
             Mascotas = !reader.IsDBNull(reader.GetOrdinal("mascotas")) && reader.GetBoolean("mascotas"),
             Metros2 = reader.IsDBNull(reader.GetOrdinal("metros2")) ? null : reader.GetString("metros2"),
             UrlImagen = reader.IsDBNull(reader.GetOrdinal("UrlImagen")) ? null : reader.GetString("UrlImagen"),
-            estado = reader.IsDBNull(reader.GetOrdinal("estado")) ? EstadoInmueble.NoDisponible : (EstadoInmueble)reader.GetInt32("estado")
+            estado = reader.IsDBNull(reader.GetOrdinal("estado_calculado")) ? EstadoInmueble.NoDisponible : (EstadoInmueble)reader.GetInt32("estado_calculado"),
+            propietario = new Propietarios
+            {
+                IdPropietario = reader.IsDBNull(reader.GetOrdinal("p_id")) ? 0 : reader.GetInt32("p_id"),
+                Nombre = reader.IsDBNull(reader.GetOrdinal("p_nombre")) ? "" : reader.GetString("p_nombre"),
+                Apellido = reader.IsDBNull(reader.GetOrdinal("p_apellido")) ? "" : reader.GetString("p_apellido")
+            },
+            tipo = new Tipo
+            {
+                IdTipo = reader.IsDBNull(reader.GetOrdinal("t_id")) ? 0 : reader.GetInt32("t_id"),
+                Observacion = reader.IsDBNull(reader.GetOrdinal("t_obs")) ? "" : reader.GetString("t_obs")
+            }
         };
 
         if (!reader.IsDBNull(reader.GetOrdinal("d_id")))
@@ -506,7 +554,10 @@ namespace Inmobiliaria25.Repositorios
             {
                 IdDireccion = reader.GetInt32("d_id"),
                 Calle = reader.IsDBNull(reader.GetOrdinal("d_calle")) ? null : reader.GetString("d_calle"),
-                Altura = reader.IsDBNull(reader.GetOrdinal("d_altura")) ? (int?)null : reader.GetInt32("d_altura")
+                Altura = reader.IsDBNull(reader.GetOrdinal("d_altura")) ? (int?)null : reader.GetInt32("d_altura"),
+                Cp = reader.IsDBNull(reader.GetOrdinal("d_cp")) ? null : reader.GetString("d_cp"),
+                Ciudad = reader.IsDBNull(reader.GetOrdinal("d_ciudad")) ? null : reader.GetString("d_ciudad"),
+                Coordenadas = reader.IsDBNull(reader.GetOrdinal("d_coords")) ? null : reader.GetString("d_coords")
             };
         }
 
@@ -515,6 +566,8 @@ namespace Inmobiliaria25.Repositorios
 
     return lista;
 }
+
+
 
   }
 }
