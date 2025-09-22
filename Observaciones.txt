@@ -31,3 +31,9 @@ USUARIO
 INQUILINO
 1.
 2.
+
+
+------------------------------------------------------------------
+"INMUEBLES":
+Colocar la direccion del inmueble en el index de inmuebles, se agrego en repoInmu listarConDireccion
+En el controller revisar el endpoint filtrar para q desde el inmueble.js se consuma el json. El json actual de inmueble.js no trae la direccion del inmueble. IdDireccion valor 0.
