@@ -2,6 +2,7 @@
 using Inmobiliaria25.Models;
 using Inmobiliaria25.Repositorios;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Inmobiliaria25.Controllers
 {
@@ -11,17 +12,21 @@ namespace Inmobiliaria25.Controllers
     private readonly RepositorioInquilino _repoInquilino;
     private readonly RepositorioInmueble _repoInmueble;
     private readonly RepositorioPago _repoPago;
+    private readonly RepositorioAuditoria _repoAuditoria;
 
     public ContratoController(
         RepositorioContrato repoContrato,
         RepositorioInquilino repoInquilino,
         RepositorioInmueble repoInmueble,
-        RepositorioPago repoPago)
+        RepositorioPago repoPago,
+        RepositorioAuditoria repoAuditoria
+        )
     {
       _repoContrato = repoContrato;
       _repoInquilino = repoInquilino;
       _repoInmueble = repoInmueble;
       _repoPago = repoPago;
+      _repoAuditoria = repoAuditoria;
     }
 
 
@@ -65,6 +70,8 @@ namespace Inmobiliaria25.Controllers
       return View(vm);
     }
 
+
+
     [HttpPost]
     public IActionResult Crear(ContratoViewModel vm)
     {
@@ -107,6 +114,10 @@ namespace Inmobiliaria25.Controllers
       contrato.FechaAnulacion = null;
 
       int id = _repoContrato.Crear(contrato);
+      // Registrar auditoría: creación de contrato
+      var claim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? User.FindFirst("IdUsuario")?.Value;
+      int idUsuario = int.TryParse(claim, out var tmp) ? tmp : 0;
+      _repoAuditoria.RegistrarAuditoria(id, TipoEntidad.contrato, AccionAuditoria.crear, idUsuario, $"Contrato creado (ID {id})");
       return RedirectToAction("Index");
     }
 
@@ -205,6 +216,8 @@ namespace Inmobiliaria25.Controllers
       return View(contrato);
     }
 
+
+
     [HttpPost]
     public IActionResult Finalizar(int id)
     {
@@ -230,6 +243,11 @@ namespace Inmobiliaria25.Controllers
 
       //Anular contrato
       _repoContrato.AnularContrato(id);
+      
+      // Registrar auditoría: anulación de contrato
+      var claim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? User.FindFirst("IdUsuario")?.Value;
+      int idUsuario = int.TryParse(claim, out var tmp) ? tmp : 0;
+      _repoAuditoria.RegistrarAuditoria(id, TipoEntidad.contrato, AccionAuditoria.anular, idUsuario, $"Contrato anulado (ID {id})");
 
       //Registrar pago como pendiente
       var pago = new Pago
@@ -242,6 +260,9 @@ namespace Inmobiliaria25.Controllers
         Estado = false
       };
       _repoPago.CrearPagoSinValidacion(pago);
+
+      // Registrar auditoría: creación de pago (multa)
+      _repoAuditoria.RegistrarAuditoria(pago.IdPago, TipoEntidad.pago, AccionAuditoria.crear, idUsuario, $"Multa creada por anulación de contrato (Contrato {id}, Pago ID {pago.IdPago})");
 
       TempData["Mensaje"] = $"Contrato N° {id} anulado. Multa: ${multa}, deuda: ${deuda}, total: ${totalMulta}.";
       return RedirectToAction("Detalles", new { id });

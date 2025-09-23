@@ -1,7 +1,9 @@
 //Controllers/PagoController.cs
+using System.Security.Claims;
 using Inmobiliaria25.Models;
 using Inmobiliaria25.Repositorios;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Inmobiliaria25.Controllers
 {
@@ -9,11 +11,13 @@ namespace Inmobiliaria25.Controllers
 	{
 		private readonly RepositorioPago _repoPago;
 		private readonly RepositorioContrato _repoContrato;
+		private readonly RepositorioAuditoria _repoAuditoria;
 
-		public PagoController(RepositorioPago repoPago, RepositorioContrato repoContrato)
+		public PagoController(RepositorioPago repoPago, RepositorioContrato repoContrato, RepositorioAuditoria repoAuditoria)
 		{
 			_repoPago = repoPago;
 			_repoContrato = repoContrato;
+			_repoAuditoria = repoAuditoria;
 		}
 
 		// lista pagos
@@ -91,6 +95,10 @@ namespace Inmobiliaria25.Controllers
 					pago.Estado = true;
 					_repoPago.Crear(pago);
 				}
+				//Registrar auditoria en creacion de pago
+				var claim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? User.FindFirst("IdUsuario")?.Value;
+				int idUsuario = int.TryParse(claim, out var tmp) ? tmp : 0;
+				_repoAuditoria.RegistrarAuditoria(pago.IdPago, TipoEntidad.pago, AccionAuditoria.crear, idUsuario, $"Pago registrado (Contrato {pago.IdContrato}, N° {pago.NumeroPago})");
 
 				TempData["Exito"] = "Pago registrado correctamente.";
 				return RedirectToAction("Index", new { idContrato = pago.IdContrato });
@@ -160,18 +168,27 @@ namespace Inmobiliaria25.Controllers
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public IActionResult Eliminar(int id, int idContrato)
-		{
-			try
-			{
-				_repoPago.Eliminar(id);
-				TempData["Exito"] = "Pago eliminado correctamente.";
-			}
-			catch (Exception ex)
-			{
-				TempData["Error"] = "Error al eliminar el pago: " + ex.Message;
-			}
+		        {
+            try
+            {
+                _repoPago.Eliminar(id);
 
-			return RedirectToAction("Index", new { idContrato });
-		}
+                // Registrar auditoría: anulación/eliminación de pago
+                var claim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? User.FindFirst("IdUsuario")?.Value;
+                int idUsuario = int.TryParse(claim, out var tmp) ? tmp : 0;
+                _repoAuditoria.RegistrarAuditoria(id, TipoEntidad.pago, AccionAuditoria.anular, idUsuario, $"Pago eliminado (ID {id})");
+
+                TempData["Exito"] = "Pago eliminado correctamente.";
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "Error al eliminar el pago: " + ex.Message;
+            }
+
+            return RedirectToAction("Index", new { idContrato });
+        }
+
+
+		
 	}
 }

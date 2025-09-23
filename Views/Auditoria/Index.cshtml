@@ -28,14 +28,11 @@
                 </select>
             </div>
             
-            <!-- Filtro por tipo -->
+                   <!-- Filtro por tipo -->
             <div class="col-md-4">
                 <label class="form-label">Filtrar por tipo:</label>
                 <select class="form-select" name="tipoEntidad" onchange="this.form.submit()">
                     <option value="">-- Todos los tipos --</option>
-                    <option value="inquilino" selected="@(Context.Request.Query["tipoEntidad"] == "inquilino" ? "selected" : null)">Inquilinos</option>
-                    <option value="propietario" selected="@(Context.Request.Query["tipoEntidad"] == "propietario" ? "selected" : null)">Propietarios</option>
-                    <option value="inmueble" selected="@(Context.Request.Query["tipoEntidad"] == "inmueble" ? "selected" : null)">Inmuebles</option>
                     <option value="contrato" selected="@(Context.Request.Query["tipoEntidad"] == "contrato" ? "selected" : null)">Contratos</option>
                     <option value="pago" selected="@(Context.Request.Query["tipoEntidad"] == "pago" ? "selected" : null)">Pagos</option>
                 </select>
