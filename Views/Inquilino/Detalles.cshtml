@@ -1,3 +1,4 @@
+<!-- Views/Inquilino/Detalles.cshtml -->
 @model Inmobiliaria25.Models.Inquilinos
 
 @{
@@ -35,12 +36,19 @@
 
       @if (Model.Estado)
       {
+        @if(User.IsInRole("Administrador"))
+        {
         <form asp-action="Borrar" method="post" class="mx-1">
           <input type="hidden" name="id" value="@Model.IdInquilino" />
           <button type="submit" class="btn btn-borrarbt">
             <i class="fa-solid fa-trash"></i> Dar de Baja
           </button>
         </form>
+      } else{
+        <button class="btn btn-borrarbt mx-1" disabled title="Solo administradores">
+          <i class="fa-solid fa-trash"></i> Dar de Baja
+          </button>
+        }
       }
       else
       {
