@@ -2,9 +2,11 @@
 using Inmobiliaria25.Models;
 using Inmobiliaria25.Repositorios;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Inmobiliaria25.Controllers
 {
+  [Authorize] //todas las acciones requieren autenticacion
   public class TipoController : Controller // heredo de controller
   {
     private readonly RepositorioTipo _repo;

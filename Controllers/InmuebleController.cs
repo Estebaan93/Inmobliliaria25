@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Inmobiliaria25.Controllers
 {
+	[Authorize] //todas las acciones requieren autenticacion
 	public class InmuebleController : Controller
 	{
 		private readonly RepositorioInmueble _repoInmueble;
@@ -194,34 +195,34 @@ public IActionResult Index(int page = 1)
 		}
 
 		[HttpGet]
-    public IActionResult ListarDisponible()
-    {
-        try
-        {
-            var inmuebles = _repoInmueble.ListarDisponible();
-            return Json(inmuebles);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new { error = ex.Message });
-        }
-    }
-		
+		public IActionResult ListarDisponible()
+		{
+			try
+			{
+				var inmuebles = _repoInmueble.ListarDisponible();
+				return Json(inmuebles);
+			}
+			catch (Exception ex)
+			{
+				return StatusCode(500, new { error = ex.Message });
+			}
+		}
+
 		// filtros ajax para la vista inmuebles enriquecidos con direccion
-        [HttpGet]
-        public IActionResult Filtrar(int? estado = null, int? idPropietario = null)
-        {
-            try
-            {
-        // Usar la versión que devuelve inmuebles ya enriquecidos con direccion/tipo/propietario
-        var inmuebles = _repoInmueble.ListarConDireccion(estado, idPropietario);
-                return Json(inmuebles);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { error = ex.Message });
-            }
-        }
+		[HttpGet]
+		public IActionResult Filtrar(int? estado = null, int? idPropietario = null)
+		{
+			try
+			{
+				// Usar la versión que devuelve inmuebles ya enriquecidos con direccion/tipo/propietario
+				var inmuebles = _repoInmueble.ListarConDireccion(estado, idPropietario);
+				return Json(inmuebles);
+			}
+			catch (Exception ex)
+			{
+				return StatusCode(500, new { error = ex.Message });
+			}
+		}
 
 	}
 }

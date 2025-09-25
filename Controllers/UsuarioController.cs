@@ -22,6 +22,7 @@ namespace Inmobiliaria25.Controllers
     }
 
     //  Listar usuarios
+    [Authorize(Policy = "Administrador")] //Solo administradores pueden listar usuarios
     public IActionResult Index()
     {
       var usuarios = _repo.Listar();
@@ -196,7 +197,7 @@ namespace Inmobiliaria25.Controllers
 
     //  Cambiar Password (POST)
     [HttpPost]
-    public IActionResult CambiarPassword(UsuarioEditar vm)
+    public async Task<IActionResult> CambiarPassword(UsuarioEditar vm)
     {
       if (vm.NewPassword != vm.ConfirmPassword)
       {
@@ -207,9 +208,48 @@ namespace Inmobiliaria25.Controllers
       var usuario = _repo.Obtener(vm.IdUsuario);
       if (usuario == null) return NotFound();
 
+      var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+      var userRol = User.FindFirst(ClaimTypes.Role)?.Value;
+      var esAdministrador = userRol == "Administrador";
+
+      // Si el usuario logueado esta cambiando su propia clave, verificar la antigua.
+      // Si no es el mismo usuario y no es administrador, denegar.
+      if (currentUserId == vm.IdUsuario.ToString())
+      {
+        if (string.IsNullOrEmpty(vm.OldPassword))
+        {
+          ModelState.AddModelError("OldPassword", "Debe ingresar la contraseña actual.");
+          return View(vm);
+        }
+        if (!_repo.VerificarPassword(vm.IdUsuario, vm.OldPassword))
+        {
+          ModelState.AddModelError("OldPassword", "La contraseña actual es incorrecta.");
+          return View(vm);
+        }
+      }
+      else if (!esAdministrador)
+      {
+        // No es propietario ni administrador -> prohibido
+        return Forbid();
+      }
+
+      // Actualiza la contraseña
       _repo.Actualizar(usuario, vm.NewPassword);
-      return RedirectToAction("Index");
+
+      // Si el usuario cambioo su propia contraseña, cerrar sesión y pedir re-login
+      /*if (currentUserId == vm.IdUsuario.ToString())
+      {*/
+        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        TempData["Success"] = "Contraseña cambiada. Por favor inicie sesión con la nueva contraseña.";
+        return RedirectToAction("Index", "Login");
+      //}
+      //return RedirectToAction("Index", "Home", new { t = DateTime.Now.Ticks });
+      /*
+      // Si un admin cambi0 la contraseña de otro usuario, redirigir al listado o detalle
+      TempData["Success"] = "Contraseña actualizada correctamente.";
+      return RedirectToAction("Index", "Home", new { t = DateTime.Now.Ticks });*/
     }
+      
 
     //  Eliminar
     [HttpPost]

@@ -1,8 +1,15 @@
 ﻿<!--Views/Shared/_Layout.cshtml -->
 @using System.Security.Claims
 @{
+	//Obtener identidad y estado de autenticacion 
 	var identity = User.Identity as ClaimsIdentity;
-	var avatar = identity?.FindFirst("AvatarUrl")?.Value ?? "/img/avatars/default.jpg";
+	var isAuthenticated = User?.Identity?.IsAuthenticated==true;
+
+	//Sino esta autenticado usamos avatar por defecto
+	var avatar= isAuthenticated ? identity?.FindFirst("AvatarUrl")?.Value : "/img/avatars/default.jpg";
+	//var avatar = identity?.FindFirst("AvatarUrl")?.Value ?? "/img/avatars/default.jpg";
+	
+	//Nombre y userId
 	var nombre = identity?.FindFirst(ClaimTypes.Name)?.Value ?? "Usuario";
 	var userId = identity?.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0";
    // Obtener el parámetro de la URL para forzar recarga

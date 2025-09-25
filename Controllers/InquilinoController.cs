@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Inmobiliaria25.Controllers
 {
+  [Authorize] //todas las acciones requieren autenticacion
   // defino la clase que hereda de controller
   public class InquilinoController : Controller
   {

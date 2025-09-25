@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Inmobiliaria25.Controllers
 {
+  [Authorize] //todas las acciones requieren autenticacion
   public class PropietarioController : Controller
   {
     private readonly RepositorioPropietario repo;
@@ -15,7 +16,7 @@ namespace Inmobiliaria25.Controllers
       this.repo = repo;
     }
 
-       //Listar activos paginado
+    //Listar activos paginado
     public IActionResult Index(int page = 1)
     {
       const int pageSize = 5;
@@ -48,55 +49,55 @@ namespace Inmobiliaria25.Controllers
       return View();
     }
 
-     [HttpPost]
-        public IActionResult Guardar(Propietarios propietario)
+    [HttpPost]
+    public IActionResult Guardar(Propietarios propietario)
+    {
+      try
+      {
+        // vslido modelo primero
+        if (!ModelState.IsValid)
         {
-            try
-            {
-                // vslido modelo primero
-                if (!ModelState.IsValid)
-                {
-                    if (propietario.IdPropietario > 0)
-                    {
-                        return View("Editar", propietario);
-                    }
-                    return View("Crear", propietario);
-                }
-
-                // valido duplicados de DNI
-                if (propietario.IdPropietario > 0)
-                {
-                    // EDITAR
-                    if (repo.ExisteDni(propietario.Dni, propietario.IdPropietario))
-                    {
-                        ModelState.AddModelError("Dni", "El DNI ya está registrado en otro propietario.");
-                        return View("Editar", propietario);
-                    }
-
-                    repo.Modificar(propietario);
-                    TempData["Mensaje"] = "Propietario modificado con éxito";
-                }
-                else
-                {
-                    // CREAR
-                    if (repo.ExisteDni(propietario.Dni))
-                    {
-                        ModelState.AddModelError("Dni", "El DNI ya está registrado. Revise la tabla de propietarios.");
-                        return View("Crear", propietario);
-                    }
-
-                    repo.Alta(propietario);
-                    TempData["Mensaje"] = "Propietario creado con éxito";
-                }
-
-                return RedirectToAction("Index");
-            }
-            catch (Exception ex)
-            {
-                TempData["Error"] = ex.Message;
-                return RedirectToAction("Index");
-            }
+          if (propietario.IdPropietario > 0)
+          {
+            return View("Editar", propietario);
+          }
+          return View("Crear", propietario);
         }
+
+        // valido duplicados de DNI
+        if (propietario.IdPropietario > 0)
+        {
+          // EDITAR
+          if (repo.ExisteDni(propietario.Dni, propietario.IdPropietario))
+          {
+            ModelState.AddModelError("Dni", "El DNI ya está registrado en otro propietario.");
+            return View("Editar", propietario);
+          }
+
+          repo.Modificar(propietario);
+          TempData["Mensaje"] = "Propietario modificado con éxito";
+        }
+        else
+        {
+          // CREAR
+          if (repo.ExisteDni(propietario.Dni))
+          {
+            ModelState.AddModelError("Dni", "El DNI ya está registrado. Revise la tabla de propietarios.");
+            return View("Crear", propietario);
+          }
+
+          repo.Alta(propietario);
+          TempData["Mensaje"] = "Propietario creado con éxito";
+        }
+
+        return RedirectToAction("Index");
+      }
+      catch (Exception ex)
+      {
+        TempData["Error"] = ex.Message;
+        return RedirectToAction("Index");
+      }
+    }
 
     // editar (GET)
     public IActionResult Editar(int id)
@@ -112,7 +113,7 @@ namespace Inmobiliaria25.Controllers
 
     // baja logica
     [HttpPost]
-    [Authorize(Roles="Administrador")]
+    [Authorize(Roles = "Administrador")]
     public IActionResult Borrar(int id)
     {
       repo.Baja(id);

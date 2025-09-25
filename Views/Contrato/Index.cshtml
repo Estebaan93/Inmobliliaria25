@@ -29,6 +29,7 @@
 <table class="table table-striped table-bordered">
 	<thead class="table-dark">
 		<tr>
+            <th>Contrato N°</th>
 			<th>Inquilino</th>
 			<th>Inmueble Direc.</th>
 			<th>Monto</th>
@@ -47,6 +48,7 @@
             var diasRestantes = (c.FechaFin.Date - DateTime.Today).Days;
             var diasTexto = diasRestantes >= 0 ? diasRestantes.ToString() : ("-" + Math.Abs(diasRestantes).ToString());
         <tr>
+            <td>@c.IdContrato</td>
             <td>@c.inquilino?.Apellido @c.inquilino?.Nombre</td>
 						<td>	
                 @{

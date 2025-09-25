@@ -4,9 +4,11 @@ using Inmobiliaria25.Models;
 using Inmobiliaria25.Repositorios;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Inmobiliaria25.Controllers
 {
+	[Authorize] //todas las acciones requieren autenticacion
 	public class PagoController : Controller
 	{
 		private readonly RepositorioPago _repoPago;
@@ -63,7 +65,8 @@ namespace Inmobiliaria25.Controllers
 				IdContrato = idContrato,
 				Contrato = contrato,
 				FechaPago = DateTime.Today,
-				Importe = multaPendiente?.Importe ?? 0,
+				//Importe = multaPendiente?.Importe ?? 0,
+				Importe= multaPendiente?.Importe ?? (decimal)contrato.Monto, // si hay multa, el importe es el de la multa, sino el del contrato
 				NumeroPago = numeroGenerado,                // mostrado en readonly
 				Detalle = multaPendiente?.Detalle ?? "",
 				IdPago = multaPendiente?.IdPago ?? 0        // si existe multa, la actualizaremos en el POST
@@ -98,7 +101,7 @@ namespace Inmobiliaria25.Controllers
 				//Registrar auditoria en creacion de pago
 				var claim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? User.FindFirst("IdUsuario")?.Value;
 				int idUsuario = int.TryParse(claim, out var tmp) ? tmp : 0;
-				_repoAuditoria.RegistrarAuditoria(pago.IdPago, TipoEntidad.pago, AccionAuditoria.crear, idUsuario, $"Pago registrado (Contrato {pago.IdContrato}, N° {pago.NumeroPago})");
+				_repoAuditoria.RegistrarAuditoria(pago.IdPago, TipoEntidad.pago, AccionAuditoria.crear, idUsuario, $"Pago registrado (Contrato N° {pago.IdContrato}, N° {pago.NumeroPago})");
 
 				TempData["Exito"] = "Pago registrado correctamente.";
 				return RedirectToAction("Index", new { idContrato = pago.IdContrato });
@@ -176,7 +179,7 @@ namespace Inmobiliaria25.Controllers
                 // Registrar auditoría: anulación/eliminación de pago
                 var claim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? User.FindFirst("IdUsuario")?.Value;
                 int idUsuario = int.TryParse(claim, out var tmp) ? tmp : 0;
-                _repoAuditoria.RegistrarAuditoria(id, TipoEntidad.pago, AccionAuditoria.anular, idUsuario, $"Pago eliminado (ID {id})");
+                _repoAuditoria.RegistrarAuditoria(id, TipoEntidad.pago, AccionAuditoria.anular, idUsuario, $"Pago eliminado (N° {id})");
 
                 TempData["Exito"] = "Pago eliminado correctamente.";
             }

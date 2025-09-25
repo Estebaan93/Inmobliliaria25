@@ -4,9 +4,11 @@ using Microsoft.AspNetCore.Mvc;
 using NETmvc2108.Models;
 using Inmobiliaria25.Repositorios;
 using Inmobiliaria25.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace NETmvc2108.Controllers;
 
+[Authorize] //todas las acciones requieren autenticacion
 public class HomeController : Controller
 {
   private readonly ILogger<HomeController> _logger;
@@ -32,34 +34,34 @@ public class HomeController : Controller
     return View(vm);
   }
 
-        [HttpGet]
-        public IActionResult GetInmueblesFiltrados(
-            int? idTipo = null,
-            int? ambientes = null,
-            bool? cochera = null,
-            string? ordenPrecio = null)
-        {
-            var inmuebles = _repoInmueble.ListarDisponible();
+  [HttpGet]
+  public IActionResult GetInmueblesFiltrados(
+      int? idTipo = null,
+      int? ambientes = null,
+      bool? cochera = null,
+      string? ordenPrecio = null)
+  {
+    var inmuebles = _repoInmueble.ListarDisponible();
 
-            if (idTipo.HasValue)
-                inmuebles = inmuebles.Where(i => i.IdTipo == idTipo.Value).ToList();
+    if (idTipo.HasValue)
+      inmuebles = inmuebles.Where(i => i.IdTipo == idTipo.Value).ToList();
 
-            if (ambientes.HasValue)
-                inmuebles = inmuebles.Where(i => i.CantidadAmbientes == ambientes.Value).ToList();
+    if (ambientes.HasValue)
+      inmuebles = inmuebles.Where(i => i.CantidadAmbientes == ambientes.Value).ToList();
 
-            if (cochera.HasValue)
-                inmuebles = inmuebles.Where(i => i.Cochera == cochera.Value).ToList();
+    if (cochera.HasValue)
+      inmuebles = inmuebles.Where(i => i.Cochera == cochera.Value).ToList();
 
-            if (!string.IsNullOrEmpty(ordenPrecio))
-            {
-                if (ordenPrecio == "asc")
-                    inmuebles = inmuebles.OrderBy(i => i.Precio).ToList();
-                else if (ordenPrecio == "desc")
-                    inmuebles = inmuebles.OrderByDescending(i => i.Precio).ToList();
-            }
+    if (!string.IsNullOrEmpty(ordenPrecio))
+    {
+      if (ordenPrecio == "asc")
+        inmuebles = inmuebles.OrderBy(i => i.Precio).ToList();
+      else if (ordenPrecio == "desc")
+        inmuebles = inmuebles.OrderByDescending(i => i.Precio).ToList();
+    }
 
-            return Json(inmuebles);
-        } 
+    return Json(inmuebles);
+  }
 
   public IActionResult Privacy()
   {

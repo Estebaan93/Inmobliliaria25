@@ -192,5 +192,23 @@ namespace Inmobiliaria25.Repositorios
         Estado = reader.GetBoolean("estado")
       };
     }
+
+
+
+    //  Verificar credenciales
+    public bool VerificarPassword(int idUsuario, string passwordIngresado)
+    {
+      var usuario = Obtener(idUsuario);
+      if (usuario == null) return false;
+      try
+      {
+        return BCrypt.Net.BCrypt.Verify(passwordIngresado, usuario.Password);
+      }
+      catch
+      {
+        return false;
+      }
+    }
+    
   }
 }

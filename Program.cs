@@ -3,6 +3,8 @@ using Inmobiliaria25.Db;
 using Inmobiliaria25.Repositorios;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,12 +33,22 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
   });
 
 //Politicsa de autorizaxion administradores
-  builder.Services.AddAuthorization(options=>{
+  builder.Services.AddAuthorization(options=>
+  {
     //solo administradores
-    options.AddPolicy("Administrador", policy=>
+    options.AddPolicy("Administrador", policy =>
       policy.RequireClaim(ClaimTypes.Role, "Administrador"));
+      options.AddPolicy("Empleado", policy =>
+      policy.RequireClaim(ClaimTypes.Role, "Empleado","Administrador"));
   });
 
+//Exigir autenticacion en todos los controladores
+/*builder.Services.AddControllersWithViews(options=>{
+  var policy = new AuthorizationPolicyBuilder()
+    .RequireAuthenticatedUser()
+    .Build();
+  options.Filters.Add(new AuthorizeFilter(policy));
+});*/
 
 
 // controlador con vistas
