@@ -65,7 +65,11 @@ namespace Inmobiliaria25.Controllers
     {
       var vm = new ContratoViewModel
       {
-        Contrato = new Contrato(),
+        Contrato = new Contrato()
+        {
+          FechaInicio = DateTime.Today,
+          FechaFin = DateTime.Today.AddDays(1),
+        },
         Inquilinos = _repoInquilino.ObtenerActivos(),
         Inmuebles = _repoInmueble.ListarDisponible()
       };

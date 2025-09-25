@@ -67,19 +67,25 @@ namespace Inmobiliaria25.Controllers
         // valido duplicados de DNI
         if (propietario.IdPropietario > 0)
         {
+
+          //editar recupero registro original y fuerzo dni para que no se pueda editar
+          var original = repo.ObtenerPorId(propietario.IdPropietario);
+          if (original == null) return NotFound();  
+          propietario.Dni = original.Dni; //ignoramos cualquier modificacion
+
           // EDITAR
-          if (repo.ExisteDni(propietario.Dni, propietario.IdPropietario))
+          /*if (repo.ExisteDni(propietario.Dni, propietario.IdPropietario))
           {
             ModelState.AddModelError("Dni", "El DNI ya está registrado en otro propietario.");
             return View("Editar", propietario);
-          }
+          }*/
 
           repo.Modificar(propietario);
           TempData["Mensaje"] = "Propietario modificado con éxito";
         }
         else
         {
-          // CREAR
+          // crear validar duplicados
           if (repo.ExisteDni(propietario.Dni))
           {
             ModelState.AddModelError("Dni", "El DNI ya está registrado. Revise la tabla de propietarios.");

@@ -71,11 +71,18 @@ namespace Inmobiliaria25.Controllers
 
     if (inquilino.IdInquilino > 0)
     {
-      if (repo.ObtenerPorDni(inquilino.Dni, inquilino.IdInquilino))
-      {
-        ModelState.AddModelError("Dni", "El DNI ya está registrado");
-        return View("Editar", inquilino);
-      }
+          //recupero el registro original y fuerzo el dni para que no se pueda editar
+          var original = repo.ObtenerPorId(inquilino.IdInquilino);
+          if (original == null) return NotFound();
+          inquilino.Dni = original.Dni;
+
+
+
+         /* if (repo.ObtenerPorDni(inquilino.Dni, inquilino.IdInquilino))
+          {
+            ModelState.AddModelError("Dni", "El DNI ya está registrado");
+            return View("Editar", inquilino);
+          }*/
 
       var filas = repo.Modificar(inquilino);
       if (filas > 0)

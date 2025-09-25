@@ -1,3 +1,4 @@
+<!-- Views/Propietario/Editar.cshtml -->
 @model Inmobiliaria25.Models.Propietarios
 
 @{
@@ -12,7 +13,7 @@
 
     <div class="mb-3">
       <label asp-for="Dni" class="form-label"></label>
-      <input asp-for="Dni" class="form-control" />
+      <input asp-for="Dni" class="form-control" value="@Model.Dni" readonly />
       <span asp-validation-for="Dni" class="text-danger"></span>
     </div>
 
