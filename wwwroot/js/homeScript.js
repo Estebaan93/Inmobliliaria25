@@ -173,7 +173,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // carga inicial cuando el contenedor está vacío
+  // carga inicial cuando el contenedor esta vacio
   if (container && container.children.length === 0) {
     cargarTodos();
   }

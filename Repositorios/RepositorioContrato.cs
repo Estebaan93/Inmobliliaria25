@@ -240,7 +240,7 @@ namespace Inmobiliaria25.Repositorios
 			return count > 0;
 		}
 		
-		// Listar contratos que vencen en los próximos N días (incluye hoy)
+		// Listar contratos que vencen en los proximos N días (incluye hoy)
         public List<Contrato> ListarVencenEnDias(int dias)
         {
             var lista = new List<Contrato>();

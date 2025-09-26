@@ -306,7 +306,7 @@ body.login-background {
   content: "";
   position: fixed;
   inset: 0;
-  background: rgba(41, 40, 40, 0.65); /* ajustar opacidad/ color según necesidad */
+  background: rgba(41, 40, 40, 0.65); /* ajustar opacidad/ color segun necesidad */
   pointer-events: none;
   z-index: 0;
 }

@@ -26,38 +26,6 @@ namespace Inmobiliaria25.Controllers
 			_repoDireccion = repoDireccion;
 		}
 
-		//Listar activos paginado
-		/* *PARA IMPLEMENTAR PAGINADO, PERO HAY QUE TOCAR EL JS*
-public IActionResult Index(int page = 1)
-		{
-			const int pageSize = 5;
-
-			if (page < 1) page = 1;
-
-			int total = _repoInmueble.ContarActivos();
-			int totalPages = (int)Math.Ceiling(total / (double)pageSize);
-			if (totalPages == 0) totalPages = 1;        // evita dividir por cero cuando no hay datos
-			if (page > totalPages) page = totalPages;   // clamp a último disponible
-
-			var lista = _repoInmueble.ObtenerActivosPaginado(page, pageSize);
-
-			var viewModel = new InmuebleViewModel
-			{
-				Inmuebles = lista,
-				Propietarios = _repoPropietario.ObtenerActivos() ?? new List<Propietarios>(), // si usás filtro por propietario
-				CurrentPage = page,
-				TotalPages = totalPages,
-				TotalItems = total,
-				PageSize = pageSize
-			};
-			ViewBag.CurrentPage = page;
-			ViewBag.TotalPages = totalPages;
-			ViewBag.TotalItems = total;
-			ViewBag.PageSize = pageSize;
-
-			return View(viewModel);
-		}*/
-
 		public IActionResult Index()
 		{
 			var viewModel = new InmuebleViewModel
@@ -214,7 +182,7 @@ public IActionResult Index(int page = 1)
 		{
 			try
 			{
-				// Usar la versión que devuelve inmuebles ya enriquecidos con direccion/tipo/propietario
+				// Usar la version que devuelve inmuebles ya enriquecidos con direccion/tipo/propietario
 				var inmuebles = _repoInmueble.ListarConDireccion(estado, idPropietario);
 				return Json(inmuebles);
 			}

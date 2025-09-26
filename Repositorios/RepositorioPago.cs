@@ -207,7 +207,7 @@ namespace Inmobiliaria25.Repositorios
 
 			decimal totalEsperado = (decimal)montoMensual * mesesTranscurridos;
 
-			// deuda = lo que debería haber pagado – lo que efectivamente pagó
+			// deuda = lo que debería haber pagado – lo que efectivamente pago
 			decimal deuda = totalEsperado - totalPagado;
 
 			return deuda < 0 ? 0 : deuda;
@@ -220,7 +220,7 @@ namespace Inmobiliaria25.Repositorios
 			using var conn = _context.GetConnection();
 			conn.Open();
 
-			// Obtener el máximo número ya guardado (ignora las cadenas no numéricas como 'Multa')
+			// Obtener el moximo número ya guardado (ignora las cadenas no numericas como 'Multa')
 			const string sql = @"
         SELECT COALESCE(MAX(CAST(NULLIF(numeroPago,'Multa') AS UNSIGNED)), 0) + 1
         FROM pago

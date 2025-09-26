@@ -58,124 +58,36 @@ namespace Inmobiliaria25.Controllers
 
     [HttpPost]
     public IActionResult Guardar(Inquilinos inquilino)
-{
-  try
-  {
-    if (!ModelState.IsValid)
     {
-      if (inquilino.IdInquilino > 0) return View("Editar", inquilino);
-      return View("Crear", inquilino);
-    }
+      try
+      {
+        if (!ModelState.IsValid)
+        {
+          if (inquilino.IdInquilino > 0) return View("Editar", inquilino);
+          return View("Crear", inquilino);
+        }
 
-    int usuarioId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+        int usuarioId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
 
-    if (inquilino.IdInquilino > 0)
-    {
+        if (inquilino.IdInquilino > 0)
+        {
           //recupero el registro original y fuerzo el dni para que no se pueda editar
           var original = repo.ObtenerPorId(inquilino.IdInquilino);
           if (original == null) return NotFound();
           inquilino.Dni = original.Dni;
 
-
-
-         /* if (repo.ObtenerPorDni(inquilino.Dni, inquilino.IdInquilino))
-          {
-            ModelState.AddModelError("Dni", "El DNI ya está registrado");
-            return View("Editar", inquilino);
-          }*/
-
-      var filas = repo.Modificar(inquilino);
-      /*if (filas > 0)
-      {
-        AuditoriaController.RegistrarAuditoriaDesdeExterno(
-          HttpContext.RequestServices,
-          inquilino.IdInquilino,
-          TipoEntidad.inquilino,
-          AccionAuditoria.modificar, // verifica que exista en tu enum
-          usuarioId,
-          "Inquilino modificado"
-        );
-        TempData["Mensaje"] = "Inquilino modificado con éxito";
-      }*/
-    }
-    else
-    {
-      if (repo.ObtenerPorDni(inquilino.Dni))
-      {
-        ModelState.AddModelError("Dni", "El DNI ya está registrado. Revise la tabla de propietarios.");
-        return View("Crear", inquilino);
-      }
-
-      var id = repo.Alta(inquilino); // ahora devuelve id y asigna inquilino.IdInquilino
-      /*if (id > 0)
-      {
-        AuditoriaController.RegistrarAuditoriaDesdeExterno(
-          HttpContext.RequestServices,
-          inquilino.IdInquilino,
-          TipoEntidad.inquilino,
-          AccionAuditoria.crear,
-          usuarioId,
-          "Inquilino creado"
-        );
-        TempData["Mensaje"] = "Inquilino creado con éxito";
-      }
-      else
-      {
-        ModelState.AddModelError("", "No se pudo crear el inquilino.");
-        return View("Crear", inquilino);
-      }*/
-    }
-
-    return RedirectToAction("Index");
-  }
-  catch (Exception ex)
-  {
-    TempData["Error"] = ex.Message;
-    return RedirectToAction("Index");
-  }
-}
-
-
-
-    /*public IActionResult Guardar(Inquilinos inquilino)
-    {
-      try
-      {
-
-        if (!ModelState.IsValid)
-        {
-
-          if (inquilino.IdInquilino > 0)
-          {
-            return View("Editar", inquilino);
-          }
-          return View("Crear", inquilino);
-        }
-
-
-        if (inquilino.IdInquilino > 0)
-        {
-          // EDItAR // consulta al repo si hay otro inq con ese dni aparte del que se edita
-          if (repo.ObtenerPorDni(inquilino.Dni, inquilino.IdInquilino))
-          {
-            ModelState.AddModelError("Dni", "El DNI ya está registrado");
-            return View("Editar", inquilino);
-          }
-
-          repo.Modificar(inquilino);
-          TempData["Mensaje"] = "Inquilino modificado con éxito";
+          var filas = repo.Modificar(inquilino);
         }
         else
         {
-          // CREAR // consulta al repo si hay un inqu con ese dni
           if (repo.ObtenerPorDni(inquilino.Dni))
           {
             ModelState.AddModelError("Dni", "El DNI ya está registrado. Revise la tabla de propietarios.");
             return View("Crear", inquilino);
           }
 
-          repo.Alta(inquilino);
-          TempData["Mensaje"] = "Inquilino creado con éxito";
+          var id = repo.Alta(inquilino); // ahora devuelve id y asigna inquilino.IdInquilino
+
         }
 
         return RedirectToAction("Index");
@@ -185,7 +97,8 @@ namespace Inmobiliaria25.Controllers
         TempData["Error"] = ex.Message;
         return RedirectToAction("Index");
       }
-    }*/
+    }
+
 
     // editar (GET)
     // cuando hago click

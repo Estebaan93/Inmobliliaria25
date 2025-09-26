@@ -16,9 +16,8 @@ namespace Inmobiliaria25.Controllers
       _repo = repo;
     }
 
-    // =======================
+    
     // SOLO PARA SWEETALERT
-    // =======================
 
     // listar
     [HttpGet]

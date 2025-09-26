@@ -22,22 +22,6 @@ namespace Inmobiliaria25.Controllers
 			_repoAuditoria = repoAuditoria;
 		}
 
-		// lista pagos
-		/*public IActionResult Index(int idContrato)
-		{
-			var contrato = _repoContrato.Obtener(idContrato);
-			if (contrato == null) return RedirectToAction("Index", "Contrato");
-
-			var pagos = _repoPago.ListarPorContrato(idContrato);
-
-			var vm = new PagoContrato
-			{
-				Contrato = contrato,
-				Pagos = pagos
-			};
-
-			return View(vm);
-		}*/
         public IActionResult Index(int idContrato)
         {
             var contrato = _repoContrato.Obtener(idContrato);
@@ -67,33 +51,7 @@ namespace Inmobiliaria25.Controllers
 			return View(pago);
 		}
 
-		// creo
-		/*public IActionResult Crear(int idContrato)
-		{
-			var contrato = _repoContrato.Obtener(idContrato);
-			if (contrato == null) return RedirectToAction("Index", "Contrato");
-
-			var pagos = _repoPago.ListarPorContrato(idContrato);
-			var multaPendiente = pagos.FirstOrDefault(p => p.NumeroPago == "Multa" && !p.Estado);
-
-			// siempre mostrar un número secuencial en el formulario
-			var numeroGenerado = _repoPago.GenerarNumeroPago(idContrato);
-
-			var pago = new Pago
-			{
-				IdContrato = idContrato,
-				Contrato = contrato,
-				FechaPago = DateTime.Today,
-				//Importe = multaPendiente?.Importe ?? 0,
-				Importe= multaPendiente?.Importe ?? (decimal)contrato.Monto, // si hay multa, el importe es el de la multa, sino el del contrato
-				NumeroPago = numeroGenerado,                // mostrado en readonly
-				Detalle = multaPendiente?.Detalle ?? "",
-				IdPago = multaPendiente?.IdPago ?? 0        // si existe multa, la actualizaremos en el POST
-			};
-
-			return View(pago);
-		}*/
-		        // GET: Crear nuevo pago
+		    // GET: Crear nuevo pago
         public IActionResult Crear(int idContrato)
         {
             var contrato = _repoContrato.Obtener(idContrato);
@@ -108,16 +66,12 @@ namespace Inmobiliaria25.Controllers
 
 			// preparar pago (vista espera un pago)
 						var pago = new Pago { IdContrato = idContrato, FechaPago = DateTime.Now, NumeroPago = _repoPago.GenerarNumeroPago(idContrato), Importe = (decimal)contrato.Monto };
-            /*var vm = new PagoViewModel
-								{			
-										Contrato = contrato,
-													Pago = new Pago { IdContrato = idContrato, FechaPago = DateTime.Now }
-									};*/
+ 
 				ViewBag.Contrato = contrato; // pasar contrato a la vista
 			return View(pago);
         }
 
-			        // Helper: detecta si un Contrato está anulado (intenta varias propiedades comunes)
+			  // Helper: detecta si un Contrato esta anulado (intenta varias propiedades comunes)
         private bool ContratoEstaAnulado(Contrato contrato)
         {
             if (contrato == null) return true;
@@ -147,18 +101,16 @@ namespace Inmobiliaria25.Controllers
                 return !(bool)(prop.GetValue(contrato) ?? true);
             }
 
-            // por defecto: no está anulado
+            // por defecto: no esta anulado
             return false;
         }
 
 
-
-		
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Crear(Pago pago)
         {
-            // Si el model es inválido, volver a mostrar la vista con el Pago y el Contrato en ViewBag
+            // Si el model es invalido, volver a mostrar la vista con el Pago y el Contrato en ViewBag
             if (!ModelState.IsValid)
             {
                 ViewBag.Contrato = _repoContrato.Obtener(pago.IdContrato);
@@ -167,12 +119,12 @@ namespace Inmobiliaria25.Controllers
 
             try
             {
-                // garantizar número secuencial (no confiar en entrada del cliente)
+                // garantizar numero secuencial (no confiar en entrada del cliente)
                 pago.NumeroPago = _repoPago.GenerarNumeroPago(pago.IdContrato);
 
                 if (pago.IdPago > 0)
                 {
-                    // actualizar el registro de multa original con el número y marcar como pagado
+                    // actualizar el registro de multa original con el nmero y marcar como pagado
                     pago.Estado = true;
                     _repoPago.ActualizarPagoCompleto(pago.IdPago, pago);
                 }
@@ -197,69 +149,6 @@ namespace Inmobiliaria25.Controllers
                 return View(pago);
             }
         }
-
-
-		/*
-		[HttpPost]
-		[ValidateAntiForgeryToken]
-		public IActionResult Crear(Pago pago)
-		{
-			if (!ModelState.IsValid) return View(pago);
-
-			try
-			{
-				// garantizar número secuencial (no confiar en entrada del cliente)
-				pago.NumeroPago = _repoPago.GenerarNumeroPago(pago.IdContrato);
-
-				if (pago.IdPago > 0)
-				{
-					// actualizar el registro de multa original con el número y marcar como pagado
-					pago.Estado = true;
-					_repoPago.ActualizarPagoCompleto(pago.IdPago, pago);
-				}
-				else
-				{
-					// crear nuevo pago normal
-					pago.Estado = true;
-					_repoPago.Crear(pago);
-				}
-				//Registrar auditoria en creacion de pago
-				var claim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? User.FindFirst("IdUsuario")?.Value;
-				int idUsuario = int.TryParse(claim, out var tmp) ? tmp : 0;
-				_repoAuditoria.RegistrarAuditoria(pago.IdPago, TipoEntidad.pago, AccionAuditoria.crear, idUsuario, $"Pago registrado (Contrato N° {pago.IdContrato}, pago N° {pago.NumeroPago})");
-
-				TempData["Exito"] = "Pago registrado correctamente.";
-				return RedirectToAction("Index", new { idContrato = pago.IdContrato });
-			}
-			catch (Exception ex)
-			{
-				TempData["Error"] = "Error al registrar pago: " + ex.Message;
-				return View(pago);
-			}
-		}*/
-
-		/*
-		// post crear
-		[HttpPost]
-		[ValidateAntiForgeryToken]
-		public IActionResult Crear(Pago pago)
-		{
-			if (!ModelState.IsValid)
-				return View(pago);
-
-			try
-			{
-				_repoPago.Crear(pago);
-				TempData["Exito"] = "Pago creado correctamente.";
-				return RedirectToAction("Index", new { idContrato = pago.IdContrato });
-			}
-			catch (Exception ex)
-			{
-				TempData["Error"] = "Error al crear el pago: " + ex.Message;
-				return View(pago);
-			}
-		}
-*/
 
 
 
@@ -301,7 +190,7 @@ namespace Inmobiliaria25.Controllers
             {
                 _repoPago.Eliminar(id);
 
-                // Registrar auditoría: anulación/eliminación de pago
+                // Registrar auditoria: anulacion/eliminacion de pago
                 var claim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? User.FindFirst("IdUsuario")?.Value;
                 int idUsuario = int.TryParse(claim, out var tmp) ? tmp : 0;
                 _repoAuditoria.RegistrarAuditoria(id, TipoEntidad.pago, AccionAuditoria.anular, idUsuario, $"Pago eliminado (N° {id})");

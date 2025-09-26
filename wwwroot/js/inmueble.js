@@ -97,7 +97,7 @@ document.addEventListener("DOMContentLoaded", function () {
 						.then(data => {
 							if (data.success) {
 								Swal.fire("Eliminado", data.mensaje, "success");
-								//  refrescamos tabla sin recargar página
+								//  refrescamos tabla sin recargar pagina
 								cargarInmuebles();
 							} else {
 								Swal.fire("Error", data.mensaje, "error");

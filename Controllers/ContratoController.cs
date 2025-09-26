@@ -55,12 +55,7 @@ namespace Inmobiliaria25.Controllers
       return View(contratos);
     }
 
-
-
-
-
     // crear
-
     public IActionResult Crear()
     {
       var vm = new ContratoViewModel
@@ -75,7 +70,6 @@ namespace Inmobiliaria25.Controllers
       };
       return View(vm);
     }
-
 
 
     [HttpPost]
@@ -100,7 +94,7 @@ namespace Inmobiliaria25.Controllers
         ModelState.AddModelError("Contrato.FechaInicio", "La fecha de inicio no puede ser anterior a hoy.");
       }
 
-      // Validar superposición de fechas
+      // Validar superposicion de fechas
       if (_repoContrato.ExisteContratoSuperpuesto(contrato.IdInmueble, contrato.FechaInicio, contrato.FechaFin))
       {
         ModelState.AddModelError("Contrato.IdInmueble", "El inmueble ya está alquilado en el período seleccionado.");
@@ -120,17 +114,15 @@ namespace Inmobiliaria25.Controllers
       contrato.FechaAnulacion = null;
 
       int id = _repoContrato.Crear(contrato);
-      // Registrar auditoría: creación de contrato
+
+      // Registrar auditoria: creacion de contrato
       var claim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? User.FindFirst("IdUsuario")?.Value;
       int idUsuario = int.TryParse(claim, out var tmp) ? tmp : 0;
       _repoAuditoria.RegistrarAuditoria(id, TipoEntidad.contrato, AccionAuditoria.crear, idUsuario, $"Contrato creado (N° {id})");
       return RedirectToAction("Index");
     }
 
-
-
     // editar
-
     public IActionResult Editar(int id)
     {
       var contrato = _repoContrato.Obtener(id);
@@ -180,7 +172,7 @@ namespace Inmobiliaria25.Controllers
     }
 
 
-    // JSON para ajax para que me arme mas bonito (propietario + precio)
+    // JSON para ajax (propietario + precio)
 
     [HttpGet]
     public IActionResult ObtenerInmueble(int id)
@@ -223,59 +215,6 @@ namespace Inmobiliaria25.Controllers
     }
 
     [HttpPost]
-public IActionResult Finalizar(int id)
-{
-    var contrato = _repoContrato.Obtener(id);
-    if (contrato == null) return NotFound();
-
-    //El monto del contrato es mensual
-    decimal montoMensual = (decimal)contrato.Monto;
-
-    //Calcular deuda de alquiler hasta hoy
-    decimal deuda = _repoPago.CalcularDeuda(id, (double)montoMensual, contrato.FechaInicio);
-
-    //Calcular multa
-    int diasTotales = (contrato.FechaFin - contrato.FechaInicio).Days;
-    int diasTranscurridos = (DateTime.Today - contrato.FechaInicio).Days;
-
-    decimal multa = diasTranscurridos < (diasTotales / 2)
-        ? montoMensual * 2   // menos de la mitad
-        : montoMensual;      // más de la mitad
-
-    //Total
-    decimal totalMulta = deuda + multa;
-
-    //Anular contrato
-    _repoContrato.AnularContrato(id);
-
-    // Registrar auditoría: anulación de contrato
-    var claim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? User.FindFirst("IdUsuario")?.Value;
-    int idUsuario = int.TryParse(claim, out var tmp) ? tmp : 0;
-    _repoAuditoria.RegistrarAuditoria(id, TipoEntidad.contrato, AccionAuditoria.anular, idUsuario, $"Contrato anulado (N° {id})");
-
-    //Registrar pago (multa) COMO PAGADO y obtener el id insertado
-    var pago = new Pago
-    {
-        IdContrato = id,
-        FechaPago = DateTime.Today,
-        Importe = totalMulta,
-        NumeroPago = "Multa",
-        Detalle = $"Multa por contrato anulado (incluye deuda: {deuda})",
-        Estado = true // marcar como pagado si así lo requiere el flujo
-    };
-
-    int idPagoCreado = _repoPago.CrearPagoSinValidacion(pago);
-    pago.IdPago = idPagoCreado;
-
-    // Registrar auditoría: creación de pago (multa) con el id real
-    _repoAuditoria.RegistrarAuditoria(idPagoCreado, TipoEntidad.pago, AccionAuditoria.crear, idUsuario, $"Multa creada por anulación de contrato (Contrato N° {id}, Pago N° {idPagoCreado})");
-
-    TempData["Mensaje"] = $"Contrato N° {id} anulado. Multa: ${multa}, deuda: ${deuda}, total: ${totalMulta}.";
-    return RedirectToAction("Detalles", new { id });
-}
-
-
-    /*[HttpPost]
     public IActionResult Finalizar(int id)
     {
       var contrato = _repoContrato.Obtener(id);
@@ -301,12 +240,12 @@ public IActionResult Finalizar(int id)
       //Anular contrato
       _repoContrato.AnularContrato(id);
 
-      // Registrar auditoría: anulación de contrato
+      // Registrar auditoria: anulación de contrato
       var claim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? User.FindFirst("IdUsuario")?.Value;
       int idUsuario = int.TryParse(claim, out var tmp) ? tmp : 0;
       _repoAuditoria.RegistrarAuditoria(id, TipoEntidad.contrato, AccionAuditoria.anular, idUsuario, $"Contrato anulado (N° {id})");
 
-      //Registrar pago como pendiente
+      //Registrar pago (multa) COMO PAGADO y obtener el id insertado
       var pago = new Pago
       {
         IdContrato = id,
@@ -314,15 +253,19 @@ public IActionResult Finalizar(int id)
         Importe = totalMulta,
         NumeroPago = "Multa",
         Detalle = $"Multa por contrato anulado (incluye deuda: {deuda})",
-        Estado = false
+        Estado = true // marcar como pagado si asi lo requiere el flujo
       };
-      _repoPago.CrearPagoSinValidacion(pago);
 
-      // Registrar auditoría: creación de pago (multa)
-      _repoAuditoria.RegistrarAuditoria(pago.IdPago, TipoEntidad.pago, AccionAuditoria.crear, idUsuario, $"Multa creada por anulación de contrato (Contrato N° {id}, Pago N° {pago.IdPago})");
+      int idPagoCreado = _repoPago.CrearPagoSinValidacion(pago);
+      pago.IdPago = idPagoCreado;
+
+      // Registrar auditoriia: creación de pago (multa) con el id real
+      _repoAuditoria.RegistrarAuditoria(idPagoCreado, TipoEntidad.pago, AccionAuditoria.crear, idUsuario, $"Multa creada por anulación de contrato (Contrato N° {id}, Pago N° {idPagoCreado})");
 
       TempData["Mensaje"] = $"Contrato N° {id} anulado. Multa: ${multa}, deuda: ${deuda}, total: ${totalMulta}.";
       return RedirectToAction("Detalles", new { id });
-    }*/
+    }
+
+
   }
 }

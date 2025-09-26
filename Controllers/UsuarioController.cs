@@ -154,7 +154,7 @@ namespace Inmobiliaria25.Controllers
 
         var newIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
-        // Cerrar sesión actual y volver a autenticar con los nuevos claims
+        // Cerrar sesion actual y volver a autenticar con los nuevos claims
         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         await HttpContext.SignInAsync(
             CookieAuthenticationDefaults.AuthenticationScheme,
@@ -236,7 +236,7 @@ namespace Inmobiliaria25.Controllers
       // Actualiza la contraseña
       _repo.Actualizar(usuario, vm.NewPassword);
 
-      // Si el usuario cambioo su propia contraseña, cerrar sesión y pedir re-login
+      // Si el usuario cambioo su propia contraseña, cerrar sesion y pedir re-login
       /*if (currentUserId == vm.IdUsuario.ToString())
       {*/
         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
