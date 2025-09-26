@@ -100,8 +100,32 @@ namespace Inmobiliaria25.Repositorios
 			return cmd.ExecuteNonQuery();
 		}
 
+
+	public int CrearPagoSinValidacion(Pago pago)
+{
+    using var conn = _context.GetConnection();
+    conn.Open();
+
+    const string sql = @"
+        INSERT INTO pago 
+        (idContrato, fechaPago, importe, numeroPago, detalle, estado)
+        VALUES (@idContrato, @fechaPago, @importe, @numeroPago, @detalle, @estado);
+        SELECT LAST_INSERT_ID();";
+
+    using var cmd = new MySqlCommand(sql, conn);
+    cmd.Parameters.AddWithValue("@idContrato", pago.IdContrato);
+    cmd.Parameters.AddWithValue("@fechaPago", pago.FechaPago);
+    cmd.Parameters.AddWithValue("@importe", pago.Importe);
+    cmd.Parameters.AddWithValue("@numeroPago", pago.NumeroPago);
+    cmd.Parameters.AddWithValue("@detalle", (object?)pago.Detalle ?? DBNull.Value);
+    cmd.Parameters.AddWithValue("@estado", pago.Estado ? 1 : 0);
+
+    // ExecuteScalar devolverá el LAST_INSERT_ID()
+    return Convert.ToInt32(cmd.ExecuteScalar());
+}
+
 		//Pagos sin validacion
-		public int CrearPagoSinValidacion(Pago pago)
+		/*public int CrearPagoSinValidacion(Pago pago)
 		{
 			using var conn = _context.GetConnection();
 			conn.Open();
@@ -126,7 +150,7 @@ namespace Inmobiliaria25.Repositorios
 					return Convert.ToInt32(cmd.ExecuteScalar());
 				}
 			}
-		}
+		}*/
 
 
 		public Pago ObtenerMultaPorContrato(int idContrato)

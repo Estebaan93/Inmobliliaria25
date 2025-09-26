@@ -222,9 +222,60 @@ namespace Inmobiliaria25.Controllers
       return View(contrato);
     }
 
-
-
     [HttpPost]
+public IActionResult Finalizar(int id)
+{
+    var contrato = _repoContrato.Obtener(id);
+    if (contrato == null) return NotFound();
+
+    //El monto del contrato es mensual
+    decimal montoMensual = (decimal)contrato.Monto;
+
+    //Calcular deuda de alquiler hasta hoy
+    decimal deuda = _repoPago.CalcularDeuda(id, (double)montoMensual, contrato.FechaInicio);
+
+    //Calcular multa
+    int diasTotales = (contrato.FechaFin - contrato.FechaInicio).Days;
+    int diasTranscurridos = (DateTime.Today - contrato.FechaInicio).Days;
+
+    decimal multa = diasTranscurridos < (diasTotales / 2)
+        ? montoMensual * 2   // menos de la mitad
+        : montoMensual;      // más de la mitad
+
+    //Total
+    decimal totalMulta = deuda + multa;
+
+    //Anular contrato
+    _repoContrato.AnularContrato(id);
+
+    // Registrar auditoría: anulación de contrato
+    var claim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? User.FindFirst("IdUsuario")?.Value;
+    int idUsuario = int.TryParse(claim, out var tmp) ? tmp : 0;
+    _repoAuditoria.RegistrarAuditoria(id, TipoEntidad.contrato, AccionAuditoria.anular, idUsuario, $"Contrato anulado (N° {id})");
+
+    //Registrar pago (multa) COMO PAGADO y obtener el id insertado
+    var pago = new Pago
+    {
+        IdContrato = id,
+        FechaPago = DateTime.Today,
+        Importe = totalMulta,
+        NumeroPago = "Multa",
+        Detalle = $"Multa por contrato anulado (incluye deuda: {deuda})",
+        Estado = true // marcar como pagado si así lo requiere el flujo
+    };
+
+    int idPagoCreado = _repoPago.CrearPagoSinValidacion(pago);
+    pago.IdPago = idPagoCreado;
+
+    // Registrar auditoría: creación de pago (multa) con el id real
+    _repoAuditoria.RegistrarAuditoria(idPagoCreado, TipoEntidad.pago, AccionAuditoria.crear, idUsuario, $"Multa creada por anulación de contrato (Contrato N° {id}, Pago N° {idPagoCreado})");
+
+    TempData["Mensaje"] = $"Contrato N° {id} anulado. Multa: ${multa}, deuda: ${deuda}, total: ${totalMulta}.";
+    return RedirectToAction("Detalles", new { id });
+}
+
+
+    /*[HttpPost]
     public IActionResult Finalizar(int id)
     {
       var contrato = _repoContrato.Obtener(id);
@@ -272,6 +323,6 @@ namespace Inmobiliaria25.Controllers
 
       TempData["Mensaje"] = $"Contrato N° {id} anulado. Multa: ${multa}, deuda: ${deuda}, total: ${totalMulta}.";
       return RedirectToAction("Detalles", new { id });
-    }
+    }*/
   }
 }

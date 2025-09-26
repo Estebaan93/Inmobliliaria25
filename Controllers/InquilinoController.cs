@@ -85,7 +85,7 @@ namespace Inmobiliaria25.Controllers
           }*/
 
       var filas = repo.Modificar(inquilino);
-      if (filas > 0)
+      /*if (filas > 0)
       {
         AuditoriaController.RegistrarAuditoriaDesdeExterno(
           HttpContext.RequestServices,
@@ -96,7 +96,7 @@ namespace Inmobiliaria25.Controllers
           "Inquilino modificado"
         );
         TempData["Mensaje"] = "Inquilino modificado con éxito";
-      }
+      }*/
     }
     else
     {
@@ -107,7 +107,7 @@ namespace Inmobiliaria25.Controllers
       }
 
       var id = repo.Alta(inquilino); // ahora devuelve id y asigna inquilino.IdInquilino
-      if (id > 0)
+      /*if (id > 0)
       {
         AuditoriaController.RegistrarAuditoriaDesdeExterno(
           HttpContext.RequestServices,
@@ -123,7 +123,7 @@ namespace Inmobiliaria25.Controllers
       {
         ModelState.AddModelError("", "No se pudo crear el inquilino.");
         return View("Crear", inquilino);
-      }
+      }*/
     }
 
     return RedirectToAction("Index");
