@@ -186,7 +186,7 @@ public IActionResult Index(int page = 1)
 			try
 			{
 				_repoInmueble.Eliminar(id);
-				return Json(new { success = true, mensaje = "Inmueble eliminado correctamente" });
+				return Json(new { success = true, mensaje = "Inmueble dado de baja correctamente" });
 			}
 			catch (Exception ex)
 			{

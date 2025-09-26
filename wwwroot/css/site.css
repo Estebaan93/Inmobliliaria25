@@ -1,3 +1,4 @@
+/*wwwwroot/css/site.css*/
 html {
   font-size: 14px;
 }
@@ -284,5 +285,36 @@ body {
     box-shadow: 0 6px 20px rgba(0, 180, 216, 0.4);
 }
 
+/*Fondo login*/
+body.login-background {
+  height: 100vh;          /* forzar altura de ventana */
+  min-height: 100vh;
+  overflow: hidden;       /* quita el scroll */
+  margin-bottom: 0 !important; /* anula margin global que genera scroll */
+}
 
+.login-background {
+  background: url('/img/2.jpg') no-repeat center center fixed;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+  background-attachment: fixed;
+}
+/* Capa semitransparente para mejorar contraste sobre la imagen */
+.login-background::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: rgba(41, 40, 40, 0.65); /* ajustar opacidad/ color según necesidad */
+  pointer-events: none;
+  z-index: 0;
+}
 
+/* Llevar el contenido por encima de la capa */
+.login-container, .login-container * {
+  position: relative;
+  z-index: 1;
+  max-height: 100vh;
+  overflow: auto; 
+}
