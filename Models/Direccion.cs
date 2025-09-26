@@ -15,6 +15,7 @@ namespace Inmobiliaria25.Models
 
     public string? Cp { get; set; }
     public string? Ciudad { get; set; }
-    public string? Coordenadas { get; set; }
+    [Required]
+    public string Coordenadas { get; set; }
   }
 }
