@@ -30,7 +30,7 @@ namespace Inmobiliaria25.Controllers
 		{
 			var viewModel = new InmuebleViewModel
 			{
-				Inmuebles = _repoInmueble.Listar(), // si querés mostrar de una
+				Inmuebles = _repoInmueble.Listar(), // mostrar de una
 				Propietarios = _repoPropietario.ObtenerActivos()
 			};
 
@@ -167,7 +167,7 @@ namespace Inmobiliaria25.Controllers
 		{
 			try
 			{
-				var inmuebles = _repoInmueble.ListarDisponible();
+				var inmuebles = _repoInmueble.ListarDisponible("disponible");
 				return Json(inmuebles);
 			}
 			catch (Exception ex)

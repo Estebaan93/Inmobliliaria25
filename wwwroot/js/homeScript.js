@@ -1,19 +1,19 @@
-// wwwroot/js/homeScript.js - fetch-only, carga todos y filtra en cliente
+// wwwroot/js/homeScript.js - carga todos y filtra en cliente (limpio)
 
-console.log("homeScript.js (fetch) loaded:", location.href);
+console.log("homeScript.js loaded:", location.href);
 
-document.addEventListener("DOMContentLoaded", function () {
-
+document.addEventListener("DOMContentLoaded", () => {
   const selTipo = document.querySelector("#selectTipos");
   const selAmbientes = document.querySelector("#selectAmbientes");
   const selCochera = document.querySelector("#selectCochera");
   const selOrden = document.querySelector("#selectOrdenPrecio");
+  const selContratoDias = document.querySelector("#selectContratoDias");
+  const chkSoloDisponibles = document.querySelector("#chkSoloDisponibles");
   const btnFiltrar = document.querySelector("#btnFiltrarInmueblesIndex");
   const btnLimpiar = document.querySelector("#limpiarFiltros");
   const container = document.querySelector(".containerInmueble");
-  const selContratoDias = document.querySelector("#selectContratoDias");
 
-  let cacheInmuebles = []; // cache de todos los inmuebles recibidos
+  let cacheInmuebles = [];
 
   function parseFilters() {
     const idTipoRaw = selTipo?.value;
@@ -25,16 +25,17 @@ document.addEventListener("DOMContentLoaded", function () {
     return {
       idTipo: idTipoRaw && idTipoRaw !== "0" ? parseInt(idTipoRaw, 10) : null,
       ambientes: ambientesRaw && ambientesRaw !== "0" ? parseInt(ambientesRaw, 10) : null,
-      contratoDias: contratoRow && contratoRow !=="" ? parseInt(contratoRow, 10) : null,
+      contratoDias: contratoRow && contratoRow !== "" ? parseInt(contratoRow, 10) : null,
       cochera: cocheraRaw === "true" ? true : (cocheraRaw === "false" ? false : null),
+      soloDisponibles: !!(chkSoloDisponibles?.checked),
       ordenPrecio: ordenRaw || null
     };
   }
 
   function qsFromObj(obj) {
     return Object.entries(obj)
-      .filter(([k,v]) => v !== null && v !== undefined && v !== "")
-      .map(([k,v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`)
+      .filter(([k, v]) => v !== null && v !== undefined && v !== "")
+      .map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`)
       .join("&");
   }
 
@@ -53,17 +54,30 @@ document.addEventListener("DOMContentLoaded", function () {
   function aplicarFiltroLocal(filters) {
     let resultado = cacheInmuebles.slice();
 
+    if (filters.soloDisponibles) {
+      resultado = resultado.filter(i => {
+        const estado =
+          i.estado ??
+          i.estado_calculado ??
+          i.estado_tabla ??
+          i.estadoTabla ??
+          null;
+        return Number(estado) === 1;
+      });
+    }
+
     if (filters.idTipo !== null) {
       resultado = resultado.filter(i => (i.tipo?.IdTipo ?? i.tipo?.idTipo ?? i.IdTipo ?? i.idTipo) == filters.idTipo);
     }
+
     if (filters.ambientes !== null) {
       resultado = resultado.filter(i => (i.cantidadAmbientes ?? i.CantidadAmbientes ?? 0) == filters.ambientes);
     }
+
     if (filters.cochera !== null) {
       resultado = resultado.filter(i => !!(i.cochera ?? i.Cochera) === filters.cochera);
     }
 
-        // filtro por dias de contrato (intenta diversos nombres de propiedad)
     if (filters.contratoDias !== null) {
       resultado = resultado.filter(i => {
         const dias =
@@ -75,15 +89,15 @@ document.addEventListener("DOMContentLoaded", function () {
           i.diasParaFinContrato ??
           i.diasParaVencimiento ??
           null;
-        if (dias == null) return false; // si no hay info de contratos, ocultar por seguridad
+        if (dias == null) return false;
         return Number(dias) === Number(filters.contratoDias);
       });
     }
 
     if (filters.ordenPrecio === "asc") {
-      resultado.sort((a,b) => (Number(a.precio ?? a.Precio ?? 0) - Number(b.precio ?? b.Precio ?? 0)));
+      resultado.sort((a, b) => (Number(a.precio ?? a.Precio ?? 0) - Number(b.precio ?? b.Precio ?? 0)));
     } else if (filters.ordenPrecio === "desc") {
-      resultado.sort((a,b) => (Number(b.precio ?? b.Precio ?? 0) - Number(a.precio ?? a.Precio ?? 0)));
+      resultado.sort((a, b) => (Number(b.precio ?? b.Precio ?? 0) - Number(a.precio ?? a.Precio ?? 0)));
     }
 
     return resultado;
@@ -100,17 +114,16 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
 
-    let html = "";
-    for (const i of inmuebles) {
+    const parts = inmuebles.map(i => {
       const id = i.idInmueble ?? i.IdInmueble ?? "";
       const urlImg = i.urlImagen ?? i.UrlImagen ?? "/img/no-image.jpg";
-      const tipo = i.tipo?.observacion ?? i.tipo?.Observacion ?? i.tipo?.Observacion ?? "";
+      const tipo = i.tipo?.observacion ?? i.tipo?.Observacion ?? "";
       const descripcion = i.descripcion ?? i.Descripcion ?? "";
       const precio = i.precio ?? i.Precio ?? "";
       const ambientes = i.cantidadAmbientes ?? i.CantidadAmbientes ?? "";
       const cochera = (i.cochera ?? i.Cochera) ? "Sí" : "No";
 
-      html += `
+      return `
         <div class="col-md-4 mb-3">
           <a href="/Inmueble/Detalle/${id}" class="text-decoration-none">
             <div class="card h-100 shadow-sm">
@@ -125,8 +138,9 @@ document.addEventListener("DOMContentLoaded", function () {
             </div>
           </a>
         </div>`;
-    }
-    container.innerHTML = html;
+    });
+
+    container.innerHTML = parts.join("");
   }
 
   window.llenarCartasInmuebles = llenarCartasInmuebles;
@@ -134,11 +148,12 @@ document.addEventListener("DOMContentLoaded", function () {
   async function cargarTodos() {
     try {
       cacheInmuebles = await fetchJson("/Inmueble/ListarDisponible");
-      console.log("cargarTodos -> recibidos:", cacheInmuebles.length);
-      console.log("cacheInmuebles:", cacheInmuebles);
+      console.log("cargarTodos -> recibidos:", cacheInmuebles?.length ?? 0);
+      console.log("cacheInmuebles sample:", cacheInmuebles?.[0]);
       llenarCartasInmuebles(cacheInmuebles);
     } catch (err) {
       console.error("Error cargarTodos:", err);
+      container.innerHTML = `<div class="col-12 text-center py-4 text-danger">Error al cargar inmuebles.</div>`;
     }
   }
 
@@ -146,10 +161,7 @@ document.addEventListener("DOMContentLoaded", function () {
     try {
       const filters = parseFilters();
       console.log("aplicarFiltro params:", filters);
-      // Si no tenemos cache, cargar todos primero
-      if (!cacheInmuebles || cacheInmuebles.length === 0) {
-        await cargarTodos();
-      }
+      if (!cacheInmuebles || cacheInmuebles.length === 0) await cargarTodos();
       const res = aplicarFiltroLocal(filters);
       console.log("aplicarFiltro -> resultados:", res.length);
       llenarCartasInmuebles(res);
@@ -160,22 +172,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // listeners
   if (btnFiltrar) btnFiltrar.addEventListener("click", aplicarFiltro);
-  else [selTipo, selAmbientes, selCochera, selContratoDias,selOrden].forEach(s => s?.addEventListener("change", aplicarFiltro));
+  [selTipo, selAmbientes, selCochera, selContratoDias, selOrden].forEach(s => s?.addEventListener("change", aplicarFiltro));
+  if (chkSoloDisponibles) chkSoloDisponibles.addEventListener("change", aplicarFiltro);
 
   if (btnLimpiar) {
     btnLimpiar.addEventListener("click", async () => {
       if (selTipo) selTipo.value = "0";
       if (selAmbientes) selAmbientes.value = "0";
       if (selCochera) selCochera.value = "";
-      if(selContratoDias) selContratoDias.value = "";
+      if (selContratoDias) selContratoDias.value = "";
+      if (chkSoloDisponibles) chkSoloDisponibles.checked = false;
       if (selOrden) selOrden.value = "";
       await cargarTodos();
     });
   }
 
-  // carga inicial cuando el contenedor esta vacio
-  if (container && container.children.length === 0) {
-    cargarTodos();
-  }
-
+  if (container && container.children.length === 0) cargarTodos();
 });
