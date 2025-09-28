@@ -163,11 +163,11 @@ namespace Inmobiliaria25.Controllers
 		}
 
 		[HttpGet]
-		public IActionResult ListarDisponible()
+		public IActionResult ListarDisponible(string filtro="todos")
 		{
 			try
 			{
-				var inmuebles = _repoInmueble.ListarDisponible("disponible");
+				var inmuebles = _repoInmueble.ListarDisponible(filtro);
 				return Json(inmuebles);
 			}
 			catch (Exception ex)
