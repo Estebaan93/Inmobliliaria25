@@ -112,7 +112,7 @@ namespace Inmobiliaria25.Controllers
         vm.Rol = usuario.Rol; // ignorar cualquier intento de cambiar rol
     }
 
-    // Actualizar sólo los campos permitidos (server-side)
+    // Actualizar  los campos permitidos 
     usuario.Nombre = vm.Nombre;
     usuario.Apellido = vm.Apellido;
     usuario.Email = vm.Email;
@@ -134,7 +134,7 @@ namespace Inmobiliaria25.Controllers
 
     _repo.Actualizar(usuario);
 
-    // Si el usuario editado es el que está logueado, refrescar claims/sesion
+    // Si el usuario editado es el que esta logueado, refrescar claims
     if (currentUserId == vm.IdUsuario)
     {
         var claims = new List<Claim>
