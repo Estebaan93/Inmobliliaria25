@@ -63,17 +63,16 @@ namespace Inmobiliaria25.Controllers
       var usuario = _repo.Obtener(id);
       if (usuario == null) return NotFound();
 
-      //Obt rol del usuario actual
-      var userRol = User.FindFirst(ClaimTypes.Role)?.Value;
-      var puedeEditarRol = userRol == "Administrador";
-      var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+    var currentUserIdStr = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+    int.TryParse(currentUserIdStr, out var currentUserId);
+    bool esAdministrador = User.IsInRole("Administrador");
 
-      // Usuarios solo pueden editar su propio nombre si son administradores
-      var puedeEditarNombre = puedeEditarRol || (currentUserId != id.ToString());
+    // Si no es admin y no es el propio usuario -> prohibido
+    if (!esAdministrador && id != currentUserId)
+        return Forbid();
 
-
-      ViewBag.PuedeEditarRol = puedeEditarRol;
-      ViewBag.puedeEditarNombre = puedeEditarNombre;
+    ViewBag.EsAdministrador = esAdministrador;
+    ViewBag.EsMismoUsuario = (id == currentUserId);
 
       var vm = new UsuarioEditar
       {
@@ -92,57 +91,52 @@ namespace Inmobiliaria25.Controllers
     // Editar (POST)
     [HttpPost]
     public async Task<IActionResult> GuardarEditar(UsuarioEditar vm)
+ {
+    if (!ModelState.IsValid) return View("Editar", vm);
+
+    var usuario = _repo.Obtener(vm.IdUsuario);
+    if (usuario == null) return NotFound();
+
+    var currentUserIdStr = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+    int.TryParse(currentUserIdStr, out var currentUserId);
+    bool esAdministrador = User.IsInRole("Administrador");
+    bool esMismoUsuario = (vm.IdUsuario == currentUserId);
+
+    // Si no es admin y no es el propio usuario -> prohibido
+    if (!esAdministrador && !esMismoUsuario)
+        return Forbid();
+
+    // No permitir cambio de rol por parte de no administradores
+    if (!esAdministrador)
     {
-      if (!ModelState.IsValid) return View("Editar", vm);
+        vm.Rol = usuario.Rol; // ignorar cualquier intento de cambiar rol
+    }
 
-      var usuario = _repo.Obtener(vm.IdUsuario);
-      if (usuario == null) return NotFound();
+    // Actualizar sólo los campos permitidos (server-side)
+    usuario.Nombre = vm.Nombre;
+    usuario.Apellido = vm.Apellido;
+    usuario.Email = vm.Email;
+    usuario.Rol = vm.Rol;
 
-      //Obt rol del usuario actual
-      var userRol = User.FindFirst(ClaimTypes.Role)?.Value;
-      var esAdministrador = userRol == "Administrador";
-      var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-      //Si no es adm mantiene datos sensibles
-      if (!esAdministrador && currentUserId == vm.IdUsuario.ToString())
-      {
-        vm.Rol = usuario.Rol; //
-        if (currentUserId == vm.IdUsuario.ToString())
-        {
-          vm.Nombre = usuario.Nombre; //Mantiene su nombre
-          vm.Apellido = usuario.Apellido; //appelid
-        }
-
-
-      }
-
-      usuario.Nombre = vm.Nombre;
-      usuario.Apellido = vm.Apellido;
-      usuario.Email = vm.Email;
-      usuario.Rol = vm.Rol;
-
-      if (vm.AvatarFile != null && vm.AvatarFile.Length > 0)
-      {
+    if (vm.AvatarFile != null && vm.AvatarFile.Length > 0)
+    {
         string filePath = Path.Combine("wwwroot/img/avatars", vm.AvatarFile.FileName);
         using (var stream = new FileStream(filePath, FileMode.Create))
         {
-          vm.AvatarFile.CopyTo(stream);
+            vm.AvatarFile.CopyTo(stream);
         }
         usuario.Avatar = "/img/avatars/" + vm.AvatarFile.FileName;
-      }
-      else if (vm.BorrarAvatar)
-      {
+    }
+    else if (vm.BorrarAvatar)
+    {
         usuario.Avatar = null;
-      }
+    }
 
-      _repo.Actualizar(usuario);
+    _repo.Actualizar(usuario);
 
-      //Actualizar los claims del usuario para el avatar
-      if (User.FindFirst(ClaimTypes.NameIdentifier)?.Value == vm.IdUsuario.ToString())
-      {
-        var identity = User.Identity as ClaimsIdentity;
-
-        // Crear una nueva identidad con los claims actualizados
+    // Si el usuario editado es el que está logueado, refrescar claims/sesion
+    if (currentUserId == vm.IdUsuario)
+    {
         var claims = new List<Claim>
         {
             new Claim(ClaimTypes.NameIdentifier, usuario.IdUsuario.ToString()),
@@ -154,19 +148,16 @@ namespace Inmobiliaria25.Controllers
 
         var newIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
-        // Cerrar sesion actual y volver a autenticar con los nuevos claims
         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         await HttpContext.SignInAsync(
             CookieAuthenticationDefaults.AuthenticationScheme,
             new ClaimsPrincipal(newIdentity),
-            new AuthenticationProperties
-            {
-              IsPersistent = true,
-              ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(60)
-            });
-      }
-      return RedirectToAction("Index", "Home", new { t = DateTime.Now.Ticks });
+            new AuthenticationProperties { IsPersistent = true, ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(60) }
+        );
     }
+
+    return RedirectToAction("Index", "Home", new { t = DateTime.Now.Ticks });
+}
 
 
 
